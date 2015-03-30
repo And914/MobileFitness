@@ -2,10 +2,11 @@ package it.polimi.jaa.mobilefitness;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * Created by andre on 27/03/15.
@@ -17,6 +18,7 @@ public class HomeUserFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    Button startWodButton;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -37,6 +39,22 @@ public class HomeUserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
+
+        startWodButton = (Button) rootView.findViewById(R.id.button_start_wod);
+
+
+        //Click Button
+        startWodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.container, new WodFragment())
+                        .commit();
+            }
+        });
+
+
+
         return rootView;
     }
 
