@@ -29,9 +29,11 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.apache.http.client.HttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -280,16 +282,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
+            final boolean[] login = new boolean[1];
             // Create a client to perform networking
-            String urlServer = "http://192.168.1.187:80/users/login";
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setProxy("192.168.1.187",80);
+            String urlServer = "http://192.168.1.120:80/users/login";
+            SyncHttpClient client = new SyncHttpClient();
+            client.setProxy("192.168.1.120",80);
             RequestParams requestParams = new RequestParams();
             requestParams.put("email", mEmail);
             requestParams.put("password", mPassword);
-
-            //client.get(urlServer,new JsonHttpResponseHandler());
 
             client.post(urlServer, requestParams,  new TextHttpResponseHandler() {
 
@@ -298,14 +298,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                     if (response.equals("success")) {
                         //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
+                        login[0] = true;
                         //Toast.makeText(view.getContext(), "Login Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(mainActivityIntent);
+
                     }
                     else{
                         //Toast.makeText(getApplicationContext(), "Login ERROR " , Toast.LENGTH_LONG).show();
                         Log.e("onFailurelog: ", response);
                         //TODO:gestione login errato
+                        login[0] = false;
                     }
                 }
 
@@ -314,12 +317,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     if (statusCode == 401) {
 
                         Log.d("onFailure: ", response);
+                        login[0] = false;
                     }
                 }
             });
 
             // TODO: register the new account here.
-            return true;
+            return login[0];
         }
 
         @Override

@@ -1,9 +1,11 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         exerciseViewHolder.vRounds.setText(ex.rounds);
         exerciseViewHolder.vWeight.setText(ex.weight);
         exerciseViewHolder.vTime.setText(ex.time);
+        exerciseViewHolder.vImage.setImageResource(ex.image);
     }
 
     @Override
@@ -58,6 +61,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         TextView vRest;
         TextView vWeight;
         TextView vTime;
+        ImageView vImage;
         View view;
 
 
@@ -71,6 +75,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             vRest = (TextView) v.findViewById(R.id.ex_rest);
             vWeight = (TextView) v.findViewById(R.id.ex_weight);
             vTime = (TextView) v.findViewById(R.id.ex_time);
+            vImage = (ImageView) v.findViewById(R.id.ex_image);
 
             //TODO:gestire click card
             view.setOnClickListener(new View.OnClickListener() {

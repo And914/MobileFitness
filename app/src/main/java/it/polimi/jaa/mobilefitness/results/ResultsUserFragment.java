@@ -49,7 +49,7 @@ public class ResultsUserFragment extends Fragment {
         List<ExerciseInfo> result = new ArrayList<>();
         for (int i=1; i <= size; i++) {
             ExerciseInfo ei = new ExerciseInfo("name " + i, "equipment " + i, "rounds " + i,
-                    "reps " + i, "rest " + i, "weight " + i, "time " + i);
+                    "reps " + i, "rest " + i, "weight " + i, "time " + i,R.drawable.crossover);
             result.add(ei);
 
         }

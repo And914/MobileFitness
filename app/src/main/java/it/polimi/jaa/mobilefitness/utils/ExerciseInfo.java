@@ -11,8 +11,9 @@ public class ExerciseInfo {
     public final String rest;
     public final String weight;
     public final String time;
+    public final int image;
 
-    public ExerciseInfo(String name, String equipment, String rounds, String rep, String rest, String weight, String time) {
+    public ExerciseInfo(String name, String equipment, String rounds, String rep, String rest, String weight, String time,int image) {
         this.name = name;
         this.equipment = equipment;
         this.rounds = rounds;
@@ -20,5 +21,6 @@ public class ExerciseInfo {
         this.rest = rest;
         this.weight = weight;
         this.time = time;
+        this.image = image;
     }
 }
