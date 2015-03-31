@@ -2,8 +2,31 @@
 
     <!-- Base application theme. -->
     <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"> -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Title" parent="Theme.AppCompat">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Button" parent="Theme.AppCompat">
+        <item name="android:textColor">#FF8800</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
+    <style name="TextCard" parent="Theme.AppCompat">
+        <item name="android:textColor">#FF8800</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextProfile" parent="Theme.AppCompat">
+        <item name="android:textColor">#FF8800</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">20dp</item>
+    </style>
 </resources>

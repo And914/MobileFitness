@@ -29,7 +29,7 @@ public class ProfileUserFragment extends Fragment {
 
     //TODO: da fare tutto XD
     UserInfo getUserInfo (){
-     return new UserInfo("a","b","v","d","s");
+     return new UserInfo("Name: allah","Surname : al bar","Birthdate: 20/12/1000","Height: 1,20 km","Weight: 120 t");
     }
 
     void setUserInfo(UserInfo user, View view){

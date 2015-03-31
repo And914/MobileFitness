@@ -4,32 +4,41 @@
     android:layout_height="match_parent">
 
     <TextView
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/TextProfile"
         android:text="Nome"
-        android:id="@+id/user_name"/>
+        android:id="@+id/user_name"
+        android:linksClickable="false"
+        android:singleLine="false" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/TextProfile"
         android:text="New Text"
         android:id="@+id/user_surname" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/TextProfile"
         android:text="New Text"
         android:id="@+id/user_birth_date" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/TextProfile"
         android:text="New Text"
-        android:id="@+id/user_height" />
+        android:id="@+id/user_height"
+        android:singleLine="false" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/TextProfile"
         android:text="New Text"
         android:id="@+id/user_weight" />
 
