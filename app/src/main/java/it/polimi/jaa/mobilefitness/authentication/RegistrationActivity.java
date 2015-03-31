@@ -1,4 +1,4 @@
-package it.polimi.jaa.mobilefitness;
+package it.polimi.jaa.mobilefitness.authentication;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -27,6 +27,9 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import it.polimi.jaa.mobilefitness.MainActivity;
+import it.polimi.jaa.mobilefitness.R;
 
 /**
  * Created by andre on 31/03/15.

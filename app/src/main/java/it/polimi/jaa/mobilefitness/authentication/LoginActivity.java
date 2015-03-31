@@ -1,11 +1,10 @@
-package it.polimi.jaa.mobilefitness;
+package it.polimi.jaa.mobilefitness.authentication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -27,18 +26,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import it.polimi.jaa.mobilefitness.MainActivity;
+import it.polimi.jaa.mobilefitness.R;
 
 
 /**

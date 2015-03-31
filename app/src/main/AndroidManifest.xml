@@ -20,7 +20,7 @@
 
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".authentication.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
@@ -30,12 +30,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegistrationActivity"
+            android:name=".authentication.RegistrationActivity"
             android:label="@string/title_activity_registration"
-            android:parentActivityName=".LoginActivity">
+            android:parentActivityName=".authentication.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity"/>
+                android:value=".authentication.LoginActivity"/>
         </activity>
     </application>
 
