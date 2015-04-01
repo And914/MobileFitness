@@ -1,5 +1,7 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
@@ -8,12 +10,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
 import it.polimi.jaa.mobilefitness.profile.ProfileUserFragment;
 import it.polimi.jaa.mobilefitness.results.ResultsUserFragment;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    SharedPreferences mSharedPreferences;
+    private static final String PREFS = "prefs";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -95,6 +101,14 @@ public class MainActivity extends ActionBarActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        else if (id == R.id.action_logout){
+            mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor e = mSharedPreferences.edit();
+            e.clear();
+            e.apply();
+            Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(loginActivityIntent);
         }
 
         return super.onOptionsItemSelected(item);
