@@ -201,6 +201,11 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
 
         });
 
+        setPreferences();
+        Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
+        Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
+        startActivity(mainActivityIntent);
+
     }
 
     private void setPreferences(){

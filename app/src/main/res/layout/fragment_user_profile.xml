@@ -39,7 +39,8 @@
         android:theme="@style/TextProfile"
         android:text="New Text"
         android:id="@+id/user_height"
-        android:singleLine="false" />
+        android:singleLine="false"
+        />
 
     <TextView
         android:layout_width="match_parent"
