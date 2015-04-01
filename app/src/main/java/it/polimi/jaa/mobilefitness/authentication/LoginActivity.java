@@ -8,6 +8,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,6 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -47,13 +49,10 @@ import it.polimi.jaa.mobilefitness.R;
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    SharedPreferences mSharedPreferences;
+    private static final String PREFS = "prefs";
+    private static final String PREF_NAME = "name";
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -68,50 +67,68 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        if(!checkAlreadyLogin()) {
 
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+            setContentView(R.layout.activity_login);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
+            // Set up the login form.
+            mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+            populateAutoComplete();
+
+            mPasswordView = (EditText) findViewById(R.id.password);
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+            Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+            mEmailSignInButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptLogin();
+                }
+            });
 
-        Button mRegistrationButton = (Button) findViewById(R.id.email_registration_button);
-        mRegistrationButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent registrationIntent = new Intent(view.getContext(), RegistrationActivity.class);
-                startActivity(registrationIntent);
+            Button mRegistrationButton = (Button) findViewById(R.id.email_registration_button);
+            mRegistrationButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent registrationIntent = new Intent(view.getContext(), RegistrationActivity.class);
+                    startActivity(registrationIntent);
 
-            }
-        });
+                }
+            });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+            mLoginFormView = findViewById(R.id.login_form);
+            mProgressView = findViewById(R.id.login_progress);
+        }
     }
 
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
     }
 
+    private boolean checkAlreadyLogin(){
+        // Access the device's key-value storage
+        mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+        // Read the user's name,
+        // or an empty string if nothing found
+        String name = mSharedPreferences.getString(PREF_NAME, "");
+        if (name.length() > 0) {
+            // If the name is valid, display a Toast welcoming them
+            Toast.makeText(this, "Welcome back, " + name + "!", Toast.LENGTH_LONG).show();
+            Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mainActivityIntent);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -284,9 +301,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
             final boolean[] login = new boolean[1];
             // Create a client to perform networking
-            String urlServer = "http://192.168.1.120:80/users/login";
+            String urlServer = "http://192.168.1.187:80/users/login";
             SyncHttpClient client = new SyncHttpClient();
-            client.setProxy("192.168.1.120",80);
+            client.setProxy("192.168.1.187",80);
             RequestParams requestParams = new RequestParams();
             requestParams.put("email", mEmail);
             requestParams.put("password", mPassword);
@@ -299,15 +316,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     if (response.equals("success")) {
                         //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
                         login[0] = true;
-                        //Toast.makeText(view.getContext(), "Login Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(mainActivityIntent);
 
                     }
                     else{
-                        //Toast.makeText(getApplicationContext(), "Login ERROR " , Toast.LENGTH_LONG).show();
                         Log.e("onFailurelog: ", response);
-                        //TODO:gestione login errato
                         login[0] = false;
                     }
                 }
@@ -322,7 +336,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 }
             });
 
-            // TODO: register the new account here.
             return login[0];
         }
 

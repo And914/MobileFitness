@@ -19,4 +19,13 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 
+    <string name="reg_error_email">This email address is invalid</string>
+    <string name="reg_error_psw">This password is too short</string>
+    <string name="reg_error_name">This field is required</string>
+    <string name="reg_error_surname">This field is required</string>
+    <string name="reg_error_height">This field is required</string>
+    <string name="reg_error_weight">This field is required</string>
+    <string name="reg_error_birthdate">This field is required</string>
+
+
 </resources>
