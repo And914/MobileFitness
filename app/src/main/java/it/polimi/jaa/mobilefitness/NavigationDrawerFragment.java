@@ -1,6 +1,13 @@
 package it.polimi.jaa.mobilefitness;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -12,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +28,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -66,6 +79,9 @@ public class NavigationDrawerFragment extends Fragment {
     private static final String PREFS = "prefs";
     private static final String PREF_NAME = "name";
     private static final String PREF_EMAIL = "email";
+    private static final String PREF_AVATAR = "avatar";
+
+    private static int RESULT_LOAD_IMG = 1;
 
     public NavigationDrawerFragment() {
     }
@@ -86,6 +102,113 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
+    }
+
+
+    public void loadImagefromGallery(View view) {
+        Intent intent = new Intent();
+        // Show only images, no videos or anything else
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // Always show the chooser (if there are multiple options available)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == -1 && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+            mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor e = mSharedPreferences.edit();
+            e.putString(PREF_AVATAR, uri.toString());
+            e.apply();
+            setImage(uri);
+        }
+    }
+
+    public void setImage(Uri uri){
+        try {
+
+            Bitmap bitmap = getCorrectlyOrientedImage(getActivity(),uri);
+            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            Log.d("AVATAR", String.valueOf(bitmap));
+
+            /*int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);*/
+
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgtemp);
+            imageView.setImageBitmap(bitmap);
+            ImageView imageFake = (ImageView) getActivity().findViewById(R.id.imgAvatar);
+            imageFake.setImageAlpha(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getOrientation(Uri photoUri) {
+    /* it's on the external media. */
+        Cursor cursor = getActivity().getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+
+        cursor.moveToFirst();
+        return cursor.getInt(0);
+    }
+
+    public Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {
+        InputStream is = context.getContentResolver().openInputStream(photoUri);
+        BitmapFactory.Options dbo = new BitmapFactory.Options();
+        dbo.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, dbo);
+        is.close();
+
+        int rotatedWidth, rotatedHeight;
+        int orientation = getOrientation(photoUri);
+
+        if (orientation == 90 || orientation == 270) {
+            rotatedWidth = dbo.outHeight;
+            rotatedHeight = dbo.outWidth;
+        } else {
+            rotatedWidth = dbo.outWidth;
+            rotatedHeight = dbo.outHeight;
+        }
+
+        Bitmap srcBitmap;
+        is = context.getContentResolver().openInputStream(photoUri);
+        if (rotatedWidth > 512 || rotatedHeight > 512) {
+            float widthRatio = ((float) rotatedWidth) / ((float) 512);
+            float heightRatio = ((float) rotatedHeight) / ((float) 512);
+            float maxRatio = Math.max(widthRatio, heightRatio);
+
+            // Create the bitmap from file
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = (int) maxRatio;
+            srcBitmap = BitmapFactory.decodeStream(is, null, options);
+        } else {
+            srcBitmap = BitmapFactory.decodeStream(is);
+        }
+        is.close();
+
+    /*
+     * if the orientation is not 0 (or -1, which means we don't know), we
+     * have to do a rotation.
+     */
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(),
+                    srcBitmap.getHeight(), matrix, true);
+        }
+
+        return srcBitmap;
     }
 
     @Override
@@ -112,7 +235,7 @@ public class NavigationDrawerFragment extends Fragment {
         mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         TextView username = (TextView) mDrawerLayoutView.findViewById(R.id.txtUsername);
         TextView email = (TextView) mDrawerLayoutView.findViewById(R.id.txtUserEmail);
-        username.setText(mSharedPreferences.getString(PREF_NAME,""));
+        username.setText(mSharedPreferences.getString(PREF_NAME, ""));
         email.setText(mSharedPreferences.getString(PREF_EMAIL,""));
 
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
@@ -125,10 +248,23 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section3),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+
+        ImageView avatar = (ImageView) mDrawerLayoutView.findViewById(R.id.imgAvatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadImagefromGallery(view);
+            }
+        });
         return mDrawerLayoutView;
     }
 
     public boolean isDrawerOpen() {
+        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if(mSharedPreferences.getString(PREF_AVATAR,"").length()>0){
+            setImage(Uri.parse(mSharedPreferences.getString(PREF_AVATAR,"")));
+        }
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
