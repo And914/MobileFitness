@@ -49,7 +49,7 @@ public class GymContract {
         // map intent, we store the latitude and longitude as returned by openweathermap.
         public static final String COLUMN_ID_EQUIPMENT = "id_equipment";
 
-        public static Uri buildLocationUri(long id) {
+        public static Uri buildLBeaconUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -72,7 +72,7 @@ public class GymContract {
         // Date, stored as long in milliseconds since the epoch
         public static final String COLUMN_NAME = "name";
 
-        public static Uri buildWeatherUri(long id) {
+        public static Uri buildWodrUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -99,7 +99,7 @@ public class GymContract {
         public static final String COLUMN_PERSONAL_RECORD = "personal_record";
 
 
-        public static Uri buildWeatherUri(long id) {
+        public static Uri buildExerciseUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -119,14 +119,14 @@ public class GymContract {
         // Column with the foreign key into the location table.
         public static final String COLUMN_ID_EXERC = "id_exerc";
         // Date, stored as long in milliseconds since the epoch
-        public static final String COLUMN_NAME = "timestamp";
+        public static final String COLUMN_TIMESTAMP = "timestamp";
 
-        public static final String COLUMN_EQUIPMENT = "result";
-
-
-        public static Uri buildWeatherUri(long id) {
+        public static Uri buildHistoryrUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+
+        public static final String COLUMN_RESULT = "result";
     }
 
     public static final class WodExerciseEntry implements BaseColumns {
@@ -155,7 +155,7 @@ public class GymContract {
         public static final String COLUMN_WEIGHT = "weight";
 
 
-        public static Uri buildWeatherUri(long id) {
+        public static Uri buildWodExerciseUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
