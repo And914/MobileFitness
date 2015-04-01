@@ -2,31 +2,34 @@
 
     <!-- Base application theme. -->
     <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"> -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+        <item name="colorPrimaryDark">#0288D1</item>
+        <item name="colorPrimary">#FF1CA8F4</item>
+        <item name="android:textColorPrimary">#FFF</item>
     </style>
 
-    <style name="Title" parent="Theme.AppCompat">
+    <style name="Title" parent="Theme.AppCompat.Light">
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Button" parent="Theme.AppCompat">
+    <style name="Button" parent="Theme.AppCompat.Light">
         <item name="android:textColor">#FF8800</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:padding">20dp</item>
     </style>
-
-    <style name="TextCard" parent="Theme.AppCompat">
+    <style name="TextCard" parent="Theme.AppCompat.Light">
         <item name="android:textColor">#FF8800</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextProfile" parent="Theme.AppCompat">
+    <style name="TextProfile" parent="Theme.AppCompat.Light">
         <item name="android:textColor">#FF8800</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">20dp</item>
     </style>
+
 </resources>

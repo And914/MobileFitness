@@ -30,12 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +52,16 @@ import it.polimi.jaa.mobilefitness.R;
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
+    private static final String LOG_ACTIVITY = "LoginActivity";
+
     SharedPreferences mSharedPreferences;
     private static final String PREFS = "prefs";
     private static final String PREF_NAME = "name";
+    private static final String PREF_SURNAME = "surname";
+    private static final String PREF_BIRTHDATE = "birthdate";
+    private static final String PREF_EMAIL = "email";
+    private static final String PREF_WEIGHT = "weight";
+    private static final String PREF_HEIGHT = "height";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -308,33 +318,43 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             requestParams.put("email", mEmail);
             requestParams.put("password", mPassword);
 
-            client.post(urlServer, requestParams,  new TextHttpResponseHandler() {
 
-                @Override
-                public void onSuccess(int i, Header[] headers, String response) {
+            client.post(urlServer, requestParams,
+                    new TextHttpResponseHandler() {
 
-                    if (response.equals("success")) {
-                        //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
-                        login[0] = true;
-                        Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(mainActivityIntent);
+                        @Override
+                        public void onSuccess(int i,Header[] headers, String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
 
-                    }
-                    else{
-                        Log.e("onFailurelog: ", response);
-                        login[0] = false;
-                    }
-                }
+                                Log.d(LOG_ACTIVITY, jsonObject.toString());
+                                if(jsonObject.optString("response").equals("success")){
+                                    login[0] = true;
+                                    //restore preferences
+                                    setPreferences(jsonObject);
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
-                    if (statusCode == 401) {
+                                    //call main activity with intent
+                                    Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(mainActivityIntent);
+                                }
+                                else{
+                                    login[0] = false;
+                                    Log.e(LOG_ACTIVITY, jsonObject.optString("response"));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                        Log.d("onFailure: ", response);
-                        login[0] = false;
-                    }
-                }
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode,Header[] headers, String response, Throwable throwable)  {
+                            Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
+                            login[0] = false;
+                        }
             });
+
 
             return login[0];
         }
@@ -356,6 +376,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        private void setPreferences(JSONObject jsonObject) throws JSONException {
+            mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor e = mSharedPreferences.edit();
+            e.putString(PREF_NAME, jsonObject.getString(PREF_NAME));
+            e.putString(PREF_BIRTHDATE, jsonObject.getString(PREF_BIRTHDATE));
+            e.putString(PREF_EMAIL, jsonObject.getString(PREF_EMAIL));
+            e.putString(PREF_HEIGHT, jsonObject.getString(PREF_HEIGHT));
+            e.putString(PREF_WEIGHT, jsonObject.getString(PREF_WEIGHT));
+            e.putString(PREF_SURNAME, jsonObject.getString(PREF_SURNAME));
+            e.apply();
         }
     }
 }

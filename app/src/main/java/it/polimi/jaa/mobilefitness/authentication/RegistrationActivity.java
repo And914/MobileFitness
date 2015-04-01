@@ -127,7 +127,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
     
     private boolean checkData(){
         boolean valid = true;
-        if(emailText.getText().toString().contains("@")){
+        if(!emailText.getText().toString().contains("@")){
             emailText.setError(getString(R.string.reg_error_email));
             valid = false;
         }
@@ -214,7 +214,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         e.putString(PREF_WEIGHT, weightText.getText().toString());
         e.putString(PREF_SURNAME, surnameText.getText().toString());
 
-        e.commit();
+        e.apply();
 
     }
 }
