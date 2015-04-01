@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +23,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -58,6 +66,13 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    RelativeLayout mDrawerLayoutView;
+
+    SharedPreferences mSharedPreferences;
+    private static final String PREFS = "prefs";
+    private static final String PREF_NAME = "name";
+    private static final String PREF_EMAIL = "email";
+
     public NavigationDrawerFragment() {
     }
 
@@ -89,25 +104,34 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        mDrawerLayoutView = (RelativeLayout) inflater.inflate(
+                R.layout.fragment_navigation_drawer_material, container, false);
+        mDrawerListView = (ListView) mDrawerLayoutView.findViewById(R.id.drawerList);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
             }
         });
+
+        //set email and username in drawer fragment
+        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        TextView username = (TextView) mDrawerLayoutView.findViewById(R.id.txtUsername);
+        TextView email = (TextView) mDrawerLayoutView.findViewById(R.id.txtUserEmail);
+        username.setText(mSharedPreferences.getString(PREF_NAME,""));
+        email.setText(mSharedPreferences.getString(PREF_EMAIL,""));
+
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
-                R.layout.list_item_drawer,
-                R.id.text_drawer,
+                R.layout.drawer_row_material,
+                R.id.item_drawer_name,
                 new String[]{
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
                         getString(R.string.title_section3),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return mDrawerLayoutView;
     }
 
     public boolean isDrawerOpen() {
@@ -191,7 +215,7 @@ public class NavigationDrawerFragment extends Fragment {
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
+            mDrawerListView.findViewById(R.id.drawerList).setSelected(true);
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);

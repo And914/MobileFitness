@@ -106,7 +106,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
             SharedPreferences.Editor e = mSharedPreferences.edit();
             e.clear();
-            e.apply();
+            e.commit();
             Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginActivityIntent);
         }

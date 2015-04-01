@@ -12,7 +12,7 @@
         android:orientation="horizontal"
         android:layout_weight="1"
         android:padding="20dp"
-        android:background="@color/button_material_dark"
+        android:background="@color/common_action_bar_splitter"
         android:baselineAligned="false">
 
         <LinearLayout android:layout_width="0dp"
