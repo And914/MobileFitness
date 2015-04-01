@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -51,6 +52,17 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
     private SimpleDateFormat dateFormatter;
 
     private ProgressDialog mDialog;
+
+    SharedPreferences mSharedPreferences;
+    private static final String PREFS = "prefs";
+    private static final String PREF_NAME = "name";
+    private static final String PREF_SURNAME = "surname";
+    private static final String PREF_BIRTHDATE = "birthdate";
+    private static final String PREF_EMAIL = "email";
+    private static final String PREF_WEIGHT = "weight";
+    private static final String PREF_HEIGHT = "height";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +184,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
 
                 if(response.equals("success")) {
                     mDialog.dismiss();
-                    //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
+                    setPreferences();
                     Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
                     Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
                     startActivity(mainActivityIntent);
@@ -188,6 +200,21 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             }
 
         });
+
+    }
+
+    private void setPreferences(){
+        // Access the device's key-value storage
+        mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor e = mSharedPreferences.edit();
+        e.putString(PREF_NAME, nameText.getText().toString());
+        e.putString(PREF_BIRTHDATE, nameText.getText().toString());
+        e.putString(PREF_EMAIL, emailText.getText().toString());
+        e.putString(PREF_HEIGHT, heightText.getText().toString());
+        e.putString(PREF_WEIGHT, weightText.getText().toString());
+        e.putString(PREF_SURNAME, surnameText.getText().toString());
+
+        e.commit();
 
     }
 }
