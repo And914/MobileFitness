@@ -70,7 +70,8 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registrationQuery(view);
+                if(checkData())
+                    registrationQuery(view);
             }
         });
     }
@@ -111,21 +112,45 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             datePickerDialog.show();
         }
     }
+    
+    private boolean checkData(){
+        boolean valid = true;
+        if(emailText.getText().toString().contains("@")){
+            emailText.setError(getString(R.string.reg_error_email));
+            valid = false;
+        }
+        if(passwordText.getText().toString().length()<4){
+            passwordText.setError(getString(R.string.reg_error_psw));
+            valid = false;
+        }
+        if(nameText.getText().toString().equals("")){
+            nameText.setError(getString(R.string.reg_error_name));
+            valid = false;
+        }
+        if(surnameText.getText().toString().equals("")){
+            surnameText.setError(getString(R.string.reg_error_surname));
+            valid = false;
+        }
+        if(birthDateText.getText().toString().equals("")){
+            birthDateText.setError(getString(R.string.reg_error_birthdate));
+            valid = false;
+        }
+        if(weightText.getText().toString().equals("")){
+            weightText.setError(getString(R.string.reg_error_weight));
+            valid = false;
+        }
+        if(heightText.getText().toString().equals("")){
+            heightText.setError(getString(R.string.reg_error_height));
+            valid = false;
+        }
+
+        return valid;
+    }
 
     private void registrationQuery(final View view){
-        //mDialog.show();
+        mDialog.show();
 
         String urlServer = "http://192.168.1.187:80/users";
-        String urlString = "/users";
-
-        try {
-            urlString = URLEncoder.encode(urlServer, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-
-            // if this fails for some reason, let the user know why
-            e.printStackTrace();
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
@@ -138,8 +163,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         params.put("weight", weightText.getText().toString());
         params.put("height", heightText.getText().toString());
         params.put("birthdate", birthDateText.getText().toString());
-
-        //client.get(urlServer,new JsonHttpResponseHandler());
+        
 
         client.post(urlServer, params,  new TextHttpResponseHandler() {
 
@@ -147,6 +171,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             public void onSuccess(int i, Header[] headers, String response) {
 
                 if(response.equals("success")) {
+                    mDialog.dismiss();
                     //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
                     Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
                     Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
@@ -157,13 +182,12 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             @Override
             public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
                 if (statusCode == 401) {
-
+                    mDialog.dismiss();
                     Log.d("onFailure: ", response);
                 }
             }
 
         });
 
-        //mDialog.dismiss();
     }
 }

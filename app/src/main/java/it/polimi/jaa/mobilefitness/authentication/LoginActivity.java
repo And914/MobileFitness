@@ -299,15 +299,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     if (response.equals("success")) {
                         //TODO: CREARE TUTTO QUELLO CHE SERVE IN LOCALE (DB)
                         login[0] = true;
-                        //Toast.makeText(view.getContext(), "Login Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(mainActivityIntent);
 
                     }
                     else{
-                        //Toast.makeText(getApplicationContext(), "Login ERROR " , Toast.LENGTH_LONG).show();
                         Log.e("onFailurelog: ", response);
-                        //TODO:gestione login errato
                         login[0] = false;
                     }
                 }
@@ -322,7 +319,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 }
             });
 
-            // TODO: register the new account here.
             return login[0];
         }
 
