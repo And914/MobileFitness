@@ -48,7 +48,7 @@ public class HomeUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.container, new WodsFragment())
+                fragmentManager.beginTransaction().replace(R.id.container, new WodsFragment()).addToBackStack("tag")
                         .commit();
             }
         });

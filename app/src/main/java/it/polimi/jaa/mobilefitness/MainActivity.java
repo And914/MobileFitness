@@ -53,17 +53,17 @@ public class MainActivity extends ActionBarActivity
         switch (position+1){
             case 1:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new HomeUserFragment())
+                        .replace(R.id.container, new HomeUserFragment()).addToBackStack("tag")
                         .commit();
                 break;
             case 2:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new ResultsUserFragment())
+                        .replace(R.id.container, new ResultsUserFragment()).addToBackStack("tag")
                         .commit();
                 break;
             case 3:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new ProfileUserFragment())
+                        .replace(R.id.container, new ProfileUserFragment()).addToBackStack("tag")
                         .commit();
                 break;
         }
@@ -106,7 +106,7 @@ public class MainActivity extends ActionBarActivity
             mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
             SharedPreferences.Editor e = mSharedPreferences.edit();
             e.clear();
-            e.commit();
+            e.apply();
             Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginActivityIntent);
         }

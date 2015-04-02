@@ -1,6 +1,7 @@
 package it.polimi.jaa.mobilefitness.profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,10 +12,13 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +32,7 @@ import it.polimi.jaa.mobilefitness.utils.UserInfo;
 /**
  * Created by andre on 30/03/15.
  */
-public class ProfileUserFragment extends Fragment {
+public class ProfileUserFragment extends Fragment implements View.OnClickListener{
 
     SharedPreferences mSharedPreferences;
     private static final String PREFS = "prefs";
@@ -85,12 +89,31 @@ public class ProfileUserFragment extends Fragment {
         TextView height = (TextView) view.findViewById(R.id.user_height);
         TextView weight = (TextView) view.findViewById(R.id.user_weight);
         TextView email = (TextView) view.findViewById(R.id.user_email);
+        final ImageButton nameButton = (ImageButton) view.findViewById(R.id.user_name_imagebtn);
+        ImageButton surnameButton = (ImageButton) view.findViewById(R.id.user_surname_imagebtn);
+        ImageButton birthDateButton = (ImageButton) view.findViewById(R.id.user_birth_date_imagebtn);
+        ImageButton heightButton = (ImageButton) view.findViewById(R.id.user_height_imagebtn);
+        ImageButton weightButton = (ImageButton) view.findViewById(R.id.user_weight_imagebtn);
+
         email.setText("Email: " + user.getEmail());
         name.setText("Name: " + user.getName());
         surname.setText("Surname: " + user.getSurname());
         birthDate.setText("Birthdate: " + user.getBirthDate());
         height.setText("Height: " + user.getHeight());
         weight.setText("Weight: " + user.getWeight());
+        nameButton.setImageResource(R.drawable.edit_profile);
+        surnameButton.setImageResource(R.drawable.edit_profile);
+        birthDateButton.setImageResource(R.drawable.edit_profile);
+        heightButton.setImageResource(R.drawable.edit_profile);
+        weightButton.setImageResource(R.drawable.edit_profile);
+
+        nameButton.setOnClickListener(this);
+        surnameButton.setOnClickListener(this);
+        birthDateButton.setOnClickListener(this);
+        heightButton.setOnClickListener(this);
+        weightButton.setOnClickListener(this);
+
+
     }
 
     public void setImage(Uri uri){
@@ -164,5 +187,40 @@ public class ProfileUserFragment extends Fragment {
         }
 
         return srcBitmap;
+    }
+
+    @Override
+    public void onClick(View v) {
+        FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+        Bundle bundle = new Bundle();
+        EditProfileFragment editProfileFragment = new EditProfileFragment();
+        TextView textView;
+        switch (v.getId()) {
+            case R.id.user_name_imagebtn:
+                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_name);
+                bundle.putString("value",textView.getText().toString());
+                break;
+            case R.id.user_surname_imagebtn:
+                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_surname);
+                bundle.putString("value",textView.getText().toString());
+                break;
+            case R.id.user_birth_date_imagebtn:
+                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_birth_date);
+                bundle.putString("value",textView.getText().toString());
+                break;
+            case R.id.user_height_imagebtn:
+                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_height);
+                bundle.putString("value",textView.getText().toString());
+                break;
+            case R.id.user_weight_imagebtn:
+                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_weight);
+                bundle.putString("value",textView.getText().toString());
+                break;
+            default:
+                break;
+        }
+        editProfileFragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, editProfileFragment).addToBackStack("tag").commit();
+
     }
 }

@@ -69,7 +69,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
                     WodFragment wodFragment = new WodFragment();
                     wodFragment.setArguments(args);
                     FragmentManager fragmentManager = ((FragmentActivity)view.getContext()).getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.container, wodFragment)
+                    fragmentManager.beginTransaction().replace(R.id.container, wodFragment).addToBackStack("tag")
                             .commit();
                 }
             });

@@ -55,7 +55,7 @@ public class WodsFragment extends Fragment {
 
         String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(PREF_EMAIL,"");
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setProxy("192.168.1.7",80);
+        //client.setProxy("192.168.1.7",80);
 
         client.get(urlServer,
                 new TextHttpResponseHandler() {
