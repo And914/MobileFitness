@@ -1,8 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -24,39 +21,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
+import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**
- * Created by andre on 30/03/15.
+ * Created by Jacopo on 02/04/2015.
  */
-public class WodFragment extends Fragment{
+public class WodsFragment extends Fragment {
 
     RecyclerView recyclerView;
     int idWod;
-    private static final String LOG_ACTIVITY = "WodFragment";
+    private static final String PREFS = "prefs";
+    private static final String PREF_EMAIL = "email";
+    private static final String LOG_ACTIVITY = "WodsFragment";
 
-    public WodFragment() {
+    public WodsFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_wod, container, false);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.card_list);
+        View rootView = inflater.inflate(R.layout.fragment_wods, container, false);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.wod_list);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        SharedPreferences mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        //TODO: METTERE IL WOD DINAMICO.....AGGIUNGERE UNA PAGINA PRIMA IN CUI SELEZIONARLO...OPPURE FORZARLO A FARNE UNO E SOLO UNO
-        String urlServer = Utils.server_ip + "/wods/" + getArguments().getInt("id_wod") + "/exercises";
+        String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(PREF_EMAIL,"");
         AsyncHttpClient client = new AsyncHttpClient();
-        //client.setProxy("192.168.1.7",80);
+        client.setProxy("192.168.1.7",80);
 
         client.get(urlServer,
                 new TextHttpResponseHandler() {
@@ -69,8 +68,8 @@ public class WodFragment extends Fragment{
                             Log.d(LOG_ACTIVITY, jsonArray.toString());
                             if (jsonArray.length() > 0) {
                                 //set the content of the recycler view
-                                ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(createList(jsonArray));
-                                recyclerView.setAdapter(exerciseCardAdapter);
+                                WodCardAdapter wodCardAdapter = new WodCardAdapter(createList(jsonArray));
+                                recyclerView.setAdapter(wodCardAdapter);
 
                             } else {
                                 Log.e(LOG_ACTIVITY, jsonArray.toString());
@@ -91,19 +90,17 @@ public class WodFragment extends Fragment{
         return rootView;
     }
 
-    private List<ExerciseInfo> createList(JSONArray jsonExercises) {
+    private List<WodInfo> createList(JSONArray jsonExercises) {
 
-        List<ExerciseInfo> result = new ArrayList<ExerciseInfo>();
+        List<WodInfo> result = new ArrayList<WodInfo>();
 
         for (int i = 0; i<jsonExercises.length();i++) {
             try {
                 JSONObject exercise = jsonExercises.getJSONObject(i);
 
-                ExerciseInfo ei = new ExerciseInfo("name " + exercise.getString("name"), "equipment " + exercise.getString("equipment"), "rounds " + exercise.getString("rounds"),
-                        "reps " + exercise.getString("reps"), "rest " + exercise.getString("rest_time"), "weight " + exercise.getString("weight"), "time "
-                        + exercise.getString("duration"), exercise.getInt("icon_id"));
+                WodInfo wi = new WodInfo("name " + exercise.getString("wod_name"), "gym " + exercise.getString("gym_name"),exercise.getInt("id"));
 
-                result.add(ei);
+                result.add(wi);
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by andre on 31/03/15.
@@ -162,11 +163,11 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
     private void registrationQuery(final View view){
         mDialog.show();
 
-        String urlServer = "http://192.168.1.187:80/users";
+        String urlServer = Utils.server_ip + "/users";
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setProxy("192.168.1.187",80);
+        //client.setProxy("192.168.1.187",80);
         RequestParams params = new RequestParams();
         params.put("email", emailText.getText().toString());
         params.put("password", passwordText.getText().toString());
