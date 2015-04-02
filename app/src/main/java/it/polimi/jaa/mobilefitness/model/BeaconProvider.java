@@ -10,44 +10,14 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 /**
- * Created by asna on 02/04/15.
+ * Created by asna on 01/04/15.
  */
-public class HistoryProvider extends ContentProvider {
+public class BeaconProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = buildUriMatcher();
     private GymDbHelper gymDbHelper;
 
-    static final int HISTORY = 1;
+    static final int BEACON = 1;
 
-    private static final SQLiteQueryBuilder historyExerciseQueryBuilder;
-
-    static {
-        historyExerciseQueryBuilder = new SQLiteQueryBuilder();
-
-        // history join exercise
-        historyExerciseQueryBuilder.setTables(
-                GymContract.HistoryEntry.TABLE_NAME + " JOIN " +
-                        GymContract.ExerciseEntry.TABLE_NAME + " ON " +
-                        GymContract.HistoryEntry.TABLE_NAME + "." +
-                        GymContract.HistoryEntry.COLUMN_ID_EXERC + "=" +
-                        GymContract.ExerciseEntry.TABLE_NAME + "." +
-                        GymContract.ExerciseEntry.COLUMN_ID
-        );
-    }
-
-   /* private static final String[] projectionAllExerciseDone = new String[]{
-            "DISTINCT " + GymContract.ExerciseEntry.TABLE_NAME + "." +
-                    GymContract.ExerciseEntry.COLUMN_NAME + ", " +
-                    GymContract.ExerciseEntry.TABLE_NAME + "." +
-                    GymContract.ExerciseEntry.COLUMN_EQUIPMENT + ", " +
-                    GymContract.ExerciseEntry.TABLE_NAME + "." +
-                    GymContract.ExerciseEntry.COLUMN_ICON_ID
-    };
-
-    private static final String selectionExerciseFromHistory =
-            GymContract.HistoryEntry.TABLE_NAME + "." +
-                    GymContract.HistoryEntry.COLUMN_ID_EXERC + "= ?";
-
-*/
     @Override
     public boolean onCreate() {
         gymDbHelper = new GymDbHelper(getContext());
@@ -60,19 +30,20 @@ public class HistoryProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)){
 
-            case HISTORY:
-                retCursor = historyExerciseQueryBuilder.query(
-                        gymDbHelper.getReadableDatabase(),
+            // exercise -> gives (exercise,beacon)
+            case BEACON:
+                retCursor = gymDbHelper.getReadableDatabase().query(
+                        GymContract.BeaconEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
                         null,
                         null,
-                        sortOrder
-                );
+                        sortOrder);
+
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri "+uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -84,10 +55,10 @@ public class HistoryProvider extends ContentProvider {
         final int match = uriMatcher.match(uri);
 
         switch (match){
-            case HISTORY:
-                return GymContract.HistoryEntry.CONTENT_TYPE;
+            case BEACON:
+                return GymContract.BeaconEntry.CONTENT_TYPE;
             default:
-                throw new UnsupportedOperationException("Unknown uri :" +uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
     }
 
@@ -98,17 +69,17 @@ public class HistoryProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match){
-            case HISTORY:
-                long _id = db.insert(GymContract.HistoryEntry.TABLE_NAME, null, values);
-                if(_id>0){
-                    returnUri = GymContract.HistoryEntry.buildHistoryrUri(_id);
+            case BEACON:
+                long _id = db.insert(GymContract.BeaconEntry.TABLE_NAME, null, values);
+                if (_id > 0){
+                    returnUri = GymContract.BeaconEntry.buildLBeaconUri(_id);
                 }
                 else{
-                    throw new SQLException("Fail to insert row into " +uri);
+                    throw new SQLException("Fail to insert row into "+uri);
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: "+uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri,null);
         return returnUri;
@@ -125,8 +96,8 @@ public class HistoryProvider extends ContentProvider {
         }
 
         switch (match){
-            case HISTORY:
-                rowsDeleted = db.delete(GymContract.HistoryEntry.TABLE_NAME,selection, selectionArgs);
+            case BEACON:
+                rowsDeleted = db.delete(GymContract.BeaconEntry.TABLE_NAME,selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: "+uri);
@@ -148,7 +119,8 @@ public class HistoryProvider extends ContentProvider {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = GymContract.CONTENT_AUTHORITY;
 
-        uriMatcher.addURI(authority, GymContract.PATH_HISTORY, HISTORY);
+        uriMatcher.addURI(authority, GymContract.PATH_BEACON, BEACON);
+
 
         return uriMatcher;
     }
