@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -198,23 +199,23 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         switch (v.getId()) {
             case R.id.user_name_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_name);
-                bundle.putString("value",textView.getText().toString());
+                bundle.putString("value",PREF_NAME);
                 break;
             case R.id.user_surname_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_surname);
-                bundle.putString("value",textView.getText().toString());
+                bundle.putString("value",PREF_SURNAME);
                 break;
             case R.id.user_birth_date_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_birth_date);
-                bundle.putString("value",textView.getText().toString());
+                bundle.putString("value",PREF_BIRTHDATE);
                 break;
             case R.id.user_height_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_height);
-                bundle.putString("value",textView.getText().toString());
+                bundle.putString("value",PREF_HEIGHT);
                 break;
             case R.id.user_weight_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_weight);
-                bundle.putString("value",textView.getText().toString());
+                bundle.putString("value",PREF_WEIGHT);
                 break;
             default:
                 break;

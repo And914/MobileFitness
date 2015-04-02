@@ -28,6 +28,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
@@ -128,7 +130,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
     
     private boolean checkData(){
         boolean valid = true;
-        if(!emailText.getText().toString().contains("@")){
+        if(!isEmailValid(emailText.getText().toString())){
             emailText.setError(getString(R.string.reg_error_email));
             valid = false;
         }
@@ -158,6 +160,20 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         }
 
         return valid;
+    }
+
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
     }
 
     private void registrationQuery(final View view){
