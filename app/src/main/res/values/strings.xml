@@ -13,4 +13,6 @@
 
     <string name="start_wod">Start WOD</string>
     <string name="user_home_title">Welcome!</string>
+
+    <string name="content_authority">it.polimi.jaa.mobilefitness</string>
 </resources>

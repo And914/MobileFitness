@@ -163,7 +163,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         mDialog.show();
 
         String urlServer = "http://192.168.1.187:80/users";
-
+/*
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
         client.setProxy("192.168.1.187",80);
@@ -200,7 +200,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             }
 
         });
-
+*/
         setPreferences();
         Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
         Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);

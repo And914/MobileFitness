@@ -39,6 +39,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".authentication.LoginActivity"/>
         </activity>
+
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".model.GymProvider"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

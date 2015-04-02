@@ -22,7 +22,7 @@ public class GymDbHelper extends SQLiteOpenHelper{
         //Set the queries to create the databases
         final String SQL_CREATE_BEACON_TABLE = "CREATE TABLE " + GymContract.BeaconEntry.TABLE_NAME + " (" +
                 GymContract.BeaconEntry.COLUMN_ID_BEACON +" TEXT PRIMARY KEY, " +
-                GymContract.BeaconEntry.COLUMN_ID_EXERCISE + " INTEGER NOT NULL " +
+                GymContract.BeaconEntry.COLUMN_ID_EXERCISE + " INTEGER NOT NULL, " +
                 GymContract.BeaconEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL " +
                 " );";
 
@@ -30,15 +30,15 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 GymContract.ExerciseEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 GymContract.ExerciseEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_ID_WOD +" INTEGER NOT NULL, " +
-                GymContract.ExerciseEntry.COLUMN_NAME_WOD + " TEXT NOT NULL " +
-                GymContract.ExerciseEntry.COLUMN_CATEGORY + " INTEGER NOT NULL" +
+                GymContract.ExerciseEntry.COLUMN_NAME_WOD + " TEXT NOT NULL, " +
+                GymContract.ExerciseEntry.COLUMN_CATEGORY + " INTEGER NOT NULL," +
                 GymContract.ExerciseEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL, " +
-                GymContract.ExerciseEntry.COLUMN_DURATION + "INTEGER" +
+                GymContract.ExerciseEntry.COLUMN_DURATION + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ICON_ID + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_REPS + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_REST_TIME + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ROUNDS+ " INTEGER, " +
-                GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER, " +
+                GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER " +
                 " );";
 
         final String SQL_CREATE_HISTORY_TABLE = "CREATE TABLE " + GymContract.HistoryEntry.TABLE_NAME + " (" +
