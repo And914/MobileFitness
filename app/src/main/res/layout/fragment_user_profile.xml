@@ -1,52 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:text="Nome"
-        android:id="@+id/user_name"
-        android:linksClickable="false"
-        android:singleLine="false" />
+        android:layout_height="wrap_content">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:text="New Text"
-        android:id="@+id/user_surname" />
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:id="@+id/img_profile"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:id="@+id/user_email" />
+            <TextView
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:text="New Text"
-        android:id="@+id/user_birth_date" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:text="Nome"
+                android:id="@+id/user_name"
+                android:linksClickable="false"
+                android:singleLine="false" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:text="New Text"
-        android:id="@+id/user_height"
-        android:singleLine="false"
-        />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:text="New Text"
+                android:id="@+id/user_surname" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/TextProfile"
-        android:text="New Text"
-        android:id="@+id/user_weight" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:id="@+id/user_email" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:text="New Text"
+                android:id="@+id/user_birth_date" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:text="New Text"
+                android:id="@+id/user_height"
+                android:singleLine="false"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextProfile"
+                android:text="New Text"
+                android:id="@+id/user_weight" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
