@@ -45,6 +45,7 @@ import java.util.List;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
 /**
@@ -311,9 +312,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
             final boolean[] login = new boolean[1];
             // Create a client to perform networking
-            String urlServer = "http://192.168.1.187:80/users/login";
+            String urlServer = Utils.server_ip + "/users/login";
             SyncHttpClient client = new SyncHttpClient();
-            client.setProxy("192.168.1.187",80);
+            //client.setProxy("192.168.1.187",80);
             RequestParams requestParams = new RequestParams();
             requestParams.put("email", mEmail);
             requestParams.put("password", mPassword);
