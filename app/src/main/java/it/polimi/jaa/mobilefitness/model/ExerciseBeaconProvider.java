@@ -13,6 +13,9 @@ import android.net.Uri;
  * Created by asna on 01/04/15.
  */
 public class ExerciseBeaconProvider extends ContentProvider {
+    private static final UriMatcher uriMatcher = buildUriMatcher();
+    private GymDbHelper gymDbHelper;
+
     static final int EXERCISE = 1;
     static final int EXERC_BEACON = 2;
 
@@ -42,8 +45,7 @@ public class ExerciseBeaconProvider extends ContentProvider {
             GymContract.BeaconEntry.TABLE_NAME + "." +
             GymContract.BeaconEntry.COLUMN_ID_BEACON + "= ?";
 
-    private static final UriMatcher uriMatcher = buildUriMatcher();
-    private GymDbHelper gymDbHelper;
+
 
     @Override
     public boolean onCreate() {

@@ -213,7 +213,7 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
         mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         SharedPreferences.Editor e = mSharedPreferences.edit();
         e.putString(PREF_NAME, nameText.getText().toString());
-        e.putString(PREF_BIRTHDATE, nameText.getText().toString());
+        e.putString(PREF_BIRTHDATE, birthDateText.getText().toString());
         e.putString(PREF_EMAIL, emailText.getText().toString());
         e.putString(PREF_HEIGHT, heightText.getText().toString());
         e.putString(PREF_WEIGHT, weightText.getText().toString());
