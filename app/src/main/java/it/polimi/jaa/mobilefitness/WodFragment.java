@@ -54,40 +54,11 @@ public class WodFragment extends ActionBarActivity{
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        idWod = getIntent().getExtras().getInt("id_wod");
 
-        String urlServer = Utils.server_ip + "/wods/" + getIntent().getExtras().getInt("id_wod") + "/exercises";
-        AsyncHttpClient client = new AsyncHttpClient();
-        //client.setProxy("192.168.1.7",80);
-
-        client.get(urlServer,
-                new TextHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int i, Header[] headers, String response) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-
-                            Log.d(LOG_ACTIVITY, jsonArray.toString());
-                            if (jsonArray.length() > 0) {
-                                //set the content of the recycler view
-                                ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(createList(jsonArray));
-                                recyclerView.setAdapter(exerciseCardAdapter);
-
-                            } else {
-                                Log.e(LOG_ACTIVITY, jsonArray.toString());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
-                        Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
-                    }
-                });
+        //TODO:FARE QUERY IN LOCALE PER PRENDERE ESERCIZI DEL WOD IDWOD
+        //ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(createList(jsonArray));
+        //recyclerView.setAdapter(exerciseCardAdapter);
 
     }
 

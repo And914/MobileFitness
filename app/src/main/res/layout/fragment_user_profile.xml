@@ -20,11 +20,29 @@
                 android:layout_gravity="center"
                 />
 
-            <TextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/TextProfile"
-                android:id="@+id/user_email" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Email" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:id="@+id/user_email" />
+             </LinearLayout>
+
+
+            <View style="@style/Divider"/>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -33,6 +51,15 @@
 
                 <TextView
 
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Name "
+                    android:linksClickable="false"
+                    android:singleLine="false" />
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_weight="3"
                     android:layout_height="wrap_content"
@@ -62,7 +89,14 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Surname" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -88,11 +122,17 @@
                 </FrameLayout>
             </LinearLayout>
 
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Birth Date" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -118,10 +158,19 @@
                 </FrameLayout>
             </LinearLayout>
 
+            <View style="@style/Divider"/>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Height" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -152,6 +201,13 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextProfile"
+                    android:text="Weight" />
 
                 <TextView
                     android:layout_width="0dp"

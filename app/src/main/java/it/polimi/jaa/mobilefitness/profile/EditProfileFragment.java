@@ -128,7 +128,7 @@ public class EditProfileFragment extends Fragment {
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
-        //client.setProxy("192.168.1.187",80);
+
         RequestParams params = new RequestParams();
         params.put("email", mSharedPreferences.getString(Utils.PREF_EMAIL,""));
         params.put("name", mSharedPreferences.getString(Utils.PREF_NAME, ""));
@@ -138,7 +138,7 @@ public class EditProfileFragment extends Fragment {
         params.put("birthdate", mSharedPreferences.getString(Utils.PREF_BIRTHDATE,""));
 
 
-        client.post(urlServer, params,  new TextHttpResponseHandler() {
+        client.put(urlServer, params,  new TextHttpResponseHandler() {
 
             @Override
             public void onSuccess(int i, Header[] headers, String response) {
@@ -170,7 +170,6 @@ public class EditProfileFragment extends Fragment {
             }
 
         });
-
     }
 
     private void setDateTimeField() {

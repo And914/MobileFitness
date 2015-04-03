@@ -94,12 +94,12 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         ImageButton heightButton = (ImageButton) view.findViewById(R.id.user_height_imagebtn);
         ImageButton weightButton = (ImageButton) view.findViewById(R.id.user_weight_imagebtn);
 
-        email.setText("Email: " + user.getEmail());
-        name.setText("Name: " + user.getName());
-        surname.setText("Surname: " + user.getSurname());
-        birthDate.setText("Birthdate: " + user.getBirthDate());
-        height.setText("Height: " + user.getHeight());
-        weight.setText("Weight: " + user.getWeight());
+        email.setText(user.getEmail());
+        name.setText(user.getName());
+        surname.setText(user.getSurname());
+        birthDate.setText(user.getBirthDate());
+        height.setText(user.getHeight());
+        weight.setText(user.getWeight());
         nameButton.setImageResource(R.drawable.edit_profile);
         surnameButton.setImageResource(R.drawable.edit_profile);
         birthDateButton.setImageResource(R.drawable.edit_profile);
