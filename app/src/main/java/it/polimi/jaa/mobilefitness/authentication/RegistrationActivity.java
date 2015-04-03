@@ -3,12 +3,14 @@ package it.polimi.jaa.mobilefitness.authentication;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -39,7 +41,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
  * Created by andre on 31/03/15.
  */
 
-public class RegistrationActivity extends Activity implements View.OnClickListener {
+public class RegistrationActivity extends Activity {
 
     //UI References
     private EditText birthDateText;
@@ -106,7 +108,18 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
     }
 
     private void setDateTimeField() {
-        birthDateText.setOnClickListener(this);
+        birthDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialog.show();
+                //remove soft keyboard
+                View focus = getCurrentFocus();
+                if(focus!= null) {
+                    InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        });
 
         Calendar newCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -118,14 +131,6 @@ public class RegistrationActivity extends Activity implements View.OnClickListen
             }
 
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        if(view == birthDateText) {
-            datePickerDialog.show();
-        }
     }
     
     private boolean checkData(){

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -63,6 +64,10 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         if(mSharedPreferences.getString(PREF_AVATAR,"").length()>0){
             setImage(Uri.parse(mSharedPreferences.getString(PREF_AVATAR,"")));
+        }
+        else {
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.img_profile);
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
         }
         super.onViewCreated(view, savedInstanceState);
 

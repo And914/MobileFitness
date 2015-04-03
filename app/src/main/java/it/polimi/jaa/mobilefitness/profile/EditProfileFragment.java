@@ -1,12 +1,15 @@
 package it.polimi.jaa.mobilefitness.profile;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +19,22 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
 import it.polimi.jaa.mobilefitness.utils.UserInfo;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by Jacopo on 02/04/2015.
@@ -31,7 +43,10 @@ public class EditProfileFragment extends Fragment {
 
     SharedPreferences mSharedPreferences;
     private static final String PREFS = "prefs";
+    private static final String PREF_NAME = "name";
+    private static final String PREF_SURNAME = "surname";
     private static final String PREF_BIRTHDATE = "birthdate";
+    private static final String PREF_EMAIL = "email";
     private static final String PREF_WEIGHT = "weight";
     private static final String PREF_HEIGHT = "height";
 
@@ -40,10 +55,19 @@ public class EditProfileFragment extends Fragment {
 
     EditText editTextProfile;
 
+    private ProgressDialog mDialog;
+
+    private String oldValue;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_profile_edit, container, false);
         editTextProfile = (EditText)rootView.findViewById(R.id.editTextProfile);
+
+        mDialog = new ProgressDialog(getActivity());
+        mDialog.setMessage("Updating..");
+        mDialog.setCancelable(false);
+
         editTextProfile.setHint(getArguments().getString("value"));
         switch (getArguments().getString("value")){
             case PREF_BIRTHDATE:
@@ -65,7 +89,7 @@ public class EditProfileFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mDialog.show();
                 Boolean valid = true;
                 //CHECK INPUT
                 if(editTextProfile.getText().toString().length()==0) {
@@ -77,19 +101,16 @@ public class EditProfileFragment extends Fragment {
 
                 if(valid){
                     mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+                    //save old value
+                    oldValue = mSharedPreferences.getString(getArguments().getString("value"), "");
+
                     SharedPreferences.Editor e = mSharedPreferences.edit();
 
                     e.putString(getArguments().getString("value"), editTextProfile.getText().toString());
                     e.apply();
+                    sendNewProfile();
 
-                    //remove soft keyboard
-                    View focus = getActivity().getCurrentFocus();
-                    if(focus!= null) {
-                        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    }
-
-                    getFragmentManager().popBackStack();
                 }
             }
         });
@@ -105,6 +126,58 @@ public class EditProfileFragment extends Fragment {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editTextProfile, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    private void sendNewProfile(){
+        String urlServer = Utils.server_ip + "/users";
+
+        mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+        // Create a client to perform networking
+        AsyncHttpClient client = new AsyncHttpClient();
+        //client.setProxy("192.168.1.187",80);
+        RequestParams params = new RequestParams();
+        params.put("email", mSharedPreferences.getString(PREF_EMAIL,""));
+        params.put("name", mSharedPreferences.getString(PREF_NAME, ""));
+        params.put("surname", mSharedPreferences.getString(PREF_SURNAME, ""));
+        params.put("weight", mSharedPreferences.getString(PREF_WEIGHT,""));
+        params.put("height", mSharedPreferences.getString(PREF_HEIGHT,""));
+        params.put("birthdate", mSharedPreferences.getString(PREF_BIRTHDATE,""));
+
+
+        client.post(urlServer, params,  new TextHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String response) {
+
+                if(response.equals("updated")) {
+                    mDialog.dismiss();
+                    Toast.makeText(getActivity(),"Updated", Toast.LENGTH_LONG).show();
+                    //remove soft keyboard
+                    View focus = getActivity().getCurrentFocus();
+                    if(focus!= null) {
+                        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+
+                    getFragmentManager().popBackStack();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
+                mDialog.dismiss();
+                Toast.makeText(getActivity(),"Error on update", Toast.LENGTH_LONG).show();
+
+                //Rollback
+                mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = mSharedPreferences.edit();
+                edit.putString(getArguments().getString("value"), oldValue);
+                edit.apply();
+            }
+
+        });
+
     }
 
     private void setDateTimeField() {
