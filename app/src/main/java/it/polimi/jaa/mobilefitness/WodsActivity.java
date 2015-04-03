@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,8 +27,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
+import it.polimi.jaa.mobilefitness.utils.WodExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**
@@ -75,6 +78,8 @@ public class WodsActivity extends ActionBarActivity {
                                     WodCardAdapter wodCardAdapter = new WodCardAdapter(createList(jsonArray));
                                     recyclerView.setAdapter(wodCardAdapter);
 
+                                    saveOnDB(jsonArray);
+
                                 } else {
                                     Log.e(LOG_ACTIVITY, jsonArray.toString());
                                 }
@@ -85,6 +90,32 @@ public class WodsActivity extends ActionBarActivity {
 
                         }
 
+                        public void saveOnDB(JSONArray jsonArray){
+                            List<WodExerciseInfo> wodExerciseInfos = WodExerciseInfo.createListFromJSON(jsonArray);
+                            ContentValues contentValues;
+                            //TODO: query db and sync wods
+
+                            for(WodExerciseInfo we: wodExerciseInfos){
+                                contentValues = new ContentValues();
+
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, we.id_exercise);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, we.id_exercise);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, we.name_wod);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, we.name);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, we.equipment);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, we.rounds);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, we.rep);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, we.rest);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, we.weight);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, we.time);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, we.image);
+
+                                getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
+
+                            }
+
+                        }
+
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
                             Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
@@ -92,7 +123,7 @@ public class WodsActivity extends ActionBarActivity {
                     });
         }
         else{
-            //TODO:gestire caricamento senza passare da internet
+
         }
     }
 

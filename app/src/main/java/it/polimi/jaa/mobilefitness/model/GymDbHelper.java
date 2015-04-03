@@ -38,7 +38,8 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 GymContract.ExerciseEntry.COLUMN_REPS + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_REST_TIME + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ROUNDS+ " INTEGER, " +
-                GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER " +
+                GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER, " +
+                GymContract.ExerciseEntry.COLUMN_DELETED + " INTEGER " +
                 " );";
 
         final String SQL_CREATE_HISTORY_TABLE = "CREATE TABLE " + GymContract.HistoryEntry.TABLE_NAME + " (" +

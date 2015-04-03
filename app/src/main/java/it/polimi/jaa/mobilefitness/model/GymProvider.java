@@ -19,7 +19,7 @@ public class GymProvider extends ContentProvider {
     static final int HISTORY = 1;
     static final int BEACON = 2;
     static final int EXERCISE = 3;
-
+    static final int EXERCISE_DELETED = 4;
 
 
     private static final SQLiteQueryBuilder historyExerciseQueryBuilder;
@@ -71,19 +71,30 @@ public class GymProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        sortOrder);
-
+                        sortOrder
+                );
                 break;
             case EXERCISE:
                 retCursor = gymDbHelper.getReadableDatabase().query(
                         GymContract.ExerciseEntry.TABLE_NAME,
                         projection,
-                        selection,
+                        selection + " AND " +GymContract.ExerciseEntry.COLUMN_DELETED+"=0",
                         selectionArgs,
                         null,
                         null,
-                        sortOrder);
-
+                        sortOrder
+                );
+                break;
+            case EXERCISE_DELETED:
+                retCursor = gymDbHelper.getReadableDatabase().query(
+                        GymContract.ExerciseEntry.TABLE_NAME,
+                        projection,
+                        selection + " AND " +GymContract.ExerciseEntry.COLUMN_DELETED+"=1",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri "+uri);
@@ -115,34 +126,36 @@ public class GymProvider extends ContentProvider {
         final int match = uriMatcher.match(uri);
         Uri returnUri;
 
+        long _id;
+
         switch (match){
-            case HISTORY: {
-                long _id = db.insert(GymContract.HistoryEntry.TABLE_NAME, null, values);
+            case HISTORY:
+                _id = db.insert(GymContract.HistoryEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
                     returnUri = GymContract.HistoryEntry.buildHistoryrUri(_id);
                 } else {
                     throw new SQLException("Fail to insert row into " + uri);
                 }
                 break;
-            }
-            case EXERCISE: {
-                long _id = db.insert(GymContract.ExerciseEntry.TABLE_NAME, null, values);
+            case EXERCISE:
+                values.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
+                _id = db.insert(GymContract.ExerciseEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
                     returnUri = GymContract.ExerciseEntry.buildExerciseUri(_id);
                 } else {
                     throw new SQLException("Fail to insert row into " + uri);
                 }
                 break;
-            }
-            case BEACON: {
-                long _id = db.insert(GymContract.BeaconEntry.TABLE_NAME, null, values);
+            case EXERCISE_DELETED:
+                throw new UnsupportedOperationException("Cannot insert an exercise already deleted");
+            case BEACON:
+                _id = db.insert(GymContract.BeaconEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
                     returnUri = GymContract.BeaconEntry.buildLBeaconUri(_id);
                 } else {
                     throw new SQLException("Fail to insert row into " + uri);
                 }
                 break;
-            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: "+uri);
         }
@@ -164,6 +177,9 @@ public class GymProvider extends ContentProvider {
             case HISTORY:
                 rowsDeleted = db.delete(GymContract.HistoryEntry.TABLE_NAME,selection, selectionArgs);
                 break;
+            case EXERCISE_DELETED:
+                rowsDeleted = db.delete(GymContract.ExerciseEntry.TABLE_NAME,selection, selectionArgs);
+                break;
             case EXERCISE:
                 rowsDeleted = db.delete(GymContract.ExerciseEntry.TABLE_NAME,selection, selectionArgs);
                 break;
@@ -183,7 +199,36 @@ public class GymProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = gymDbHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+
+        ContentValues contentValues;
+        int rowsUpdated;
+        switch (match) {
+            case HISTORY:
+                rowsUpdated = db.update(GymContract.HistoryEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case BEACON:
+                rowsUpdated = db.update(GymContract.BeaconEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case EXERCISE:
+                contentValues = new ContentValues();
+                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 1);
+                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                break;
+            case EXERCISE_DELETED:
+                contentValues = new ContentValues();
+                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
+                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: "+uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
     }
 
     static UriMatcher buildUriMatcher(){
@@ -192,6 +237,7 @@ public class GymProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, GymContract.PATH_HISTORY, HISTORY);
         uriMatcher.addURI(authority, GymContract.PATH_EXERCISE, EXERCISE);
+        uriMatcher.addURI(authority,GymContract.PATH_EXERCISE_DELETED, EXERCISE_DELETED);
         uriMatcher.addURI(authority, GymContract.PATH_BEACON, BEACON);
 
         return uriMatcher;
