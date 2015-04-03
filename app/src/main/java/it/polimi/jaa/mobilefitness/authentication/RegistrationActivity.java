@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness.authentication;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +43,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
  * Created by andre on 31/03/15.
  */
 
-public class RegistrationActivity extends Activity {
+public class RegistrationActivity extends ActionBarActivity{
 
     //UI References
     private EditText birthDateText;
@@ -82,6 +84,8 @@ public class RegistrationActivity extends Activity {
                     registrationQuery(view);
             }
         });
+
+
     }
 
     private void findViewsById() {
@@ -176,7 +180,7 @@ public class RegistrationActivity extends Activity {
     private void registrationQuery(final View view){
         mDialog.show();
 
-        /*String urlServer = Utils.server_ip + "/users";
+        String urlServer = Utils.server_ip + "/users";
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
@@ -213,7 +217,7 @@ public class RegistrationActivity extends Activity {
                 }
             }
 
-        });*/
+        });
 
         setPreferences();
         Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
