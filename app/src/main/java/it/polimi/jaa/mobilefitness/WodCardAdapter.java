@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -63,14 +64,9 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Bundle args = new Bundle();
-                    args.putInt("id_wod",id_wod);
-
-                    WodFragment wodFragment = new WodFragment();
-                    wodFragment.setArguments(args);
-                    FragmentManager fragmentManager = ((FragmentActivity)view.getContext()).getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.container, wodFragment).addToBackStack("tag")
-                            .commit();
+                    Intent wodActivityIntent = new Intent(view.getContext().getApplicationContext(), WodFragment.class);
+                    wodActivityIntent.putExtra("id_wod", id_wod);
+                    view.getContext().startActivity(wodActivityIntent);
                 }
             });
         }

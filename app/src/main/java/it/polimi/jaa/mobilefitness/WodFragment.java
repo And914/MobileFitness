@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,7 +34,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by andre on 30/03/15.
  */
-public class WodFragment extends Fragment{
+public class WodFragment extends ActionBarActivity{
 
     RecyclerView recyclerView;
     int idWod;
@@ -43,18 +44,18 @@ public class WodFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_wod, container, false);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.card_list);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_wod);
+
+        recyclerView = (RecyclerView) findViewById(R.id.card_list);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
-        //TODO: METTERE IL WOD DINAMICO.....AGGIUNGERE UNA PAGINA PRIMA IN CUI SELEZIONARLO...OPPURE FORZARLO A FARNE UNO E SOLO UNO
-        String urlServer = Utils.server_ip + "/wods/" + getArguments().getInt("id_wod") + "/exercises";
+        String urlServer = Utils.server_ip + "/wods/" + getIntent().getExtras().getInt("id_wod") + "/exercises";
         AsyncHttpClient client = new AsyncHttpClient();
         //client.setProxy("192.168.1.7",80);
 
@@ -88,7 +89,6 @@ public class WodFragment extends Fragment{
                     }
                 });
 
-        return rootView;
     }
 
     private List<ExerciseInfo> createList(JSONArray jsonExercises) {

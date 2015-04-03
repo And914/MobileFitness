@@ -1,6 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.view.LayoutInflater;
@@ -47,9 +47,9 @@ public class HomeUserFragment extends Fragment {
         startWodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.container, new WodsFragment()).addToBackStack("tag")
-                        .commit();
+                //call main activity with intent
+                Intent wodsActivityIntent = new Intent(getActivity().getApplicationContext(), WodsActivity.class);
+                startActivity(wodsActivityIntent);
             }
         });
 
