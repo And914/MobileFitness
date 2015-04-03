@@ -24,7 +24,7 @@
         <activity
             android:name=".authentication.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +34,7 @@
         <activity
             android:name=".authentication.RegistrationActivity"
             android:label="@string/title_activity_registration"
+            android:windowSoftInputMode="stateHidden" >
             android:parentActivityName=".authentication.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

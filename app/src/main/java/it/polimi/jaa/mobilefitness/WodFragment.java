@@ -36,6 +36,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class WodFragment extends Fragment{
 
     RecyclerView recyclerView;
+    int idWod;
     private static final String LOG_ACTIVITY = "WodFragment";
 
     public WodFragment() {

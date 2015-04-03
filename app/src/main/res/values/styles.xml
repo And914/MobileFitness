@@ -4,8 +4,8 @@
     <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"> -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimaryDark">#0288D1</item>
-        <item name="colorPrimary">#FF1CA8F4</item>
+        <item name="colorPrimaryDark">@color/common_signin_btn_light_text_disabled</item>
+        <item name="colorPrimary">@color/dim_foreground_material_dark</item>
         <item name="android:textColorPrimary">#FFF</item>
         <item name="android:textColor">#000</item>
         <item name="android:editTextColor">#000</item>

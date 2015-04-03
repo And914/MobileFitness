@@ -142,6 +142,7 @@ public class RegistrationActivity extends Activity {
             surnameText.setError(getString(R.string.reg_error_surname));
             valid = false;
         }
+        //TODO:verificare che sia una data
         if(birthDateText.getText().toString().equals("")){
             birthDateText.setError(getString(R.string.reg_error_birthdate));
             valid = false;
@@ -175,7 +176,7 @@ public class RegistrationActivity extends Activity {
     private void registrationQuery(final View view){
         mDialog.show();
 
-        String urlServer = Utils.server_ip + "/users";
+        /*String urlServer = Utils.server_ip + "/users";
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
@@ -212,7 +213,7 @@ public class RegistrationActivity extends Activity {
                 }
             }
 
-        });
+        });*/
 
         setPreferences();
         Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
