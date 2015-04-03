@@ -56,13 +56,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private static final String LOG_ACTIVITY = "LoginActivity";
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
-    private static final String PREF_NAME = "name";
-    private static final String PREF_SURNAME = "surname";
-    private static final String PREF_BIRTHDATE = "birthdate";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_WEIGHT = "weight";
-    private static final String PREF_HEIGHT = "height";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -127,10 +120,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean checkAlreadyLogin(){
         // Access the device's key-value storage
-        mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
         // Read the user's name,
         // or an empty string if nothing found
-        String name = mSharedPreferences.getString(PREF_NAME, "");
+        String name = mSharedPreferences.getString(Utils.PREF_NAME, "");
         if (name.length() > 0) {
             // If the name is valid, display a Toast welcoming them
             Toast.makeText(this, "Welcome back, " + name + "!", Toast.LENGTH_LONG).show();
@@ -380,14 +373,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
 
         private void setPreferences(JSONObject jsonObject) throws JSONException {
-            mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+            mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
             SharedPreferences.Editor e = mSharedPreferences.edit();
-            e.putString(PREF_NAME, jsonObject.getString(PREF_NAME));
-            e.putString(PREF_BIRTHDATE, jsonObject.getString(PREF_BIRTHDATE));
-            e.putString(PREF_EMAIL, jsonObject.getString(PREF_EMAIL));
-            e.putString(PREF_HEIGHT, jsonObject.getString(PREF_HEIGHT));
-            e.putString(PREF_WEIGHT, jsonObject.getString(PREF_WEIGHT));
-            e.putString(PREF_SURNAME, jsonObject.getString(PREF_SURNAME));
+            e.putString(Utils.PREF_NAME, jsonObject.getString(Utils.PREF_NAME));
+            e.putString(Utils.PREF_BIRTHDATE, jsonObject.getString(Utils.PREF_BIRTHDATE));
+            e.putString(Utils.PREF_EMAIL, jsonObject.getString(Utils.PREF_EMAIL));
+            e.putString(Utils.PREF_HEIGHT, jsonObject.getString(Utils.PREF_HEIGHT));
+            e.putString(Utils.PREF_WEIGHT, jsonObject.getString(Utils.PREF_WEIGHT));
+            e.putString(Utils.PREF_SURNAME, jsonObject.getString(Utils.PREF_SURNAME));
             e.apply();
         }
     }

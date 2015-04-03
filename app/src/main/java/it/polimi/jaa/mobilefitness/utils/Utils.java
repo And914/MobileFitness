@@ -5,4 +5,11 @@ package it.polimi.jaa.mobilefitness.utils;
  */
 public class Utils {
     public static final String server_ip = "http://192.168.1.7:80";
+    public static final String PREFS = "prefs";
+    public static final String PREF_NAME = "name";
+    public static final String PREF_SURNAME = "surname";
+    public static final String PREF_BIRTHDATE = "birthdate";
+    public static final String PREF_EMAIL = "email";
+    public static final String PREF_WEIGHT = "weight";
+    public static final String PREF_HEIGHT = "height";
 }
