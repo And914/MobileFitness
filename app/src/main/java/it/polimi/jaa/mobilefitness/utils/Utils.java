@@ -12,4 +12,5 @@ public class Utils {
     public static final String PREF_EMAIL = "email";
     public static final String PREF_WEIGHT = "weight";
     public static final String PREF_HEIGHT = "height";
+    public static final String PREF_AVATAR = "avatar";
 }

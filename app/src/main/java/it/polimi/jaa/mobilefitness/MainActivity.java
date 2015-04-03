@@ -13,13 +13,13 @@ import android.support.v4.widget.DrawerLayout;
 import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
 import it.polimi.jaa.mobilefitness.profile.ProfileUserFragment;
 import it.polimi.jaa.mobilefitness.results.ResultsUserFragment;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -103,7 +103,7 @@ public class MainActivity extends ActionBarActivity
             return true;
         }
         else if (id == R.id.action_logout){
-            mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+            mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
             SharedPreferences.Editor e = mSharedPreferences.edit();
             e.clear();
             e.apply();

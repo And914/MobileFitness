@@ -42,13 +42,6 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class EditProfileFragment extends Fragment {
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
-    private static final String PREF_NAME = "name";
-    private static final String PREF_SURNAME = "surname";
-    private static final String PREF_BIRTHDATE = "birthdate";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_WEIGHT = "weight";
-    private static final String PREF_HEIGHT = "height";
 
     private DatePickerDialog datePickerDialog;
     private SimpleDateFormat dateFormatter;
@@ -70,16 +63,16 @@ public class EditProfileFragment extends Fragment {
 
         editTextProfile.setHint(getArguments().getString("value"));
         switch (getArguments().getString("value")){
-            case PREF_BIRTHDATE:
+            case Utils.PREF_BIRTHDATE:
                 editTextProfile.setInputType(InputType.TYPE_CLASS_DATETIME);
                 dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALY);
                 setDateTimeField();
 
                 break;
-            case PREF_WEIGHT:
+            case Utils.PREF_WEIGHT:
                 editTextProfile.setInputType(InputType.TYPE_CLASS_NUMBER);
                 break;
-            case PREF_HEIGHT:
+            case Utils.PREF_HEIGHT:
                 editTextProfile.setInputType(InputType.TYPE_CLASS_NUMBER);
                 break;
             default:
@@ -100,7 +93,7 @@ public class EditProfileFragment extends Fragment {
 
 
                 if(valid){
-                    mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+                    mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
                     //save old value
                     oldValue = mSharedPreferences.getString(getArguments().getString("value"), "");
@@ -122,7 +115,7 @@ public class EditProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         editTextProfile.requestFocus();
-        if(!getArguments().getString("value").equals(PREF_BIRTHDATE)) {
+        if(!getArguments().getString("value").equals(Utils.PREF_BIRTHDATE)) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editTextProfile, InputMethodManager.SHOW_IMPLICIT);
         }
@@ -131,18 +124,18 @@ public class EditProfileFragment extends Fragment {
     private void sendNewProfile(){
         String urlServer = Utils.server_ip + "/users";
 
-        mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
         // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
         //client.setProxy("192.168.1.187",80);
         RequestParams params = new RequestParams();
-        params.put("email", mSharedPreferences.getString(PREF_EMAIL,""));
-        params.put("name", mSharedPreferences.getString(PREF_NAME, ""));
-        params.put("surname", mSharedPreferences.getString(PREF_SURNAME, ""));
-        params.put("weight", mSharedPreferences.getString(PREF_WEIGHT,""));
-        params.put("height", mSharedPreferences.getString(PREF_HEIGHT,""));
-        params.put("birthdate", mSharedPreferences.getString(PREF_BIRTHDATE,""));
+        params.put("email", mSharedPreferences.getString(Utils.PREF_EMAIL,""));
+        params.put("name", mSharedPreferences.getString(Utils.PREF_NAME, ""));
+        params.put("surname", mSharedPreferences.getString(Utils.PREF_SURNAME, ""));
+        params.put("weight", mSharedPreferences.getString(Utils.PREF_WEIGHT,""));
+        params.put("height", mSharedPreferences.getString(Utils.PREF_HEIGHT,""));
+        params.put("birthdate", mSharedPreferences.getString(Utils.PREF_BIRTHDATE,""));
 
 
         client.post(urlServer, params,  new TextHttpResponseHandler() {
@@ -170,7 +163,7 @@ public class EditProfileFragment extends Fragment {
                 Toast.makeText(getActivity(),"Error on update", Toast.LENGTH_LONG).show();
 
                 //Rollback
-                mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+                mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = mSharedPreferences.edit();
                 edit.putString(getArguments().getString("value"), oldValue);
                 edit.apply();

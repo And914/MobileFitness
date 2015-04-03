@@ -33,9 +33,7 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
 public class WodsFragment extends Fragment {
 
     RecyclerView recyclerView;
-    int idWod;
-    private static final String PREFS = "prefs";
-    private static final String PREF_EMAIL = "email";
+
     private static final String LOG_ACTIVITY = "WodsFragment";
 
     public WodsFragment() {
@@ -51,9 +49,9 @@ public class WodsFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        SharedPreferences mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        SharedPreferences mSharedPreferences = this.getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
-        String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(PREF_EMAIL,"");
+        String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(Utils.PREF_EMAIL,"");
         AsyncHttpClient client = new AsyncHttpClient();
         //client.setProxy("192.168.1.7",80);
 

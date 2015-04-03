@@ -59,15 +59,6 @@ public class RegistrationActivity extends Activity {
     private ProgressDialog mDialog;
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
-    private static final String PREF_NAME = "name";
-    private static final String PREF_SURNAME = "surname";
-    private static final String PREF_BIRTHDATE = "birthdate";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_WEIGHT = "weight";
-    private static final String PREF_HEIGHT = "height";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,14 +223,14 @@ public class RegistrationActivity extends Activity {
 
     private void setPreferences(){
         // Access the device's key-value storage
-        mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
         SharedPreferences.Editor e = mSharedPreferences.edit();
-        e.putString(PREF_NAME, nameText.getText().toString());
-        e.putString(PREF_BIRTHDATE, birthDateText.getText().toString());
-        e.putString(PREF_EMAIL, emailText.getText().toString());
-        e.putString(PREF_HEIGHT, heightText.getText().toString());
-        e.putString(PREF_WEIGHT, weightText.getText().toString());
-        e.putString(PREF_SURNAME, surnameText.getText().toString());
+        e.putString(Utils.PREF_NAME, nameText.getText().toString());
+        e.putString(Utils.PREF_BIRTHDATE, birthDateText.getText().toString());
+        e.putString(Utils.PREF_EMAIL, emailText.getText().toString());
+        e.putString(Utils.PREF_HEIGHT, heightText.getText().toString());
+        e.putString(Utils.PREF_WEIGHT, weightText.getText().toString());
+        e.putString(Utils.PREF_SURNAME, surnameText.getText().toString());
 
         e.apply();
 

@@ -36,6 +36,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 
+import it.polimi.jaa.mobilefitness.utils.Utils;
+
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -76,12 +78,7 @@ public class NavigationDrawerFragment extends Fragment {
     RelativeLayout mDrawerLayoutView;
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
-    private static final String PREF_NAME = "name";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_AVATAR = "avatar";
 
-    private static int RESULT_LOAD_IMG = 1;
 
     public NavigationDrawerFragment() {
     }
@@ -122,9 +119,9 @@ public class NavigationDrawerFragment extends Fragment {
         if (requestCode == 1 && resultCode == -1 && data != null && data.getData() != null) {
 
             Uri uri = data.getData();
-            mSharedPreferences = getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor e = mSharedPreferences.edit();
-            e.putString(PREF_AVATAR, uri.toString());
+            e.putString(Utils.PREF_AVATAR, uri.toString());
             e.apply();
             setImage(uri);
         }
@@ -232,11 +229,11 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         //set email and username in drawer fragment
-        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        mSharedPreferences = this.getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
         TextView username = (TextView) mDrawerLayoutView.findViewById(R.id.txtUsername);
         TextView email = (TextView) mDrawerLayoutView.findViewById(R.id.txtUserEmail);
-        username.setText(mSharedPreferences.getString(PREF_NAME, ""));
-        email.setText(mSharedPreferences.getString(PREF_EMAIL,""));
+        username.setText(mSharedPreferences.getString(Utils.PREF_NAME, ""));
+        email.setText(mSharedPreferences.getString(Utils.PREF_EMAIL,""));
 
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
@@ -261,9 +258,9 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     public boolean isDrawerOpen() {
-        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if(mSharedPreferences.getString(PREF_AVATAR,"").length()>0){
-            setImage(Uri.parse(mSharedPreferences.getString(PREF_AVATAR,"")));
+        mSharedPreferences = this.getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
+        if(mSharedPreferences.getString(Utils.PREF_AVATAR,"").length()>0){
+            setImage(Uri.parse(mSharedPreferences.getString(Utils.PREF_AVATAR,"")));
         }
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }

@@ -30,6 +30,7 @@ import java.io.InputStream;
 
 import it.polimi.jaa.mobilefitness.R;
 import it.polimi.jaa.mobilefitness.utils.UserInfo;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by andre on 30/03/15.
@@ -37,14 +38,6 @@ import it.polimi.jaa.mobilefitness.utils.UserInfo;
 public class ProfileUserFragment extends Fragment implements View.OnClickListener{
 
     SharedPreferences mSharedPreferences;
-    private static final String PREFS = "prefs";
-    private static final String PREF_NAME = "name";
-    private static final String PREF_SURNAME = "surname";
-    private static final String PREF_BIRTHDATE = "birthdate";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_WEIGHT = "weight";
-    private static final String PREF_HEIGHT = "height";
-    private static final String PREF_AVATAR = "avatar";
 
     public ProfileUserFragment() {
     }
@@ -61,9 +54,9 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if(mSharedPreferences.getString(PREF_AVATAR,"").length()>0){
-            setImage(Uri.parse(mSharedPreferences.getString(PREF_AVATAR,"")));
+        mSharedPreferences = this.getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
+        if(mSharedPreferences.getString(Utils.PREF_AVATAR,"").length()>0){
+            setImage(Uri.parse(mSharedPreferences.getString(Utils.PREF_AVATAR,"")));
         }
         else {
             ImageView imageView = (ImageView) getActivity().findViewById(R.id.img_profile);
@@ -76,14 +69,14 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
     UserInfo getUserInfo (){
         UserInfo user = new UserInfo();
         // Access the device's key-value storage
-        mSharedPreferences = this.getActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        mSharedPreferences = this.getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
-        user.setName(mSharedPreferences.getString(PREF_NAME,""));
-        user.setBirthDate(mSharedPreferences.getString(PREF_BIRTHDATE,""));
-        user.setEmail(mSharedPreferences.getString(PREF_EMAIL, ""));
-        user.setHeight(mSharedPreferences.getString(PREF_HEIGHT, ""));
-        user.setSurname(mSharedPreferences.getString(PREF_SURNAME,""));
-        user.setWeight(mSharedPreferences.getString(PREF_WEIGHT,""));
+        user.setName(mSharedPreferences.getString(Utils.PREF_NAME,""));
+        user.setBirthDate(mSharedPreferences.getString(Utils.PREF_BIRTHDATE,""));
+        user.setEmail(mSharedPreferences.getString(Utils.PREF_EMAIL, ""));
+        user.setHeight(mSharedPreferences.getString(Utils.PREF_HEIGHT, ""));
+        user.setSurname(mSharedPreferences.getString(Utils.PREF_SURNAME,""));
+        user.setWeight(mSharedPreferences.getString(Utils.PREF_WEIGHT,""));
 
         return user;
     }
@@ -204,23 +197,23 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         switch (v.getId()) {
             case R.id.user_name_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_name);
-                bundle.putString("value",PREF_NAME);
+                bundle.putString("value",Utils.PREF_NAME);
                 break;
             case R.id.user_surname_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_surname);
-                bundle.putString("value",PREF_SURNAME);
+                bundle.putString("value",Utils.PREF_SURNAME);
                 break;
             case R.id.user_birth_date_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_birth_date);
-                bundle.putString("value",PREF_BIRTHDATE);
+                bundle.putString("value",Utils.PREF_BIRTHDATE);
                 break;
             case R.id.user_height_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_height);
-                bundle.putString("value",PREF_HEIGHT);
+                bundle.putString("value",Utils.PREF_HEIGHT);
                 break;
             case R.id.user_weight_imagebtn:
                 textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_weight);
-                bundle.putString("value",PREF_WEIGHT);
+                bundle.putString("value",Utils.PREF_WEIGHT);
                 break;
             default:
                 break;
