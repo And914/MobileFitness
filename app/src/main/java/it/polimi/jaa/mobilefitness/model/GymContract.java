@@ -17,6 +17,7 @@ public class GymContract {
 
     public static final String PATH_BEACON = "beacon";
     public static final String PATH_EXERCISE = "exercise";
+    public static final String PATH_EXERCISE_DELETED = "exercise_deleted";
     public static final String PATH_HISTORY = "history";
 
 
@@ -67,6 +68,9 @@ public class GymContract {
         public static final String COLUMN_DURATION = "duration";
         public static final String COLUMN_REST_TIME = "rest_time";
         public static final String COLUMN_WEIGHT = "weight";
+
+        public static final String COLUMN_DELETED = "deleted";
+
 
         public static Uri buildExerciseUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
