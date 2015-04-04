@@ -75,10 +75,16 @@ public class GymProvider extends ContentProvider {
                 );
                 break;
             case EXERCISE:
+                if (selection == null) {
+                    selection = GymContract.ExerciseEntry.COLUMN_DELETED+"=0";
+                }
+                else {
+                    selection = selection + " AND " + GymContract.ExerciseEntry.COLUMN_DELETED+"=0";
+                }
                 retCursor = gymDbHelper.getReadableDatabase().query(
                         GymContract.ExerciseEntry.TABLE_NAME,
                         projection,
-                        selection + " AND " +GymContract.ExerciseEntry.COLUMN_DELETED+"=0",
+                        selection,
                         selectionArgs,
                         null,
                         null,
@@ -86,10 +92,16 @@ public class GymProvider extends ContentProvider {
                 );
                 break;
             case EXERCISE_DELETED:
+                if (selection == null) {
+                    selection = GymContract.ExerciseEntry.COLUMN_DELETED+"=1";
+                }
+                else {
+                    selection = selection + " AND " + GymContract.ExerciseEntry.COLUMN_DELETED+"=1";
+                }
                 retCursor = gymDbHelper.getReadableDatabase().query(
                         GymContract.ExerciseEntry.TABLE_NAME,
                         projection,
-                        selection + " AND " +GymContract.ExerciseEntry.COLUMN_DELETED+"=1",
+                        selection,
                         selectionArgs,
                         null,
                         null,

@@ -3,6 +3,7 @@ package it.polimi.jaa.mobilefitness;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.model.GymContract;
+import it.polimi.jaa.mobilefitness.model.GymDbHelper;
+import it.polimi.jaa.mobilefitness.model.GymProvider;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 import it.polimi.jaa.mobilefitness.utils.WodExerciseInfo;
@@ -75,10 +78,10 @@ public class WodsActivity extends ActionBarActivity {
                                 Log.d(LOG_ACTIVITY, jsonArray.toString());
                                 if (jsonArray.length() > 0) {
                                     //set the content of the recycler view
-                                    WodCardAdapter wodCardAdapter = new WodCardAdapter(createList(jsonArray));
+                                    WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(jsonArray));
                                     recyclerView.setAdapter(wodCardAdapter);
 
-                                    saveOnDB(jsonArray);
+                                    //saveOnDB(jsonArray);
 
                                 } else {
                                     Log.e(LOG_ACTIVITY, jsonArray.toString());
@@ -98,17 +101,19 @@ public class WodsActivity extends ActionBarActivity {
                             for(WodExerciseInfo we: wodExerciseInfos){
                                 contentValues = new ContentValues();
 
-                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, we.id_exercise);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, we.id_wod);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, we.id_exercise);
-                                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, we.name_wod);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, we.wod_name);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, we.name);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, we.equipment);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, we.rounds);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, we.rep);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, we.gym_name);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, we.rest);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, we.weight);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, we.time);
                                 contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, we.image);
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_CATEGORY,we.category);
 
                                 getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
 
@@ -123,29 +128,11 @@ public class WodsActivity extends ActionBarActivity {
                     });
         }
         else{
+            Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME_WOD, GymContract.ExerciseEntry.COLUMN_GYM_NAME,GymContract.ExerciseEntry.COLUMN_ID_WOD},
+                    null, null, null);
 
+            WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createListFromCursor(cursor));
+            recyclerView.setAdapter(wodCardAdapter);
         }
-    }
-
-
-
-    private List<WodInfo> createList(JSONArray jsonExercises) {
-
-        List<WodInfo> result = new ArrayList<WodInfo>();
-
-        for (int i = 0; i<jsonExercises.length();i++) {
-            try {
-                JSONObject exercise = jsonExercises.getJSONObject(i);
-
-                WodInfo wi = new WodInfo("name " + exercise.getString("wod_name"), "gym " + exercise.getString("gym_name"),exercise.getInt("id"));
-
-                result.add(wi);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return result;
     }
 }

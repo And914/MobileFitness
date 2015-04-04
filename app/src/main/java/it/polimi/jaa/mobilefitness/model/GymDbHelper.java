@@ -27,11 +27,12 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 " );";
 
         final String SQL_CREATE_EXERC_TABLE = "CREATE TABLE " + GymContract.ExerciseEntry.TABLE_NAME + " (" +
-                GymContract.ExerciseEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                GymContract.ExerciseEntry.COLUMN_ID + " INTEGER NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_ID_WOD +" INTEGER NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_NAME_WOD + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_CATEGORY + " INTEGER NOT NULL," +
+                GymContract.ExerciseEntry.COLUMN_GYM_NAME + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_DURATION + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ICON_ID + " INTEGER, " +
@@ -39,8 +40,8 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 GymContract.ExerciseEntry.COLUMN_REST_TIME + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ROUNDS+ " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER, " +
-                GymContract.ExerciseEntry.COLUMN_DELETED + " INTEGER " +
-                " );";
+                GymContract.ExerciseEntry.COLUMN_DELETED + " INTEGER, " +
+                "PRIMARY KEY (" + GymContract.ExerciseEntry.COLUMN_ID_WOD + "," + GymContract.ExerciseEntry.COLUMN_ID + ") );";
 
         final String SQL_CREATE_HISTORY_TABLE = "CREATE TABLE " + GymContract.HistoryEntry.TABLE_NAME + " (" +
                 GymContract.HistoryEntry.COLUMN_ID_EXERC + " INTEGER, " +
