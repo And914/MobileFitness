@@ -21,7 +21,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="WELCOME"
             android:id="@+id/textView2"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:textColor="@color/dim_foreground_material_dark" />
 
 

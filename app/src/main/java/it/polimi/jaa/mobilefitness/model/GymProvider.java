@@ -225,12 +225,12 @@ public class GymProvider extends ContentProvider {
                 break;
             case EXERCISE:
                 contentValues = new ContentValues();
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 1);
+                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
                 rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
             case EXERCISE_DELETED:
                 contentValues = new ContentValues();
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
+                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 1);
                 rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
             default:

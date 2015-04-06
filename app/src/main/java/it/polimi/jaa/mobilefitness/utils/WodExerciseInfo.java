@@ -63,4 +63,54 @@ public class WodExerciseInfo extends ExerciseInfo {
 
         return result;
     }
+
+    public static List<WodExerciseInfo> createWodExerciseListFromCursor(Cursor cursor) {
+
+        ArrayList<WodExerciseInfo> mArrayList = new ArrayList<WodExerciseInfo>();
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            // The Cursor is now set to the right position
+            int idWod = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID_WOD));
+            int idExercise = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID));
+            String exerciseName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME));
+            String equipment = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_EQUIPMENT));
+            String wodName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME_WOD));
+            String rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
+            String reps = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REPS));
+            String rest = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REST_TIME));
+            String weight = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_WEIGHT));
+            String time = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
+            int image = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID));
+            int category = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_CATEGORY));
+            String gymName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_GYM_NAME));
+
+            WodExerciseInfo exerciseInfo = new WodExerciseInfo(idWod,idExercise,exerciseName,wodName,equipment,rounds,reps,rest,weight,time,image,category,gymName);
+            if (!mArrayList.contains(exerciseInfo)){
+                mArrayList.add(exerciseInfo);
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return mArrayList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WodExerciseInfo wodExerciseInfo = (WodExerciseInfo) o;
+
+        return (this.id_wod == wodExerciseInfo.id_wod) && (this.id_exercise == wodExerciseInfo.id_exercise);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id_wod;
+        result = 31 * result + id_exercise;
+        result = 31 * result + (wod_name != null ? wod_name.hashCode() : 0);
+        result = 31 * result + category;
+        result = 31 * result + (gym_name != null ? gym_name.hashCode() : 0);
+        return result;
+    }
 }

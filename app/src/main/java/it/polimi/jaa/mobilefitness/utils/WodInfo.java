@@ -57,7 +57,6 @@ public class WodInfo {
             }
             cursor.moveToNext();
         }
-        cursor.close();
         return mArrayList;
     }
 

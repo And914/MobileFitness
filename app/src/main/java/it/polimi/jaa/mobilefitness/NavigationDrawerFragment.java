@@ -156,7 +156,9 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         cursor.moveToFirst();
-        return cursor.getInt(0);
+        int result = cursor.getInt(0);
+        cursor.close();
+        return result;
     }
 
     public Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {

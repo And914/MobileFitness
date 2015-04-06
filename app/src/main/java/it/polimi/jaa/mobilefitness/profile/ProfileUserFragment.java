@@ -136,7 +136,9 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         }
 
         cursor.moveToFirst();
-        return cursor.getInt(0);
+        int result = cursor.getInt(0);
+        cursor.close();
+        return result;
     }
 
     public Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {
@@ -193,26 +195,20 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
         Bundle bundle = new Bundle();
         EditProfileFragment editProfileFragment = new EditProfileFragment();
-        TextView textView;
         switch (v.getId()) {
             case R.id.user_name_imagebtn:
-                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_name);
                 bundle.putString("value",Utils.PREF_NAME);
                 break;
             case R.id.user_surname_imagebtn:
-                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_surname);
                 bundle.putString("value",Utils.PREF_SURNAME);
                 break;
             case R.id.user_birth_date_imagebtn:
-                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_birth_date);
                 bundle.putString("value",Utils.PREF_BIRTHDATE);
                 break;
             case R.id.user_height_imagebtn:
-                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_height);
                 bundle.putString("value",Utils.PREF_HEIGHT);
                 break;
             case R.id.user_weight_imagebtn:
-                textView = (TextView) ((FragmentActivity)v.getContext()).findViewById(R.id.user_weight);
                 bundle.putString("value",Utils.PREF_WEIGHT);
                 break;
             default:

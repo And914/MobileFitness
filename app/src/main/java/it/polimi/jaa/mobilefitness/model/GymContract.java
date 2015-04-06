@@ -49,6 +49,9 @@ public class GymContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_EXERCISE).build();
 
+        public static final Uri CONTENT_URI_DELETED =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_EXERCISE_DELETED).build();
+
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EXERCISE;
         public static final String CONTENT_ITEM_TYPE =

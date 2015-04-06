@@ -31,7 +31,7 @@ public class ExerciseInfo {
         this.image = image;
     }
 
-    public static List<ExerciseInfo> createList(Cursor cursor) {
+    public static List<ExerciseInfo> createListFromCursor(Cursor cursor) {
 
         ArrayList<ExerciseInfo> mArrayList = new ArrayList<ExerciseInfo>();
         cursor.moveToFirst();
@@ -52,7 +52,6 @@ public class ExerciseInfo {
             }
             cursor.moveToNext();
         }
-        cursor.close();
         return mArrayList;
     }
 }
