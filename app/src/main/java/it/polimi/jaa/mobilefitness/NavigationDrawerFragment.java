@@ -75,7 +75,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    RelativeLayout mDrawerLayoutView;
+    DrawerLayout mDrawerLayoutView;
 
     SharedPreferences mSharedPreferences;
 
@@ -220,7 +220,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerLayoutView = (RelativeLayout) inflater.inflate(
+        mDrawerLayoutView = (DrawerLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer_material, container, false);
         mDrawerListView = (ListView) mDrawerLayoutView.findViewById(R.id.drawerList);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -290,7 +290,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                R.drawable.ic_drawer_white,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {

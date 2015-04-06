@@ -47,7 +47,10 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                         GymContract.ExerciseEntry.COLUMN_ROUNDS,GymContract.ExerciseEntry.COLUMN_REPS,GymContract.ExerciseEntry.COLUMN_REST_TIME,
                         GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID
                 },
-                "id_wod = ?", args , null);
+                GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
+                args ,
+                null
+        );
 
         ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(ExerciseInfo.createListFromCursor(cursor));
         cursor.close();
