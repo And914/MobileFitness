@@ -3,6 +3,8 @@ package it.polimi.jaa.mobilefitness;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +15,10 @@ import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 /**
  * Created by andre on 30/03/15.
  */
-public class WodActivity extends ActionBarActivity{
+public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     RecyclerView recyclerView;
+    SwipeRefreshLayout swipeRefreshLayout;
     int idWod;
     private static final String LOG_ACTIVITY = "WodFragment";
 
@@ -26,6 +29,9 @@ public class WodActivity extends ActionBarActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wod);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_wod);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.card_list);
         recyclerView.setHasFixedSize(true);
@@ -50,4 +56,12 @@ public class WodActivity extends ActionBarActivity{
     }
 
 
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 5000);
+    }
 }
