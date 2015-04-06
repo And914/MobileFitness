@@ -68,7 +68,7 @@ public class WodInfo {
             try {
                 JSONObject exercise = jsonExercises.getJSONObject(i);
 
-                WodInfo wi = new WodInfo("name " + exercise.getString("wod_name"), "gym " + exercise.getString("gym_name"),exercise.getInt("id_wod"));
+                WodInfo wi = new WodInfo(exercise.getString("wod_name"), exercise.getString("gym_name"),exercise.getInt("id_wod"));
                 if (!result.contains(wi)){
                     result.add(wi);
                 }
