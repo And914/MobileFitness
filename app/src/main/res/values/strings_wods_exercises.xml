@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ex_rounds">Rounds</string>
+    <string name="ex_reps">Reps</string>
+    <string name="ex_time">Time</string>
+    <string name="ex_weight">Weight</string>
+    <string name="ex_rest_time">Rest time</string>
+    <string name="ex_equipment">Equipment</string>
+</resources>

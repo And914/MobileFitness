@@ -40,4 +40,20 @@
         <item name="android:background">@color/myPrimaryColor</item>
     </style>
 
+    <style name="DividerHorizontalExerciseInfo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">1dp</item>
+
+        <item name="android:background">#000</item>
+    </style>
+
+    <style name="DividerVerticalExerciseInfo">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:background">#000</item>
+    </style>
+
 </resources>

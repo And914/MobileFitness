@@ -9,88 +9,203 @@
     android:id="@+id/exercise_card">
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_weight="1"
         android:padding="20dp"
         android:background="@color/common_action_bar_splitter"
         android:baselineAligned="false">
 
-        <LinearLayout android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="2">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="Cyclette"
-                android:id="@+id/ex_name"
-                android:textSize="20sp"/>
+        <LinearLayout android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="New Text"
-                android:id="@+id/ex_equip" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/ex_image"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/ic_launcher" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextCard"
+                    android:text="Cyclette"
+                    android:textSize="@dimen/abc_text_size_large_material"
+                    android:id="@+id/ex_name"
+                    android:paddingBottom="20dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ex_equipment"
+                    android:id="@+id/textView3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextCard"
+                    android:text="New Text"
+                    android:gravity="center"
+                    android:id="@+id/ex_equip" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
-
-        <LinearLayout android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="2">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="3x"
-                android:id="@+id/ex_rounds" />
-
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="New Text"
-                android:id="@+id/ex_reps" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="New Text"
-                android:id="@+id/ex_time" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="New Text"
-                android:id="@+id/ex_weight" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextCard"
-                android:text="New Text"
-                android:id="@+id/ex_rest" />
-        </LinearLayout>
+        <View style="@style/DividerHorizontalExerciseInfo"/>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ex_image"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:baselineAligned="false">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:paddingRight="15dp">
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@string/ex_rounds"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:text="3x"
+                        android:gravity="end"
+                        android:id="@+id/ex_rounds"
+                        android:textSize="@dimen/abc_text_size_large_material"
+                         />
+                </LinearLayout>
+
+                <View style="@style/DividerHorizontalExerciseInfo"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ex_reps"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:text="New Text"
+                        android:id="@+id/ex_reps"
+                        android:textSize="@dimen/abc_text_size_large_material"
+                        android:gravity="end" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:paddingLeft="15dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ex_time"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:gravity="center"
+                        android:id="@+id/ex_time" />
+                </LinearLayout>
+
+                <View style="@style/DividerHorizontalExerciseInfo"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ex_weight"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:gravity="center"
+                        android:id="@+id/ex_weight" />
+                </LinearLayout>
+
+                <View style="@style/DividerHorizontalExerciseInfo"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ex_rest_time"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:gravity="center"
+                        android:id="@+id/ex_rest" />
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
-
-
+        <View style="@style/DividerHorizontalExerciseInfo"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
