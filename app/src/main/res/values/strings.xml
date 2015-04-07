@@ -15,4 +15,8 @@
     <string name="user_home_title">Welcome!</string>
 
     <string name="content_authority">it.polimi.jaa.mobilefitness</string>
+    <string name="media_route_menu_title">Cast to Screen</string>
+
+    <string name="chromecast_app_id">555D4222</string>
+    <string name="custom_namespace">urn:x-cast:it-polimi.jaa.mobilefitness</string>
 </resources>
