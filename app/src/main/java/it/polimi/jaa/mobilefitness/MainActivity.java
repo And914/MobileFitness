@@ -7,7 +7,6 @@ import android.support.v7.app.MediaRouteActionProvider;
 import android.support.v7.media.MediaControlIntent;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
-import android.support.v7.app.MediaRouteButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
@@ -81,8 +80,7 @@ public class MainActivity extends ActionBarActivity
 
         mMediaRouter = MediaRouter.getInstance(getApplicationContext());
         mMediaRouteSelector = new MediaRouteSelector.Builder()
-                .addControlCategory(CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID)
-                .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+                .addControlCategory(CastMediaControlIntent.categoryForCast(getResources().getString(R.string.chromecast_app_id)))
                 .build();
         mMediaRouterCallback = new MyMediaRouterCallback();
     }
@@ -239,8 +237,7 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    private class ConnectionCallbacks implements
-            GoogleApiClient.ConnectionCallbacks {
+    private class ConnectionCallbacks implements GoogleApiClient.ConnectionCallbacks {
         @Override
         public void onConnected(Bundle connectionHint) {
             Log.d(TAG, "onConnected");
@@ -276,7 +273,7 @@ public class MainActivity extends ActionBarActivity
                     // Launch the receiver app
                     Cast.CastApi
                             .launchApplication(mApiClient,
-                                    getString(R.string.chromecast_app_id), false)
+                                    getString(R.string.chromecast_app_id),false)
                             .setResultCallback(
                                     new ResultCallback<Cast.ApplicationConnectionResult>() {
                                         @Override
