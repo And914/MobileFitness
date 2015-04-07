@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="myPrimaryColor">#FF6EB9B0</color>
-    <color name="myPrimaryDarkColor">#FF37776F</color>
+    <color name="myPrimaryColor">#FF227FF5</color>
+    <color name="myPrimaryDarkColor">#FF1051AB</color>
+    <!-- RED <color name="myPrimaryColor">#FFF1401E</color>
+    <color name="myPrimaryDarkColor">#FFD53417</color>
+     Light BLUE <item name="colorPrimaryDark">#FF37776F</item>
+    <item name="colorPrimary">#FF6EB9B0</item>-->
     <color name="myAccentColor">#3F51B5</color>
     <color name="myDrawerBackground">#F2F2F2</color>
     <color name="myWindowBackground">#DEDEDE</color>

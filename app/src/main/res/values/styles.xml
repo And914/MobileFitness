@@ -4,8 +4,8 @@
     <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"> -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimaryDark">#FF37776F</item>
-        <item name="colorPrimary">#FF6EB9B0</item>
+        <item name="colorPrimaryDark">@color/myPrimaryDarkColor</item>
+        <item name="colorPrimary">@color/myPrimaryColor</item>
         <item name="android:textColorPrimary">#FFF</item>
         <item name="android:textColor">@color/background_floating_material_dark</item>
         <item name="android:editTextColor">#000</item>
@@ -21,7 +21,7 @@
     </style>
 
     <style name="Button">
-        <item name="android:background">#FF6EB9B0</item>
+        <item name="android:background">@color/myPrimaryColor</item>
         <item name="android:textColor">#fff</item>
         <item name="android:textStyle">bold</item>
     </style>

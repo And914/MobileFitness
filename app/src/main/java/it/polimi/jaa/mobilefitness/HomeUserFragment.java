@@ -79,7 +79,7 @@ public class HomeUserFragment extends Fragment {
         String phrase;
         Random random = new Random();
         switch (random.nextInt(7)){
-            case 0: phrase = "The only easy day was YESTERDAY";
+            case 0: phrase = "The only easy day was yesterday";
                 break;
             case 1: phrase = "Go hard or go home";
                 break;
