@@ -1,12 +1,19 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.Random;
+
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by andre on 27/03/15.
@@ -19,6 +26,7 @@ public class HomeUserFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     Button startWodButton;
+    SharedPreferences mSharedPreferences;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -42,12 +50,21 @@ public class HomeUserFragment extends Fragment {
 
         startWodButton = (Button) rootView.findViewById(R.id.button_start_wod);
 
+        //Set title
+        mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
+        TextView userHomeText = (TextView) rootView.findViewById(R.id.homeTextView);
+        userHomeText.setText("Hi " + mSharedPreferences.getString(Utils.PREF_NAME,""));
+
+        //Set phrase
+        TextView homePhraseText = (TextView) rootView.findViewById(R.id.home_phrase);
+        homePhraseText.setText(randomPhrase());
+
 
         //Click Button
         startWodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //call main activity with intent
+                //call wods activity with intent
                 Intent wodsActivityIntent = new Intent(getActivity().getApplicationContext(), WodsActivity.class);
                 startActivity(wodsActivityIntent);
             }
@@ -56,6 +73,30 @@ public class HomeUserFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    private String randomPhrase(){
+        String phrase;
+        Random random = new Random();
+        switch (random.nextInt(7)){
+            case 0: phrase = "The only easy day was YESTERDAY";
+                break;
+            case 1: phrase = "Go hard or go home";
+                break;
+            case 2: phrase = "When it starts to hurt, thats when the set starts";
+                break;
+            case 3: phrase = "Good is not enough if better is possible";
+                break;
+            case 4: phrase = "No pain, no gain!";
+                break;
+            case 5: phrase = "If you’re not first, you’re last";
+                break;
+            case 6: phrase = "Fall down seven times, get up eight";
+                break;
+            default: phrase = "No pain, no gain!";
+        }
+
+        return phrase;
     }
 
 

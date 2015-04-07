@@ -7,28 +7,67 @@
     tools:context=".MainActivity$PlaceholderFragment"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:theme="@style/Title"
-        android:text="@string/user_home_title"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:src="@mipmap/ic_launcher" />
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_wod"
-        android:id="@+id/button_start_wod"
-        style="@style/Button"
-        android:layout_gravity="center_horizontal"
-        android:clickable="true" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/Title"
+            android:text="@string/user_home_title"
+            android:id="@+id/homeTextView"
+            />
+
+    </LinearLayout>
+
+    <View style="@style/Divider"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/PhraseHome"
+            android:text="@string/user_home_title"
+            android:id="@+id/home_phrase"
+            />
+    </LinearLayout>
+
+    <View style="@style/Divider"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_wod"
+            android:id="@+id/button_start_wod"
+            style="@style/Button"
+            android:layout_gravity="center_horizontal"
+            android:clickable="true" />
+    </LinearLayout>
+
 
 </LinearLayout>
