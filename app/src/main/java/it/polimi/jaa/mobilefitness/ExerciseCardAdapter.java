@@ -35,12 +35,63 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         ExerciseInfo ex = exerciseInfoList.get(i);
         exerciseViewHolder.vName.setText(ex.name);
         exerciseViewHolder.vEquipment.setText(ex.equipment);
-        exerciseViewHolder.vRep.setText(ex.rep);
-        exerciseViewHolder.vRest.setText(ex.rest);
-        exerciseViewHolder.vRounds.setText(ex.rounds);
-        exerciseViewHolder.vWeight.setText(ex.weight);
-        exerciseViewHolder.vTime.setText(ex.time);
-        exerciseViewHolder.vImage.setImageResource(ex.image);
+        if(ex.rep.equals("") || ex.rep.equals("null"))
+            exerciseViewHolder.vRep.setText("-");
+        else
+            exerciseViewHolder.vRep.setText(ex.rep);
+
+        if(ex.rest.equals("") || ex.rest.equals("null"))
+            exerciseViewHolder.vRest.setText("-");
+        else
+            exerciseViewHolder.vRest.setText(ex.rest);
+
+        if(ex.rounds.equals("") || ex.rounds.equals("null"))
+            exerciseViewHolder.vRounds.setText("-");
+        else
+            exerciseViewHolder.vRounds.setText(ex.rounds);
+
+        if(ex.weight.equals("") || ex.weight.equals("null"))
+            exerciseViewHolder.vWeight.setText("-");
+        else
+            exerciseViewHolder.vWeight.setText(ex.weight);
+
+        if(ex.time.equals("") || ex.time.equals("null"))
+            exerciseViewHolder.vTime.setText("-");
+        else
+            exerciseViewHolder.vTime.setText(ex.time);
+
+        exerciseViewHolder.vImage.setImageResource(findIcon(ex.image));
+        exerciseViewHolder.vCategory.setImageResource(findCategory(ex.category));
+    }
+
+    private int findIcon(int ex){
+        switch(ex){
+            case 1:
+                return R.drawable.cyclette;
+            case 2:
+                return R.drawable.rowergometer;
+            case 3:
+                return R.drawable.free_weights_icon;
+            case 4:
+                return R.drawable.accessories_icon;
+            case 5:
+                return R.drawable.treadmill;
+            case 6:
+                return R.drawable.step;
+            default:
+                return R.drawable.strength_icon;
+        }
+    }
+
+    private int findCategory(int category){
+        switch (category){
+            case 1:
+                return R.drawable.cardio_icon;
+            case 2:
+                return R.drawable.strength_icon;
+            default:
+                return R.drawable.strength_icon;
+        }
     }
 
     @Override
@@ -62,6 +113,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         TextView vWeight;
         TextView vTime;
         ImageView vImage;
+        ImageView vCategory;
         View view;
 
 
@@ -76,6 +128,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             vWeight = (TextView) v.findViewById(R.id.ex_weight);
             vTime = (TextView) v.findViewById(R.id.ex_time);
             vImage = (ImageView) v.findViewById(R.id.ex_image);
+            vCategory = (ImageView) v.findViewById(R.id.ex_category);
 
             //TODO:gestire click card
             view.setOnClickListener(new View.OnClickListener() {

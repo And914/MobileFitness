@@ -22,7 +22,7 @@ public class WodExerciseInfo extends ExerciseInfo {
     public final String gym_name;
 
     public WodExerciseInfo(int id_wod, int id_exercise, String name_exercise, String name_wod, String equipment, String rounds, String rep, String rest, String weight, String time, int image,int category,String gym_name) {
-        super(name_exercise, equipment, rounds, rep, rest, weight, time, image);
+        super(name_exercise, equipment, rounds, rep, rest, weight, time, image, category);
         this.id_wod = id_wod;
         this.id_exercise = id_exercise;
         this.wod_name = name_wod;

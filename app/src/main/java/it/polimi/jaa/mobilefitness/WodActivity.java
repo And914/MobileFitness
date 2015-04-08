@@ -161,7 +161,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
                 new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
                         GymContract.ExerciseEntry.COLUMN_ROUNDS,GymContract.ExerciseEntry.COLUMN_REPS,GymContract.ExerciseEntry.COLUMN_REST_TIME,
-                        GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID
+                        GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID, GymContract.ExerciseEntry.COLUMN_CATEGORY
                 },
                 GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
                 args ,
