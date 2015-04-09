@@ -26,6 +26,7 @@ public class HomeUserFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     Button startWodButton;
+    Button challengeButton;
     SharedPreferences mSharedPreferences;
 
     /**
@@ -49,6 +50,7 @@ public class HomeUserFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
 
         startWodButton = (Button) rootView.findViewById(R.id.button_start_wod);
+        challengeButton = (Button) rootView.findViewById(R.id.button_challenge);
 
         //Set title
         mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
@@ -60,7 +62,7 @@ public class HomeUserFragment extends Fragment {
         homePhraseText.setText(randomPhrase());
 
 
-        //Click Button
+        //Click Buttons
         startWodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +72,14 @@ public class HomeUserFragment extends Fragment {
             }
         });
 
-
+        challengeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //call wods activity with intent
+                Intent receiverNFCActivityIntent = new Intent(getActivity().getApplicationContext(), ReceiverNFCActivity.class);
+                startActivity(receiverNFCActivityIntent);
+            }
+        });
 
         return rootView;
     }
@@ -83,13 +92,13 @@ public class HomeUserFragment extends Fragment {
                 break;
             case 1: phrase = "Go hard or go home";
                 break;
-            case 2: phrase = "When it starts to hurt, thats when the set starts";
+            case 2: phrase = "When it starts to hurt, that's when the set starts";
                 break;
             case 3: phrase = "Good is not enough if better is possible";
                 break;
             case 4: phrase = "No pain, no gain!";
                 break;
-            case 5: phrase = "If you’re not first, you’re last";
+            case 5: phrase = "If you're not first, you're last";
                 break;
             case 6: phrase = "Fall down seven times, get up eight";
                 break;

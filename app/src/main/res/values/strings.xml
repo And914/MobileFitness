@@ -17,6 +17,8 @@
     <string name="content_authority">it.polimi.jaa.mobilefitness</string>
     <string name="media_route_menu_title">Cast to Screen</string>
 
-    <string name="chromecast_app_id">555D4222</string>
+    <string name="chromecast_app_id">81593202</string>
     <string name="custom_namespace">urn:x-cast:it-polimi.jaa.mobilefitness</string>
+    <string name="challenge_button_text">Challenge your friends!</string>
+    <string name="create_new_challenge">Create new challenge</string>
 </resources>
