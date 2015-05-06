@@ -46,7 +46,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
 
     public static class WodViewHolder extends RecyclerView.ViewHolder {
 
-        int id_wod;
+        String id_wod;
         TextView vName;
         TextView vGym;
 

@@ -27,9 +27,9 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 " );";
 
         final String SQL_CREATE_EXERC_TABLE = "CREATE TABLE " + GymContract.ExerciseEntry.TABLE_NAME + " (" +
-                GymContract.ExerciseEntry.COLUMN_ID + " INTEGER NOT NULL, " +
+                GymContract.ExerciseEntry.COLUMN_ID + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                GymContract.ExerciseEntry.COLUMN_ID_WOD +" INTEGER NOT NULL, " +
+                GymContract.ExerciseEntry.COLUMN_ID_WOD +" TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_NAME_WOD + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_CATEGORY + " INTEGER NOT NULL," +
                 GymContract.ExerciseEntry.COLUMN_GYM_NAME + " TEXT NOT NULL, " +

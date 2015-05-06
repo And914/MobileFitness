@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.ParseObject;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 
 import java.util.List;
 
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
@@ -73,6 +76,22 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
     private void setExercisesInfoFromServer() {
         SharedPreferences mSharedPreferences = getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
+        BackendFunctions.BFGetWods(new CallbackParseObjects() {
+            @Override
+            public void done(List<ParseObject> parseObjects) {
+                if (parseObjects.size() > 0) {
+                    WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(parseObjects));
+                    recyclerView.setAdapter(wodCardAdapter);
+                    saveOnDB(parseObjects);
+                }
+            }
+
+            @Override
+            public void error(int error) {
+
+            }
+        });
+        /*
         String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(Utils.PREF_EMAIL, "");
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -102,10 +121,63 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                     public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
                         Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
                     }
-                });
+                });*/
     }
 
-    private void saveOnDB(JSONArray jsonArray){
+    private void saveOnDB(List<ParseObject> parseObjects){
+
+        final ContentValues contentValues = new ContentValues();
+        //Set all the entry as deleted
+        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,null,null,null);
+        for (final ParseObject wod : parseObjects){
+            BackendFunctions.BFGetExercisesWod(wod.getObjectId(), new CallbackParseObjects() {
+                @Override
+                public void done(List<ParseObject> wodExercises) {
+                    for(ParseObject wodEx: wodExercises){
+                        ParseObject exercise = wodEx.getParseObject(Utils.PARSE_WODSEXERCISES_EXERCISE);
+                        //Get the exercises that matches the ones downloaded
+                        String[] args = {wod.getObjectId(),String.valueOf(exercise.getObjectId())};
+                        Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI_DELETED, null,
+                                GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?", args, null);
+
+                        //Handle error if cursor null
+                        if (null == cursor) {
+                            Log.e(LOG_ACTIVITY,"DATABASE CURSOR NULL");
+                            //Handle when entry already in the sqlite database
+                        } else if (cursor.getCount() >= 1) {
+
+                            getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI_DELETED,null,GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
+                            cursor.close();
+                            //Handle insert when no entry in the database found
+                        } else {
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, wod.getObjectId());
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, exercise.getObjectId());
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, wod.getString(Utils.PARSE_WODS_NAME));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, exercise.getString(Utils.PARSE_EXERCISES_NAME));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, exercise.getString(Utils.PARSE_EXERCISES_EQUIPMENT));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, wodEx.getString(Utils.PARSE_WODSEXERCISES_ROUNDS));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, wodEx.getString(Utils.PARSE_WODSEXERCISES_REPS));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, wod.getParseObject(Utils.PARSE_WODS_GYM).getString(Utils.PARSE_GYMS_NAME));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, wodEx.getString(Utils.PARSE_WODSEXERCISES_REST));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, wodEx.getString(Utils.PARSE_WODSEXERCISES_WEIGHT));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, wodEx.getString(Utils.PARSE_WODSEXERCISES_DURATION));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, exercise.getString(Utils.PARSE_EXERCISES_ICONID));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_CATEGORY, wodEx.getString(Utils.PARSE_WODSEXERCISES_CATEGORY));
+
+                            getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
+                            cursor.close();
+                        }
+                    }
+                }
+
+                @Override
+                public void error(int error) {
+
+                }
+            });
+        }
+
+        /*
         List<WodExerciseInfo> wodExerciseInfos = WodExerciseInfo.createListFromJSON(jsonArray);
         ContentValues contentValues;
 
@@ -151,7 +223,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                 getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
                 cursor.close();
             }
-        }
+        }*/
     }
 
     private void setExercisesFromLocalDB() {

@@ -22,7 +22,22 @@ public class Utils {
     public static final String PARSE_USER_SURNAME = "surname";
 
     public static final String PARSE_WODS_USER = "id_user";
+    public static final String PARSE_WODS_NAME = "wod_name";
+    public static final String PARSE_WODS_GYM = "id_gym";
 
     public static final String PARSE_WODSEXERCISES_WOD = "id_wod";
+    public static final String PARSE_WODSEXERCISES_EXERCISE = "id_exercise";
+    public static final String PARSE_WODSEXERCISES_ROUNDS = "rounds";
+    public static final String PARSE_WODSEXERCISES_REPS = "reps";
+    public static final String PARSE_WODSEXERCISES_REST = "rest_time";
+    public static final String PARSE_WODSEXERCISES_WEIGHT = "weight";
+    public static final String PARSE_WODSEXERCISES_DURATION = "duration";
+    public static final String PARSE_WODSEXERCISES_CATEGORY = "catgory";
 
+
+    public static final String PARSE_EXERCISES_NAME = "name";
+    public static final String PARSE_EXERCISES_EQUIPMENT = "equipment";
+    public static final String PARSE_EXERCISES_ICONID = "icon_id";
+
+    public static final String PARSE_GYMS_NAME = "gym_name";
 }

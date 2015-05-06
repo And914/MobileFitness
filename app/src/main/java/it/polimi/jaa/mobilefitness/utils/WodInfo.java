@@ -2,6 +2,8 @@ package it.polimi.jaa.mobilefitness.utils;
 
 import android.database.Cursor;
 
+import com.parse.ParseObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,9 +19,9 @@ import it.polimi.jaa.mobilefitness.model.GymContract;
 public class WodInfo {
     public final String name;
     public final String gym;
-    public final int id_wod;
+    public final String id_wod;
 
-    public WodInfo(String name, String gym, int id_wod) {
+    public WodInfo(String name, String gym, String id_wod) {
         this.name = name;
         this.gym = gym;
         this.id_wod = id_wod;
@@ -32,16 +34,10 @@ public class WodInfo {
 
         WodInfo wodInfo = (WodInfo) o;
 
-        return (this.id_wod == wodInfo.id_wod) && (this.gym.equals((wodInfo.gym))) && (this.name.equals(wodInfo.name));
+        return (this.id_wod.equals(wodInfo.id_wod)) && (this.gym.equals((wodInfo.gym))) && (this.name.equals(wodInfo.name));
     }
 
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (gym != null ? gym.hashCode() : 0);
-        result = 31 * result + id_wod;
-        return result;
-    }
+
 
     public static List<WodInfo> createListFromCursor(Cursor cursor) {
         ArrayList<WodInfo> mArrayList = new ArrayList<WodInfo>();
@@ -50,7 +46,7 @@ public class WodInfo {
             // The Cursor is now set to the right position
             String wodName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME_WOD));
             String gymName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_GYM_NAME));
-            int wodId = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID_WOD));
+            String wodId = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID_WOD));
             WodInfo wodInfo = new WodInfo(wodName,gymName,wodId);
             if (!mArrayList.contains(wodInfo)){
                 mArrayList.add(wodInfo);
@@ -60,7 +56,7 @@ public class WodInfo {
         return mArrayList;
     }
 
-    public static List<WodInfo> createList(JSONArray jsonExercises) {
+   /* public static List<WodInfo> createList(JSONArray jsonExercises) {
 
         List<WodInfo> result = new ArrayList<WodInfo>();
 
@@ -78,6 +74,17 @@ public class WodInfo {
             }
         }
 
+        return result;
+    }*/
+
+    public static List<WodInfo> createList(List<ParseObject> wodsParseObjects){
+        List<WodInfo> result = new ArrayList<WodInfo>();
+        for(ParseObject wod: wodsParseObjects){
+            WodInfo wi = new WodInfo(wod.getString(Utils.PARSE_WODS_NAME),wod.getParseObject(Utils.PARSE_WODS_GYM).getString(Utils.PARSE_GYMS_NAME),wod.getObjectId());
+            if (!result.contains(wi)){
+                result.add(wi);
+            }
+        }
         return result;
     }
 }
