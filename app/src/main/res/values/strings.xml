@@ -21,4 +21,9 @@
     <string name="custom_namespace">urn:x-cast:it-polimi.jaa.mobilefitness</string>
     <string name="challenge_button_text">Challenge your friends!</string>
     <string name="create_new_challenge">Create new challenge</string>
+
+
+
+    <!-- ERROR -->
+    <string name="e_undefined">Undefinded error</string>
 </resources>
