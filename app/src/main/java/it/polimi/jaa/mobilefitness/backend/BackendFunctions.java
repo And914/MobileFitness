@@ -4,9 +4,11 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.util.Date;
@@ -24,11 +26,26 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
  */
 public class BackendFunctions {
 
+    public static void BFRegisterDevice(final Callback callback){
+        ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+        parseInstallation.put("user",ParseUser.getCurrentUser());
+        parseInstallation.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null){
+                    callback.done();
+                }else {
+                    callback.error(R.string.e_undefined);
+                }
+            }
+        });
+    }
+
     public static void BFLogin(String email, String psw, final Callback callback){
         ParseUser.logInInBackground(email, psw, new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
-                if(parseUser != null)
+                if (parseUser != null)
                     callback.done();
                 else
                     callback.error(R.string.e_undefined);
@@ -80,13 +97,14 @@ public class BackendFunctions {
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> list, ParseException e) {
-                        if(e == null)
+                        if (e == null)
                             callbackParseObjects.done(list);
                         else
                             callbackParseObjects.error(R.string.e_undefined);
                     }
                 });
             }
+
             @Override
             public void error(int error) {
                 callbackParseObjects.error(error);
