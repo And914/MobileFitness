@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MobileFitness</string>
+    <string name="parse_app_id">toc6AuexrofPCKHCwdrtJjSQFqOABn9VR9RYsjue</string>
+    <string name="parse_app_secret">ElCaXe3noyb0Z1ZTLtW8ELKesnBY5hVLqVAXeSuj</string>
 
     <string name="title_section1">Home</string>
     <string name="title_section2">Results</string>

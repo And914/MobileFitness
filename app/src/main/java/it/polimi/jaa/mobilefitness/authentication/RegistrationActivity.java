@@ -1,7 +1,5 @@
 package it.polimi.jaa.mobilefitness.authentication;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,25 +16,20 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.Callback;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
@@ -180,43 +173,30 @@ public class RegistrationActivity extends ActionBarActivity{
     private void registrationQuery(final View view){
         mDialog.show();
 
-        String urlServer = Utils.server_ip + "/users";
+        Date date = null;
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
 
-        // Create a client to perform networking
-        AsyncHttpClient client = new AsyncHttpClient();
-        //client.setProxy("192.168.1.187",80);
-        RequestParams params = new RequestParams();
-        params.put("email", emailText.getText().toString());
-        params.put("password", passwordText.getText().toString());
-        params.put("name", nameText.getText().toString());
-        params.put("surname", surnameText.getText().toString());
-        params.put("weight", weightText.getText().toString());
-        params.put("height", heightText.getText().toString());
-        params.put("birthdate", birthDateText.getText().toString());
-        
+        try {
+            date = format.parse(birthDateText.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        client.post(urlServer, params,  new TextHttpResponseHandler() {
-
+        BackendFunctions.BFRegistration(emailText.getText().toString(), passwordText.getText().toString(), nameText.getText().toString(), surnameText.getText().toString(), date, Integer.parseInt(weightText.getText().toString()), Integer.parseInt(heightText.getText().toString()), new Callback() {
             @Override
-            public void onSuccess(int i, Header[] headers, String response) {
-
-                if(response.equals("success")) {
-                    mDialog.dismiss();
-                    setPreferences();
-                    Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
-                    Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
-                    startActivity(mainActivityIntent);
-                }
+            public void done() {
+                mDialog.dismiss();
+                setPreferences();
+                Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
+                Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
+                startActivity(mainActivityIntent);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
-                if (statusCode == 401) {
-                    mDialog.dismiss();
-                    Log.d("onFailure: ", response);
-                }
+            public void error(int error) {
+                mDialog.dismiss();
+                Log.d("onFailure: ", getString(error));
             }
-
         });
 
         setPreferences();

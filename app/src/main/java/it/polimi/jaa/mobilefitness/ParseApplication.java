@@ -27,6 +27,7 @@ public class ParseApplication extends Application {
         ParseACL defaultACL = new ParseACL();
         defaultACL.setPublicReadAccess(true);
         defaultACL.setPublicWriteAccess(true);
-        ParseACL.setDefaultACL(defaultACL,true);
+        // And the user can read and modify its own objects
+        ParseACL.setDefaultACL(defaultACL, true);
     }
 }

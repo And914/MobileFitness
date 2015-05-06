@@ -36,6 +36,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.ParseAnonymousUtils;
+import com.parse.ParseUser;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
@@ -47,6 +49,8 @@ import java.util.List;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.Callback;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
@@ -57,12 +61,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private static final String LOG_ACTIVITY = "LoginActivity";
 
-    SharedPreferences mSharedPreferences;
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -116,6 +117,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mLoginFormView = findViewById(R.id.login_form);
             mProgressView = findViewById(R.id.login_progress);
         }
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void populateAutoComplete() {
@@ -124,18 +130,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean checkAlreadyLogin(){
         // Access the device's key-value storage
-        mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
-        // Read the user's name,
-        // or an empty string if nothing found
-        String name = mSharedPreferences.getString(Utils.PREF_NAME, "");
-        if (name.length() > 0) {
-            // If the name is valid, display a Toast welcoming them
-            Toast.makeText(this, "Welcome back, " + name + "!", Toast.LENGTH_LONG).show();
-            Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(mainActivityIntent);
-            return true;
+
+        if (ParseAnonymousUtils.isLinked(ParseUser.getCurrentUser())) {
+            // If user is anonymous, send the user to LoginSignupActivity.class
+            return false;
+
+        } else {
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            return !(currentUser == null);
         }
-        return false;
     }
 
     /**
@@ -144,9 +147,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -186,8 +186,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            BackendFunctions.BFLogin(mEmailView.getText().toString(), mPasswordView.getText().toString(), new Callback() {
+                @Override
+                public void done() {
+                    //call main activity with intent
+                    Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainActivityIntent);
+                }
+
+                @Override
+                public void error(int error) {
+                    Log.e(LOG_ACTIVITY, getString(error));
+                }
+            });
         }
     }
 
@@ -289,104 +300,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            final boolean[] login = new boolean[1];
-            // Create a client to perform networking
-            String urlServer = Utils.server_ip + "/users/login";
-            SyncHttpClient client = new SyncHttpClient();
-            //client.setProxy("192.168.1.187",80);
-            RequestParams requestParams = new RequestParams();
-            requestParams.put("email", mEmail);
-            requestParams.put("password", mPassword);
-
-
-            client.post(urlServer, requestParams,
-                    new TextHttpResponseHandler() {
-
-                        @Override
-                        public void onSuccess(int i,Header[] headers, String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-
-                                Log.d(LOG_ACTIVITY, jsonObject.toString());
-                                if(jsonObject.optString("response").equals("success")){
-                                    login[0] = true;
-                                    //restore preferences
-                                    setPreferences(jsonObject);
-
-                                    //call main activity with intent
-                                    Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(mainActivityIntent);
-                                }
-                                else{
-                                    login[0] = false;
-                                    Log.e(LOG_ACTIVITY, jsonObject.optString("response"));
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode,Header[] headers, String response, Throwable throwable)  {
-                            Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
-                            login[0] = false;
-                        }
-            });
-
-
-            return login[0];
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-
-        private void setPreferences(JSONObject jsonObject) throws JSONException {
-            mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor e = mSharedPreferences.edit();
-            e.putString(Utils.PREF_NAME, jsonObject.getString(Utils.PREF_NAME));
-            e.putString(Utils.PREF_BIRTHDATE, jsonObject.getString(Utils.PREF_BIRTHDATE));
-            e.putString(Utils.PREF_EMAIL, jsonObject.getString(Utils.PREF_EMAIL));
-            e.putString(Utils.PREF_HEIGHT, jsonObject.getString(Utils.PREF_HEIGHT));
-            e.putString(Utils.PREF_WEIGHT, jsonObject.getString(Utils.PREF_WEIGHT));
-            e.putString(Utils.PREF_SURNAME, jsonObject.getString(Utils.PREF_SURNAME));
-            e.apply();
-        }
     }
 }
 

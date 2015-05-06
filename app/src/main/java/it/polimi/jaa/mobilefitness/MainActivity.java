@@ -25,6 +25,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 
@@ -149,10 +150,7 @@ public class MainActivity extends ActionBarActivity
             return true;
         }
         else if (id == R.id.action_logout){
-            mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor e = mSharedPreferences.edit();
-            e.clear();
-            e.apply();
+            ParseUser.logOut();
             Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginActivityIntent);
         }
