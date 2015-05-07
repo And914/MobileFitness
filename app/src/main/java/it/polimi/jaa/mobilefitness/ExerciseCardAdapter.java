@@ -35,30 +35,37 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         ExerciseInfo ex = exerciseInfoList.get(i);
         exerciseViewHolder.vName.setText(ex.name);
         exerciseViewHolder.vEquipment.setText(ex.equipment);
-        if(ex.rep.equals("") || ex.rep.equals("null"))
+        if(ex.rep.equals("0"))
             exerciseViewHolder.vRep.setText("-");
         else
             exerciseViewHolder.vRep.setText(ex.rep);
 
-        if(ex.rest.equals("") || ex.rest.equals("null"))
+        if(ex.rest.equals("0"))
             exerciseViewHolder.vRest.setText("-");
         else
             exerciseViewHolder.vRest.setText(ex.rest);
 
-        if(ex.rounds.equals("") || ex.rounds.equals("null"))
+        if(ex.rounds.equals("0"))
             exerciseViewHolder.vRounds.setText("-");
         else
             exerciseViewHolder.vRounds.setText(ex.rounds);
 
-        if(ex.weight.equals("") || ex.weight.equals("null"))
+        if(ex.weight.equals("0"))
             exerciseViewHolder.vWeight.setText("-");
         else
             exerciseViewHolder.vWeight.setText(ex.weight);
 
+        if(ex.time.equals("0"))
+            exerciseViewHolder.vTime.setText("-");
+        else
+            exerciseViewHolder.vTime.setText(ex.time);
+
+        /*
         if(ex.time.equals("") || ex.time.equals("null"))
             exerciseViewHolder.vTime.setText("-");
         else
             exerciseViewHolder.vTime.setText(ex.time);
+            */
 
         exerciseViewHolder.vImage.setImageResource(findIcon(ex.image));
         exerciseViewHolder.vCategory.setImageResource(findCategory(ex.category));

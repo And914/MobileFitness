@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import org.apache.http.Header;
@@ -145,6 +147,11 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                 public void done(List<ParseObject> wodExercises) {
                     for(ParseObject wodEx: wodExercises){
                         ParseObject exercise = wodEx.getParseObject(Utils.PARSE_WODSEXERCISES_EXERCISE);
+                        try {
+                            exercise.fetchIfNeeded();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         //Get the exercises that matches the ones downloaded
                         String[] args = {wod.getObjectId(),String.valueOf(exercise.getObjectId())};
                         Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI_DELETED, null,
@@ -160,19 +167,25 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                             cursor.close();
                             //Handle insert when no entry in the database found
                         } else {
+                            ParseObject gym = wod.getParseObject(Utils.PARSE_WODS_GYM);
+                            try {
+                                gym.fetchIfNeeded();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, wod.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, exercise.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, wod.getString(Utils.PARSE_WODS_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, exercise.getString(Utils.PARSE_EXERCISES_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, exercise.getString(Utils.PARSE_EXERCISES_EQUIPMENT));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, wodEx.getString(Utils.PARSE_WODSEXERCISES_ROUNDS));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, wodEx.getString(Utils.PARSE_WODSEXERCISES_REPS));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, wod.getParseObject(Utils.PARSE_WODS_GYM).getString(Utils.PARSE_GYMS_NAME));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, wodEx.getString(Utils.PARSE_WODSEXERCISES_REST));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, wodEx.getString(Utils.PARSE_WODSEXERCISES_WEIGHT));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, wodEx.getString(Utils.PARSE_WODSEXERCISES_DURATION));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, exercise.getString(Utils.PARSE_EXERCISES_ICONID));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_CATEGORY, wodEx.getString(Utils.PARSE_WODSEXERCISES_CATEGORY));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_ROUNDS));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_REPS));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, gym.getString(Utils.PARSE_GYMS_NAME));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, wodEx.getInt(Utils.PARSE_WODSEXERCISES_REST));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, wodEx.getInt(Utils.PARSE_WODSEXERCISES_WEIGHT));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, wodEx.getInt(Utils.PARSE_WODSEXERCISES_DURATION));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, exercise.getInt(Utils.PARSE_EXERCISES_ICONID));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_CATEGORY, wodEx.getInt(Utils.PARSE_WODSEXERCISES_CATEGORY));
 
                             getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
                             cursor.close();

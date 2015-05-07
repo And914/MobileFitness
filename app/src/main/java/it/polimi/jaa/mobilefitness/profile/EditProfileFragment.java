@@ -20,11 +20,16 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.apache.http.Header;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import it.polimi.jaa.mobilefitness.R;
@@ -79,14 +84,13 @@ public class EditProfileFragment extends Fragment {
                 mDialog.show();
                 Boolean valid = true;
                 //CHECK INPUT
-                if(editTextProfile.getText().toString().length()==0) {
+                if (editTextProfile.getText().toString().length() == 0) {
                     editTextProfile.setError(getString(R.string.error_field_required));
                     valid = false;
                 }
 
 
-
-                if(valid){
+                if (valid) {
                     mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
                     //save old value
@@ -116,7 +120,58 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void sendNewProfile(){
-        String urlServer = Utils.server_ip + "/users";
+
+        ParseUser user = ParseUser.getCurrentUser();
+
+        if(!user.getString(Utils.PARSE_USER_NAME).equals(mSharedPreferences.getString(Utils.PREF_NAME, "")))
+            user.put(Utils.PARSE_USER_NAME,mSharedPreferences.getString(Utils.PREF_NAME, ""));
+        if(!user.getString(Utils.PARSE_USER_SURNAME).equals(mSharedPreferences.getString(Utils.PREF_SURNAME, "")))
+            user.put(Utils.PARSE_USER_SURNAME,mSharedPreferences.getString(Utils.PREF_SURNAME, ""));
+        if(user.getInt(Utils.PARSE_USER_WEIGHT) != Integer.parseInt(mSharedPreferences.getString(Utils.PREF_WEIGHT, "")))
+            user.put(Utils.PARSE_USER_WEIGHT,  Integer.parseInt(mSharedPreferences.getString(Utils.PREF_WEIGHT, "")));
+        if(user.getInt(Utils.PARSE_USER_HEIGHT) != Integer.parseInt(mSharedPreferences.getString(Utils.PREF_HEIGHT, "")))
+            user.put(Utils.PARSE_USER_HEIGHT, Integer.parseInt(mSharedPreferences.getString(Utils.PREF_HEIGHT, "")));
+        if(!user.getDate(Utils.PARSE_USER_BIRTHDATE).toString().equals(mSharedPreferences.getString(Utils.PREF_BIRTHDATE,""))) {
+            Date date = null;
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+
+            try {
+                date = format.parse(mSharedPreferences.getString(Utils.PREF_BIRTHDATE, ""));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            user.put(Utils.PARSE_USER_BIRTHDATE, date);
+        }
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(com.parse.ParseException e) {
+                if (e == null) {
+                    mDialog.dismiss();
+                    Toast.makeText(getActivity(), "Updated", Toast.LENGTH_LONG).show();
+                    //remove soft keyboard
+                    View focus = getActivity().getCurrentFocus();
+                    if (focus != null) {
+                        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+
+                    getFragmentManager().popBackStack();
+                }
+                else {
+                    mDialog.dismiss();
+                    Toast.makeText(getActivity(),"Error on update", Toast.LENGTH_LONG).show();
+
+                    //Rollback
+                    mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor edit = mSharedPreferences.edit();
+                    edit.putString(getArguments().getString("value"), oldValue);
+                    edit.apply();
+                }
+            }
+        });
+
+
+        /*String urlServer = Utils.server_ip + "/users";
 
         mSharedPreferences = getActivity().getSharedPreferences(Utils.PREFS, Context.MODE_PRIVATE);
 
@@ -163,7 +218,7 @@ public class EditProfileFragment extends Fragment {
                 edit.apply();
             }
 
-        });
+        });*/
     }
 
     private void setDateTimeField() {

@@ -2,6 +2,7 @@ package it.polimi.jaa.mobilefitness.utils;
 
 import android.database.Cursor;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import org.json.JSONArray;
@@ -80,7 +81,13 @@ public class WodInfo {
     public static List<WodInfo> createList(List<ParseObject> wodsParseObjects){
         List<WodInfo> result = new ArrayList<WodInfo>();
         for(ParseObject wod: wodsParseObjects){
-            WodInfo wi = new WodInfo(wod.getString(Utils.PARSE_WODS_NAME),wod.getParseObject(Utils.PARSE_WODS_GYM).getString(Utils.PARSE_GYMS_NAME),wod.getObjectId());
+            ParseObject gym = wod.getParseObject(Utils.PARSE_WODS_GYM);
+            try {
+                gym.fetchIfNeeded();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            WodInfo wi = new WodInfo(wod.getString(Utils.PARSE_WODS_NAME),gym.getString(Utils.PARSE_GYMS_NAME),wod.getObjectId());
             if (!result.contains(wi)){
                 result.add(wi);
             }

@@ -187,22 +187,28 @@ public class RegistrationActivity extends ActionBarActivity{
             public void done() {
                 mDialog.dismiss();
                 setPreferences();
-                Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
-                Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
-                startActivity(mainActivityIntent);
+                BackendFunctions.BFRegisterDevice(new Callback() {
+                    @Override
+                    public void done() {
+                        Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
+                        Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
+                        startActivity(mainActivityIntent);
+                    }
+
+                    @Override
+                    public void error(int error) {
+                        Toast.makeText(view.getContext(),getString(error), Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
 
             @Override
             public void error(int error) {
                 mDialog.dismiss();
-                Log.d("onFailure: ", getString(error));
+                Toast.makeText(view.getContext(),getString(error), Toast.LENGTH_LONG).show();
             }
         });
-
-        setPreferences();
-        Toast.makeText(view.getContext(), "Registration Successful " + nameText.getText().toString(), Toast.LENGTH_LONG).show();
-        Intent mainActivityIntent = new Intent(view.getContext(), MainActivity.class);
-        startActivity(mainActivityIntent);
 
     }
 

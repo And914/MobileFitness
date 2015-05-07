@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -39,11 +38,14 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.ParseAnonymousUtils;
 import com.parse.ParseUser;
 
+
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    SharedPreferences mSharedPreferences;
 
 
 
@@ -190,8 +194,20 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 @Override
                 public void done() {
                     //call main activity with intent
-                    Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainActivityIntent);
+                    setPreferences();
+                    BackendFunctions.BFRegisterDevice(new Callback() {
+                        @Override
+                        public void done() {
+                            Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(mainActivityIntent);
+                        }
+
+                        @Override
+                        public void error(int error) {
+                            Toast.makeText(getApplicationContext(),getString(error), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
 
                 @Override
@@ -300,6 +316,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    private void setPreferences(){
+        // Access the device's key-value storage
+        mSharedPreferences = getSharedPreferences(Utils.PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor e = mSharedPreferences.edit();
+        DateFormat df = new SimpleDateFormat("dd - MM - yyyy");
+        e.putString(Utils.PREF_NAME, ParseUser.getCurrentUser().getString(Utils.PARSE_USER_NAME));
+        e.putString(Utils.PREF_BIRTHDATE, df.format(ParseUser.getCurrentUser().getDate(Utils.PARSE_USER_BIRTHDATE)));
+        e.putString(Utils.PREF_EMAIL, ParseUser.getCurrentUser().getEmail());
+        e.putString(Utils.PREF_HEIGHT, String.valueOf(ParseUser.getCurrentUser().getInt(Utils.PARSE_USER_HEIGHT)));
+        e.putString(Utils.PREF_WEIGHT, String.valueOf(ParseUser.getCurrentUser().getInt(Utils.PARSE_USER_WEIGHT)));
+        e.putString(Utils.PREF_SURNAME, ParseUser.getCurrentUser().getString(Utils.PARSE_USER_SURNAME));
+
+        e.apply();
+
     }
 }
 

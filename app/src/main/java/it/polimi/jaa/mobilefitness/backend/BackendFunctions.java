@@ -76,7 +76,7 @@ public class BackendFunctions {
 
     public static void BFGetWods(final CallbackParseObjects callbackParseObjects){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("wods");
-        query.whereEqualTo(Utils.PARSE_WODS_USER, ParseUser.getCurrentUser().getObjectId());
+        query.whereEqualTo(Utils.PARSE_WODS_USER, ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -93,7 +93,7 @@ public class BackendFunctions {
             @Override
             public void done(ParseObject parseObject) {
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("wods_exercises");
-                query.whereEqualTo(Utils.PARSE_WODSEXERCISES_WOD, parseObject.getObjectId());
+                query.whereEqualTo(Utils.PARSE_WODSEXERCISES_WOD, parseObject);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> list, ParseException e) {
