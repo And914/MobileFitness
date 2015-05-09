@@ -140,7 +140,8 @@ public class EditProfileFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            user.put(Utils.PARSE_USER_BIRTHDATE, date);
+            if(date != null)
+                user.put(Utils.PARSE_USER_BIRTHDATE, date);
         }
         user.saveInBackground(new SaveCallback() {
             @Override

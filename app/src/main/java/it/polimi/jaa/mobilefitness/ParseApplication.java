@@ -3,9 +3,11 @@ package it.polimi.jaa.mobilefitness;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseCrashReporting;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 /**
@@ -29,5 +31,8 @@ public class ParseApplication extends Application {
         defaultACL.setPublicWriteAccess(true);
         // And the user can read and modify its own objects
         ParseACL.setDefaultACL(defaultACL, true);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        ParseFacebookUtils.initialize(getApplicationContext());
     }
 }

@@ -25,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.ProfilePictureView;
+import com.parse.ParseUser;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -58,9 +61,18 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
         if(mSharedPreferences.getString(Utils.PREF_AVATAR,"").length()>0){
             setImage(Uri.parse(mSharedPreferences.getString(Utils.PREF_AVATAR,"")));
         }
+        else if(ParseUser.getCurrentUser().has("fbId")){
+            ProfilePictureView profilePictureView = (ProfilePictureView) view.findViewById(R.id.friend_profile_image_large);
+            profilePictureView.setProfileId(ParseUser.getCurrentUser().getString("fbId"));
+            profilePictureView.setPresetSize(ProfilePictureView.LARGE);
+
+            ImageView imageView = (ImageView) getActivity().findViewById(R.id.img_profile);
+
+        }
         else {
             ImageView imageView = (ImageView) getActivity().findViewById(R.id.img_profile);
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+            imageView.setVisibility(View.VISIBLE);
         }
         super.onViewCreated(view, savedInstanceState);
 

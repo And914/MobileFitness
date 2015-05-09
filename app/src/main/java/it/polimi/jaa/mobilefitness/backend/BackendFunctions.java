@@ -1,5 +1,9 @@
 package it.polimi.jaa.mobilefitness.backend;
 
+import android.text.format.DateUtils;
+import android.text.format.Time;
+import android.util.Log;
+
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -10,6 +14,9 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
@@ -51,6 +58,41 @@ public class BackendFunctions {
                     callback.error(R.string.e_undefined);
             }
         });
+    }
+
+    public static void BFSaveFacebookUser(JSONObject userInfo, final Callback callback){
+        try {
+            ParseUser parseUser = ParseUser.getCurrentUser();
+            parseUser.setUsername(userInfo.getString("name"));
+            String[] name = userInfo.getString("name").split(" ");
+            parseUser.put(Utils.PARSE_USER_HEIGHT, 0);
+            parseUser.put(Utils.PARSE_USER_WEIGHT,0);
+            parseUser.put(Utils.PARSE_USER_HEIGHT,0);
+            parseUser.put(Utils.PARSE_USER_NAME,name[0] );
+            parseUser.put(Utils.PARSE_USER_SURNAME, name[1]);
+
+            parseUser.put(Utils.PARSE_USER_BIRTHDATE, new Date());
+            if(userInfo.has("email")){
+                if(!userInfo.getString("email").isEmpty()){
+                    parseUser.setEmail(userInfo.getString("email"));
+                }
+            }
+            parseUser.put("fbId", userInfo.getString("id"));
+            parseUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null){
+                        callback.done();
+                    } else {
+                        callback.error(R.string.e_undefined);
+                        Log.e("PARSE",e.toString());
+                    }
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void BFRegistration(String email, String psw, String name, String surname, Date birthdate,int height, int weight, final Callback callback){

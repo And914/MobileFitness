@@ -3,6 +3,8 @@
     <string name="parse_app_id">toc6AuexrofPCKHCwdrtJjSQFqOABn9VR9RYsjue</string>
     <string name="parse_app_secret">ElCaXe3noyb0Z1ZTLtW8ELKesnBY5hVLqVAXeSuj</string>
 
+    <string name="facebook_app_id">753721981408245</string>
+
     <string name="title_section1">Home</string>
     <string name="title_section2">Results</string>
     <string name="title_section3">Profile</string>
@@ -28,4 +30,5 @@
 
     <!-- ERROR -->
     <string name="e_undefined">Undefinded error</string>
+    <string name="action_sign_in_facebook">LOGIN WITH FACEBOOK</string>
 </resources>

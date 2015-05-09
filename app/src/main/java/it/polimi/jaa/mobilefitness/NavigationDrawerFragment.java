@@ -33,6 +33,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.login.widget.ProfilePictureView;
+import com.parse.ParseUser;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -99,6 +102,8 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
+
+
     }
 
 
@@ -256,6 +261,16 @@ public class NavigationDrawerFragment extends Fragment {
                 loadImagefromGallery(view);
             }
         });
+
+        if(ParseUser.getCurrentUser().has("fbId")){
+            ProfilePictureView profilePictureView = (ProfilePictureView) mDrawerLayoutView.findViewById(R.id.friend_profile_image);
+            profilePictureView.setProfileId(ParseUser.getCurrentUser().getString("fbId"));
+
+            ImageView imageFake = (ImageView) mDrawerLayoutView.findViewById(R.id.imgAvatar);
+            imageFake.setImageAlpha(0);
+
+        }
+
         return mDrawerLayoutView;
     }
 

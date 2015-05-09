@@ -30,12 +30,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.LogInCallback;
 import com.parse.ParseAnonymousUtils;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.parse.ParseUser;
 
 
@@ -47,6 +54,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.MainActivity;
@@ -127,6 +135,120 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             finish();
         }
     }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Button facebookLoginButton = (Button) findViewById(R.id.login_button);
+        facebookLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<String> permissions = Arrays.asList("public_profile", "user_friends", "email");
+                ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this, permissions, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException err) {
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+
+                            AccessToken.setCurrentAccessToken(AccessToken.getCurrentAccessToken());
+
+                            GraphRequest request = GraphRequest.newMeRequest(
+                                    AccessToken.getCurrentAccessToken(),
+                                    new GraphRequest.GraphJSONObjectCallback() {
+                                        @Override
+                                        public void onCompleted(
+                                                JSONObject object,
+                                                GraphResponse response) {
+                                            BackendFunctions.BFSaveFacebookUser(object, new Callback() {
+
+                                                @Override
+                                                public void done() {
+                                                    Log.d("FACEBOOK", "Login Success");
+                                                    setPreferences();
+                                                }
+
+                                                @Override
+                                                public void error(int error) {
+                                                    Log.d("FACEBOOK", getString(error));
+                                                }
+                                            });
+                                        }
+                                    });
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,email");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            LoginActivity.this.finish();
+
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            AccessToken.setCurrentAccessToken(AccessToken.getCurrentAccessToken());
+
+                            GraphRequest request = GraphRequest.newMeRequest(
+                                    AccessToken.getCurrentAccessToken(),
+                                    new GraphRequest.GraphJSONObjectCallback() {
+                                        @Override
+                                        public void onCompleted(
+                                                JSONObject object,
+                                                GraphResponse response) {
+                                            BackendFunctions.BFSaveFacebookUser(object, new Callback() {
+
+                                                @Override
+                                                public void done() {
+                                                    Log.d("FACEBOOK", "Login Success");
+                                                    setPreferences();
+                                                }
+
+                                                @Override
+                                                public void error(int error) {
+                                                    Log.d("FACEBOOK", getString(error));
+                                                }
+                                            });
+                                        }
+                                    });
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,email");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+
+                            BackendFunctions.BFRegisterDevice(new Callback() {
+                                @Override
+                                public void done() {
+                                    Log.d("PARSE", "Device Registration Successful");
+                                }
+
+                                @Override
+                                public void error(int error) {
+                                    Log.d("PARSE", getString(error));
+                                }
+                            });
+
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            LoginActivity.this.finish();
+
+                        }
+                    }
+                });
+
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);

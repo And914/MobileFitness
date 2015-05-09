@@ -13,12 +13,20 @@
             android:scrollbars="vertical">
 
             <ImageView
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/img_profile"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
+                android:visibility="invisible"
                 />
+
+            <com.facebook.login.widget.ProfilePictureView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:scaleType="fitCenter"
+                android:id="@+id/friend_profile_image_large" />
 
 
             <LinearLayout

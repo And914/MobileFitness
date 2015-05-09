@@ -29,6 +29,17 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
 
+            <com.facebook.login.widget.ProfilePictureView
+                android:layout_width="64dp"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:gravity="start"
+
+                android:scaleType="fitCenter"
+                android:id="@+id/friend_profile_image"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"

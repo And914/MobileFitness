@@ -26,6 +26,8 @@
             android:name ="com.parse.CLIENT_KEY"
             android:value="@string/parse_app_secret"/>
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -88,6 +90,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".authentication.LoginActivity"/>
         </activity>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" />
 
         <provider
             android:authorities="@string/content_authority"
