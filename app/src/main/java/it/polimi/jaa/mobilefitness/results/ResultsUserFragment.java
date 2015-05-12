@@ -37,14 +37,14 @@ public class ResultsUserFragment extends Fragment {
 
 
         //TODO:da togliere e mettere esericizi presi da db
-        ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(createList(10));
-        recyclerView.setAdapter(exerciseCardAdapter);
+        //ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(createList(10));
+        //recyclerView.setAdapter(exerciseCardAdapter);
 
         return rootView;
     }
 
     //TODO:togliere!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private List<ExerciseInfo> createList(int size) {
+    /*private List<ExerciseInfo> createList(int size) {
 
         List<ExerciseInfo> result = new ArrayList<>();
         for (int i=1; i <= size; i++) {
@@ -55,5 +55,5 @@ public class ResultsUserFragment extends Fragment {
         }
 
         return result;
-    }
+    }*/
 }

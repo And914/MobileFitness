@@ -53,9 +53,11 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
  */
 public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    RecyclerView recyclerView;
-    SwipeRefreshLayout swipeRefreshLayout;
-    String idWod;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private String idWod;
+    private ExerciseCardAdapter exerciseCardAdapter;
+    private List<ExerciseInfo> exerciseCardList;
 
     private PlaceEventListener placeEventListener;
     private CommunicationListener communicationListener;
@@ -74,6 +76,8 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wod);
 
+        idWod = getIntent().getExtras().getString("id_wod");
+
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_wod);
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -90,7 +94,37 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                     @Override
                     public void done(List<ParseObject> parseObjects) {
                         for (ParseObject parseObject : parseObjects) {
+                            ParseObject equipment = parseObject.getParseObject(Utils.PARSE_GYMSBEACONS_EQUIPMENT);
+                            try {
+                                equipment.fetchIfNeeded();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                             beaconsList.add(parseObject.getString(Utils.PARSE_GYMSBEACONS_BEACON));
+
+                            String[] args = {String.valueOf(idWod)};
+                            Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
+                                    new String[]{GymContract.ExerciseEntry.COLUMN_ID,GymContract.ExerciseEntry.COLUMN_EQUIPMENT},
+                                    GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
+                                    args ,
+                                    null
+                            );
+
+                            cursor.moveToFirst();
+                            Boolean present = false;
+                            String exerciseId = "";
+                            while(!cursor.isAfterLast()) {
+                                if (equipment.getString(Utils.PARSE_EQUIPMENT_NAME).equals(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_EQUIPMENT)))) {
+                                    present = true;
+                                    exerciseId = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID));
+                                    break;
+                                }
+                            }
+                            cursor.close();
+
+                            if (present) {
+                                saveBeaconsOnDB(exerciseId,equipment.getString(Utils.PARSE_EQUIPMENT_NAME),parseObject.getString(Utils.PARSE_GYMSBEACONS_BEACON));
+                            }
                         }
 
                     }
@@ -169,6 +203,27 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                     Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                     vibrator.vibrate(750);
                     beaconEntered = true;
+                    int i = 0;
+
+                    String[] args = {sighting.getBeacon().getIdentifier()};
+                    Cursor cursor = getContentResolver().query(GymContract.BeaconEntry.CONTENT_URI,
+                            new String[]{GymContract.BeaconEntry.COLUMN_ID_EXERCISE},
+                            GymContract.BeaconEntry.COLUMN_ID_BEACON + " = ?",
+                            args ,
+                            null
+                    );
+                    cursor.moveToFirst();
+                    String idExercise = cursor.getString(cursor.getColumnIndex(GymContract.BeaconEntry.COLUMN_ID_EXERCISE));
+                    for(ExerciseInfo ei : exerciseCardList) {
+                        if (ei.id.equals(idExercise)) {
+                            break;
+                        }
+                        i++;
+                    }
+                    cursor.close();
+
+                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
+                    viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -199,7 +254,8 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 setExercisesInfoFromServer();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -215,7 +271,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                 if (parseObjects.size() > 0) {
                     //WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(parseObjects));
                     //recyclerView.setAdapter(wodCardAdapter);
-                    saveOnDB(parseObjects);
+                    saveExercisesOnDB(parseObjects);
 
                 }
             }
@@ -227,11 +283,11 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         });
     }
 
-    private void saveOnDB(List<ParseObject> parseObjects){
+    private void saveExercisesOnDB(List<ParseObject> parseObjects){
 
         final ContentValues contentValues = new ContentValues();
         //Set all the entry as deleted
-        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,null,null,null);
+        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI, null, null, null);
         for (final ParseObject wod : parseObjects){
             BackendFunctions.BFGetExercisesWod(wod.getObjectId(), new CallbackParseObjects() {
                 @Override
@@ -293,12 +349,31 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         }
     }
 
+    private void saveBeaconsOnDB(String exerciseId, String equipment, String beaconId){
+
+        final ContentValues contentValues = new ContentValues();
+        //Set all the entry as deleted
+        String[] args = {beaconId};
+
+        Cursor cursor = getContentResolver().query(GymContract.BeaconEntry.CONTENT_URI, null,
+                GymContract.BeaconEntry.COLUMN_ID_BEACON + "= ?", args, null);
+
+        contentValues.put(GymContract.BeaconEntry.COLUMN_ID_EXERCISE, exerciseId);
+        contentValues.put(GymContract.BeaconEntry.COLUMN_EQUIPMENT, equipment);
+        contentValues.put(GymContract.BeaconEntry.COLUMN_ID_BEACON, beaconId);
+
+        if(cursor.getCount()==0){
+            getContentResolver().insert(GymContract.BeaconEntry.CONTENT_URI, contentValues);
+        }
+
+    }
+
     private void setExercisesFromLocalDB() {
-        idWod = getIntent().getExtras().getString("id_wod");
+
 
         String[] args = {String.valueOf(idWod)};
         Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
+                new String[]{GymContract.ExerciseEntry.COLUMN_ID, GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
                         GymContract.ExerciseEntry.COLUMN_ROUNDS,GymContract.ExerciseEntry.COLUMN_REPS,GymContract.ExerciseEntry.COLUMN_REST_TIME,
                         GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID, GymContract.ExerciseEntry.COLUMN_CATEGORY
                 },
@@ -307,8 +382,11 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                 null
         );
 
-        ExerciseCardAdapter exerciseCardAdapter = new ExerciseCardAdapter(ExerciseInfo.createListFromCursor(cursor));
+        exerciseCardList = ExerciseInfo.createListFromCursor(cursor);
+        exerciseCardAdapter = new ExerciseCardAdapter(exerciseCardList);
         cursor.close();
         recyclerView.setAdapter(exerciseCardAdapter);
     }
+
+
 }

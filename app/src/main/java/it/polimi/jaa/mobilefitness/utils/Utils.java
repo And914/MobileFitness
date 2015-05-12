@@ -45,6 +45,7 @@ public class Utils {
 
     public static final String PARSE_GYMSBEACONS_GYM = "id_gym";
     public static final String PARSE_GYMSBEACONS_BEACON = "id_beacon";
+    public static final String PARSE_GYMSBEACONS_EQUIPMENT = "id_equipment";
 
     public static final String PARSE_USERSGYMS_USER = "id_user";
     public static final String PARSE_USERSGYMS_GYM = "id_gym";
