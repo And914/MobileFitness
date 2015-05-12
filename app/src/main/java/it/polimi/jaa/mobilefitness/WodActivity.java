@@ -7,12 +7,24 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.gimbal.android.BeaconEventListener;
+import com.gimbal.android.BeaconManager;
+import com.gimbal.android.BeaconSighting;
+import com.gimbal.android.Communication;
+import com.gimbal.android.CommunicationListener;
+import com.gimbal.android.CommunicationManager;
+import com.gimbal.android.Gimbal;
+import com.gimbal.android.PlaceEventListener;
+import com.gimbal.android.PlaceManager;
+import com.gimbal.android.Push;
+import com.gimbal.android.Visit;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.ParseException;
@@ -22,9 +34,13 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObject;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
@@ -40,6 +56,14 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
     String idWod;
+
+    private PlaceEventListener placeEventListener;
+    private CommunicationListener communicationListener;
+    private BeaconEventListener beaconSightingListener;
+    private BeaconManager beaconManager;
+    private Boolean beaconEntered = false;
+    final List<String> beaconsList = new ArrayList<>();
+
     private static final String LOG_ACTIVITY = "WodFragment";
 
     public WodActivity() {
@@ -59,7 +83,115 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        BackendFunctions.BFGetGym(new CallbackParseObject() {
+            @Override
+            public void done(final ParseObject parseObject) {
+                BackendFunctions.BFGetGymBeacons(parseObject, new CallbackParseObjects() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects) {
+                        for (ParseObject parseObject : parseObjects) {
+                            beaconsList.add(parseObject.getString(Utils.PARSE_GYMSBEACONS_BEACON));
+                        }
+
+                    }
+
+                    @Override
+                    public void error(int error) {
+                        Log.e("app", getString(error));
+                    }
+                });
+            }
+
+            @Override
+            public void error(int error) {
+                Log.e("app", getString(error));
+            }
+        });
+
         setExercisesFromLocalDB();
+
+        placeEventListener = new PlaceEventListener() {
+            @Override
+            public void onVisitStart(Visit visit) {
+                // This will be invoked when a place is entered. Example below shows a simple log upon enter
+                Log.i("Info:", "Enter: " + visit.getPlace().getName() + ", at: " + new Date(visit.getArrivalTimeInMillis()));
+            }
+
+            @Override
+            public void onVisitEnd(Visit visit) {
+                // This will be invoked when a place is exited. Example below shows a simple log upon exit
+                Log.i("Info:", "Exit: " + visit.getPlace().getName() + ", at: " + new Date(visit.getDepartureTimeInMillis()));
+            }
+        };
+        PlaceManager.getInstance().addListener(placeEventListener);
+
+
+        communicationListener = new CommunicationListener() {
+            @Override
+            public Collection<Communication> presentNotificationForCommunications(Collection<Communication> communications, Visit visit) {
+                for (Communication comm : communications) {
+                    Log.i("INFO", "Place Communication: " + visit.getPlace().getName() + ", message: " + comm.getTitle());
+                }
+                //allow Gimbal to show the notification for all communications
+                return communications;
+            }
+
+            @Override
+            public Collection<Communication> presentNotificationForCommunications(Collection<Communication> communications, Push push) {
+                for (Communication comm : communications) {
+                    Log.i("INFO", "Received a Push Communication with message: " + comm.getTitle());
+                }
+                //allow Gimbal to show the notification for all communications
+                return communications;
+            }
+
+            @Override
+            public void onNotificationClicked(List<Communication> communications) {
+                Log.i("INFO", "Notification was clicked on");
+            }
+        };
+        CommunicationManager.getInstance().addListener(communicationListener);
+
+        beaconSightingListener = new BeaconEventListener() {
+
+            @Override
+            public void onBeaconSighting(BeaconSighting sighting) {
+
+
+                if (beaconsList.contains(sighting.getBeacon().getIdentifier())) {
+                    handleBeaconEnter(sighting);
+
+                }
+            }
+
+            private void handleBeaconEnter(BeaconSighting sighting) {
+                if (sighting.getRSSI() > -40 && !beaconEntered) {
+                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(750);
+                    beaconEntered = true;
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            beaconEntered = false;
+                        }
+                    });
+                    thread.start();
+                }
+            }
+
+
+        };
+        beaconManager = new BeaconManager();
+        beaconManager.addListener(beaconSightingListener);
+
+        PlaceManager.getInstance().startMonitoring();
+        beaconManager.startListening();
+        CommunicationManager.getInstance().startReceivingCommunications();
 
     }
 
@@ -93,37 +225,6 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
 
             }
         });
-        /*
-        String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(Utils.PREF_EMAIL, "");
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get(urlServer,
-                new TextHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int i, Header[] headers, String response) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-
-                            Log.d(LOG_ACTIVITY, jsonArray.toString());
-                            if (jsonArray.length() > 0) {
-
-                                saveOnDB(jsonArray);
-                                setExercisesFromLocalDB();
-
-                            } else {
-                                Log.e(LOG_ACTIVITY, jsonArray.toString());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
-                        Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
-                    }
-                });*/
     }
 
     private void saveOnDB(List<ParseObject> parseObjects){
@@ -190,54 +291,6 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                 }
             });
         }
-
-        /*
-        List<WodExerciseInfo> wodExerciseInfos = WodExerciseInfo.createListFromJSON(jsonArray);
-        ContentValues contentValues;
-
-        //Set all the entry as deleted
-        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,null,null,null);
-
-
-        for(WodExerciseInfo we: wodExerciseInfos){
-
-            //Get the exercises that matches the ones downloaded
-            String[] args = {String.valueOf(we.id_wod),String.valueOf(we.id_exercise)};
-            Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI_DELETED, null,
-                    GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?", args, null);
-
-            //Handle error if cursor null
-            if (null == cursor) {
-                Log.e(LOG_ACTIVITY,"DATABASE CURSOR NULL");
-
-                //Handle when entry already in the sqlite database
-            } else if (cursor.getCount() >= 1) {
-
-                getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI_DELETED,null,GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
-                cursor.close();
-
-                //Handle insert when no entry in the database found
-            } else {
-                contentValues = new ContentValues();
-
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, we.id_wod);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, we.id_exercise);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, we.wod_name);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, we.name);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, we.equipment);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, we.rounds);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, we.rep);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, we.gym_name);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, we.rest);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, we.weight);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_DURATION, we.time);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_ICON_ID, we.image);
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_CATEGORY, we.category);
-
-                getContentResolver().insert(GymContract.ExerciseEntry.CONTENT_URI, contentValues);
-                cursor.close();
-            }
-        }*/
     }
 
     private void setExercisesFromLocalDB() {

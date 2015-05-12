@@ -36,8 +36,16 @@ public class Utils {
 
 
     public static final String PARSE_EXERCISES_NAME = "name";
-    public static final String PARSE_EXERCISES_EQUIPMENT = "equipment";
+    public static final String PARSE_EXERCISES_EQUIPMENT = "id_equipment";
     public static final String PARSE_EXERCISES_ICONID = "icon_id";
 
+    public static final String PARSE_EQUIPMENT_NAME = "name";
+
     public static final String PARSE_GYMS_NAME = "gym_name";
+
+    public static final String PARSE_GYMSBEACONS_GYM = "id_gym";
+    public static final String PARSE_GYMSBEACONS_BEACON = "id_beacon";
+
+    public static final String PARSE_USERSGYMS_USER = "id_user";
+    public static final String PARSE_USERSGYMS_GYM = "id_gym";
 }

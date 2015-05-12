@@ -91,7 +91,7 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
         BackendFunctions.BFGetWods(new CallbackParseObjects() {
             @Override
             public void done(List<ParseObject> parseObjects) {
-                if(parseObjects.size()>0){
+                if (parseObjects.size() > 0) {
                     WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(parseObjects));
                     recyclerView.setAdapter(wodCardAdapter);
                     saveOnDB(parseObjects);
@@ -173,11 +173,20 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
+
+                            ParseObject equipment = exercise.getParseObject(Utils.PARSE_EXERCISES_EQUIPMENT);
+
+                            try {
+                                equipment.fetchIfNeeded();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, wod.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, exercise.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, wod.getString(Utils.PARSE_WODS_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, exercise.getString(Utils.PARSE_EXERCISES_NAME));
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, exercise.getString(Utils.PARSE_EXERCISES_EQUIPMENT));
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, equipment.getString(Utils.PARSE_EQUIPMENT_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_ROUNDS));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_REPS));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, gym.getString(Utils.PARSE_GYMS_NAME));

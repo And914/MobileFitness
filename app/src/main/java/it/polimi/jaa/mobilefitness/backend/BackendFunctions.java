@@ -17,6 +17,7 @@ import com.parse.SignUpCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.helpers.Util;
 
 import java.util.Date;
 import java.util.List;
@@ -39,9 +40,9 @@ public class BackendFunctions {
         parseInstallation.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e == null){
+                if (e == null) {
                     callback.done();
-                }else {
+                } else {
                     callback.error(R.string.e_undefined);
                 }
             }
@@ -126,6 +127,41 @@ public class BackendFunctions {
                     callbackParseObjects.done(list);
                 else
                     callbackParseObjects.error(R.string.e_undefined);
+            }
+        });
+    }
+
+    public static void BFGetGymBeacons(ParseObject gym, final CallbackParseObjects callbackParseObjects){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("gyms_beacons");
+        query.whereEqualTo(Utils.PARSE_GYMSBEACONS_GYM, gym);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e == null)
+                    callbackParseObjects.done(list);
+                else
+                    callbackParseObjects.error(R.string.e_undefined);
+            }
+        });
+    }
+
+    public static void BFGetGym(final CallbackParseObject callbackParseObject){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("users_gyms");
+        query.whereEqualTo(Utils.PARSE_USERSGYMS_USER, ParseUser.getCurrentUser());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e == null) {
+                    ParseObject gym = parseObject.getParseObject(Utils.PARSE_USERSGYMS_GYM);
+                    try {
+                        gym.fetchIfNeeded();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                    callbackParseObject.done(gym);
+                }
+                else
+                    callbackParseObject.error(R.string.e_undefined);
             }
         });
     }
