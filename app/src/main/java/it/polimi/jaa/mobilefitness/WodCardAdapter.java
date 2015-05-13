@@ -1,6 +1,8 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import it.polimi.jaa.mobilefitness.utils.Utils;
 import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**
@@ -62,7 +65,8 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
                 @Override
                 public void onClick(View view) {
                     Intent wodActivityIntent = new Intent(view.getContext().getApplicationContext(), WodActivity.class);
-                    wodActivityIntent.putExtra("id_wod", id_wod);
+                    SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
+                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_WOD,id_wod).apply();
                     view.getContext().startActivity(wodActivityIntent);
                 }
             });

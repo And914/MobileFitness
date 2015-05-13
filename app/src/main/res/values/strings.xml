@@ -33,4 +33,5 @@
     <!-- ERROR -->
     <string name="e_undefined">Undefinded error</string>
     <string name="action_sign_in_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="start_wod_timer_cardio">START!</string>
 </resources>

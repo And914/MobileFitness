@@ -1,5 +1,7 @@
 package it.polimi.jaa.mobilefitness.utils;
 
+import it.polimi.jaa.mobilefitness.R;
+
 /**
  * Created by Jacopo on 02/04/2015.
  */
@@ -53,5 +55,40 @@ public class Utils {
     public static final String PARSE_USERSRECORDS_EXERCISE = "id_exercise";
     public static final String PARSE_USERSRECORDS_USER = "id_user";
     public static final String PARSE_USERSRECORDS_RECORD = "personal_record";
+
+    public static final String SHARED_PREFERENCES_APP = "shared_preferences_app";
+    public static final String SHARED_PREFERENCES_ID_WOD = "id_wod";
+    public static final String SHARED_PREFERENCES_ID_EXERCISE = "id_exercise";
+
+
+    public static int findIcon(int ex){
+        switch(ex){
+            case 1:
+                return R.drawable.cyclette;
+            case 2:
+                return R.drawable.rowergometer;
+            case 3:
+                return R.drawable.free_weights_icon;
+            case 4:
+                return R.drawable.accessories_icon;
+            case 5:
+                return R.drawable.treadmill;
+            case 6:
+                return R.drawable.step;
+            default:
+                return R.drawable.strength_icon;
+        }
+    }
+
+    public static int findCategory(int category){
+        switch (category){
+            case 1:
+                return R.drawable.cardio_icon;
+            case 2:
+                return R.drawable.strength_icon;
+            default:
+                return R.drawable.strength_icon;
+        }
+    }
 
 }
