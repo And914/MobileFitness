@@ -49,4 +49,9 @@ public class Utils {
 
     public static final String PARSE_USERSGYMS_USER = "id_user";
     public static final String PARSE_USERSGYMS_GYM = "id_gym";
+
+    public static final String PARSE_USERSRECORDS_EXERCISE = "id_exercise";
+    public static final String PARSE_USERSRECORDS_USER = "id_user";
+    public static final String PARSE_USERSRECORDS_RECORD = "personal_record";
+
 }

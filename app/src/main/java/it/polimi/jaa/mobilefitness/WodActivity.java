@@ -214,14 +214,25 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                             null
                     );
                     cursor.moveToFirst();
+                    if(cursor.getCount() == 0) {
+                        beaconEntered = false;
+                        return;
+                    }
+                    boolean found = false;
                     String idExercise = cursor.getString(cursor.getColumnIndex(GymContract.BeaconEntry.COLUMN_ID_EXERCISE));
                     for(ExerciseInfo ei : exerciseCardList) {
                         if (ei.id.equals(idExercise)) {
+                            found = true;
                             break;
                         }
                         i++;
                     }
                     cursor.close();
+                    if(!found) {
+                        beaconEntered = false;
+                        return;
+                    }
+
 
                     final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
                     viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
@@ -317,7 +328,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                             //Handle when entry already in the sqlite database
                         } else if (cursor.getCount() >= 1) {
 
-                            getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI_DELETED,null,GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
+                            getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI_DELETED, null, GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
                             cursor.close();
                             //Handle insert when no entry in the database found
                         } else {

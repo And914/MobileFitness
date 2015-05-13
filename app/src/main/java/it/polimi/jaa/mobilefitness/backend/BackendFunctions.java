@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.polimi.jaa.mobilefitness.R;
 import it.polimi.jaa.mobilefitness.backend.callbacks.Callback;
+import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackBoolean;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObject;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.utils.Utils;
@@ -159,8 +160,7 @@ public class BackendFunctions {
                         e1.printStackTrace();
                     }
                     callbackParseObject.done(gym);
-                }
-                else
+                } else
                     callbackParseObject.error(R.string.e_undefined);
             }
         });
@@ -197,10 +197,44 @@ public class BackendFunctions {
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if(e == null)
+                if (e == null)
                     callbackParseObject.done(parseObject);
                 else
                     callbackParseObject.error(R.string.e_undefined);
+            }
+        });
+    }
+
+    public static void BFSaveRecord(String exerciseId, final int result, final CallbackBoolean callback){
+        final ParseObject ex = ParseObject.createWithoutData("exercises", exerciseId);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("users_records");
+        query.whereEqualTo(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if(e == null){
+                    boolean isRecord = false;
+                    if(list.size() == 0){
+                        //non ho mai fatto quell'esercizio
+                        ParseObject record = new ParseObject("users_record");
+                        record.put(Utils.PARSE_USERSRECORDS_USER,ParseUser.getCurrentUser());
+                        record.put(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
+                        record.put(Utils.PARSE_USERSRECORDS_RECORD, record);
+                        record.saveInBackground();
+                        isRecord = true;
+                    } else {
+                        //controllo se ho battuto il mio record
+                        ParseObject updateRecord = list.get(0);
+                        if (updateRecord.getInt(Utils.PARSE_USERSRECORDS_RECORD) < result){
+                            updateRecord.put(Utils.PARSE_USERSRECORDS_RECORD, result);
+                            isRecord = true;
+                        }
+
+                    }
+                    callback.done(isRecord);
+                }else{
+                    callback.error(R.string.e_undefined);
+                }
             }
         });
     }
