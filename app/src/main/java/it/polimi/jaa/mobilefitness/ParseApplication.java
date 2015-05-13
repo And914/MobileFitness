@@ -60,6 +60,5 @@ public class ParseApplication extends Application {
 
         Gimbal.setApiKey(this, getString(R.string.gimbal_key));
 
-
     }
 }

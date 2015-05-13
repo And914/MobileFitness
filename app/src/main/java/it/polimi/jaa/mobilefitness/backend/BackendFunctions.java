@@ -205,38 +205,65 @@ public class BackendFunctions {
         });
     }
 
-    public static void BFSaveRecord(String exerciseId, final int result, final CallbackBoolean callback){
-        final ParseObject ex = ParseObject.createWithoutData("exercises", exerciseId);
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("users_records");
-        query.whereEqualTo(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
-        query.findInBackground(new FindCallback<ParseObject>() {
+    public static void BFGetExercise(String exerciseId, final CallbackParseObject callbackParseObject){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("exercises");
+        query.whereEqualTo("objectId", exerciseId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
-            public void done(List<ParseObject> list, ParseException e) {
+            public void done(ParseObject parseObject, ParseException e) {
                 if(e == null){
-                    boolean isRecord = false;
-                    if(list.size() == 0){
-                        //non ho mai fatto quell'esercizio
-                        ParseObject record = new ParseObject("users_record");
-                        record.put(Utils.PARSE_USERSRECORDS_USER,ParseUser.getCurrentUser());
-                        record.put(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
-                        record.put(Utils.PARSE_USERSRECORDS_RECORD, record);
-                        record.saveInBackground();
-                        isRecord = true;
-                    } else {
-                        //controllo se ho battuto il mio record
-                        ParseObject updateRecord = list.get(0);
-                        if (updateRecord.getInt(Utils.PARSE_USERSRECORDS_RECORD) < result){
-                            updateRecord.put(Utils.PARSE_USERSRECORDS_RECORD, result);
-                            isRecord = true;
-                        }
-
-                    }
-                    callback.done(isRecord);
-                }else{
-                    callback.error(R.string.e_undefined);
+                    callbackParseObject.done(parseObject);
                 }
+                else
+                    callbackParseObject.error(R.string.e_undefined);
             }
         });
+    }
+
+    public static void BFSaveRecord(String exerciseId, final int result, final CallbackBoolean callback){
+        BFGetExercise(exerciseId, new CallbackParseObject() {
+            @Override
+            public void done(final ParseObject ex) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("users_records");
+                query.whereEqualTo(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
+                query.whereEqualTo(Utils.PARSE_USERSRECORDS_USER, ParseUser.getCurrentUser());
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e == null) {
+                            boolean isRecord = false;
+                            if (list.size() == 0) {
+                                //non ho mai fatto quell'esercizio
+                                ParseObject record = new ParseObject("users_records");
+                                record.put(Utils.PARSE_USERSRECORDS_USER, ParseUser.getCurrentUser());
+                                record.put(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
+                                record.put(Utils.PARSE_USERSRECORDS_RECORD, result);
+                                record.saveInBackground();
+                                isRecord = true;
+                            } else {
+                                //controllo se ho battuto il mio record
+                                ParseObject updateRecord = list.get(0);
+                                if (updateRecord.getInt(Utils.PARSE_USERSRECORDS_RECORD) < result) {
+                                    updateRecord.put(Utils.PARSE_USERSRECORDS_RECORD, result);
+                                    updateRecord.saveInBackground();
+                                    isRecord = true;
+                                }
+
+                            }
+                            callback.done(isRecord);
+                        } else {
+                            callback.error(R.string.e_undefined);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void error(int error) {
+                callback.error(R.string.e_undefined);
+            }
+        });
+
     }
 
 
