@@ -168,11 +168,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                                                 public void done() {
                                                     Log.d("FACEBOOK", "Login Success");
                                                     setPreferences();
+                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                    startActivity(intent);
+                                                    LoginActivity.this.finish();
                                                 }
 
                                                 @Override
                                                 public void error(int error) {
                                                     Log.d("FACEBOOK", getString(error));
+                                                    setPreferences();
                                                 }
                                             });
                                         }
@@ -203,11 +207,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                                                 public void done() {
                                                     Log.d("FACEBOOK", "Login Success");
                                                     setPreferences();
+                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                    startActivity(intent);
+                                                    LoginActivity.this.finish();
                                                 }
 
                                                 @Override
                                                 public void error(int error) {
                                                     Log.d("FACEBOOK", getString(error));
+                                                    setPreferences();
                                                 }
                                             });
                                         }
@@ -230,9 +238,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             });
 
 
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            LoginActivity.this.finish();
+
 
                         }
                     }
