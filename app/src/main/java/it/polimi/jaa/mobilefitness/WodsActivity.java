@@ -153,7 +153,7 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                             e.printStackTrace();
                         }
                         //Get the exercises that matches the ones downloaded
-                        String[] args = {wod.getObjectId(),String.valueOf(exercise.getObjectId())};
+                        String[] args = {wod.getObjectId(),String.valueOf(wodEx.getObjectId())};
                         Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI_DELETED, null,
                                 GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?", args, null);
 
