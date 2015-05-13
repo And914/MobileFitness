@@ -1,5 +1,8 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,16 +15,17 @@ import android.widget.Toast;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by andre on 30/03/15.
  */
 public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapter.ExerciseViewHolder> {
 
-    private List<ExerciseInfo> exerciseInfoList;
+    private static List<ExerciseInfo> exerciseInfoList;
 
     public ExerciseCardAdapter(List<ExerciseInfo> contactList) {
-        this.exerciseInfoList = contactList;
+        exerciseInfoList = contactList;
     }
 
 
@@ -141,8 +145,21 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "Sucaaaa "+vName.getText(),
-                            Toast.LENGTH_SHORT).show();
+                    ExerciseInfo ei = exerciseInfoList.get(getAdapterPosition());
+                    SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
+                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_EXERCISE,ei.id).apply();
+                    //if cardio
+                    if (ei.category == 1) {
+                        Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
+                        view.getContext().startActivity(intent);
+                    }
+                    //if strength
+                    else if (ei.category == 2) {
+                        Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
+
+                        view.getContext().startActivity(intent);
+                    }
+
                 }
             });
         }

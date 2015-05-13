@@ -36,8 +36,9 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
  */
 public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    RecyclerView recyclerView;
-    SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String LOG_ACTIVITY = "WodsActivity";
 

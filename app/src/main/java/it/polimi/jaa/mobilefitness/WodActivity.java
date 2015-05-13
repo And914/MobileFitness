@@ -53,6 +53,8 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
  */
 public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
+
+    private SharedPreferences mSharedPreferences;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String idWod;
@@ -76,7 +78,9 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wod);
 
-        idWod = getIntent().getExtras().getString("id_wod");
+        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP,MODE_PRIVATE);
+
+        idWod = mSharedPreferences.getString(Utils.SHARED_PREFERENCES_ID_WOD, "");
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_wod);
         swipeRefreshLayout.setOnRefreshListener(this);

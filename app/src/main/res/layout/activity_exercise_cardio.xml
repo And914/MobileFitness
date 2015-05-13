@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:layout_weight="2"
+        android:id="@+id/exercise_icon"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:gravity="center_horizontal"
+        android:text="ExerciseName"
+        android:layout_weight="1"
+        android:id="@+id/exercise_name"/>
+
+
+    <Chronometer
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textSize="60sp"
+        android:format="%s"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:id="@+id/chronometer_cardio" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/button_timer_exercise"
+        android:textSize="@dimen/abc_text_size_button_material"
+        android:layout_height="@dimen/abc_action_button_min_height_material" />
+</LinearLayout>
