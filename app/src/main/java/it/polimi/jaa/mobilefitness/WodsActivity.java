@@ -183,7 +183,7 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                             }
 
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, wod.getObjectId());
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, exercise.getObjectId());
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, wodEx.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, wod.getString(Utils.PARSE_WODS_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, exercise.getString(Utils.PARSE_EXERCISES_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, equipment.getString(Utils.PARSE_EQUIPMENT_NAME));

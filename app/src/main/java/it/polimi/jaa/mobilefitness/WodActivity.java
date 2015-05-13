@@ -119,6 +119,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                                     exerciseId = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID));
                                     break;
                                 }
+                                cursor.moveToNext();
                             }
                             cursor.close();
 
@@ -209,7 +210,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                     Cursor cursor = getContentResolver().query(GymContract.BeaconEntry.CONTENT_URI,
                             new String[]{GymContract.BeaconEntry.COLUMN_ID_EXERCISE},
                             GymContract.BeaconEntry.COLUMN_ID_BEACON + " = ?",
-                            args ,
+                            args,
                             null
                     );
                     cursor.moveToFirst();
@@ -222,7 +223,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                     }
                     cursor.close();
 
-                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
+                    final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
                     viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                     Thread thread = new Thread(new Runnable() {
                         @Override
@@ -233,6 +234,12 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                                 e.printStackTrace();
                             }
                             beaconEntered = false;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                                }
+                            });
                         }
                     });
                     thread.start();
@@ -321,7 +328,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                                 e.printStackTrace();
                             }
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ID_WOD, wod.getObjectId());
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, exercise.getObjectId());
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_ID, wodEx.getObjectId());
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME_WOD, wod.getString(Utils.PARSE_WODS_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_NAME, exercise.getString(Utils.PARSE_EXERCISES_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, exercise.getString(Utils.PARSE_EXERCISES_EQUIPMENT));
@@ -365,6 +372,7 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         if(cursor.getCount()==0){
             getContentResolver().insert(GymContract.BeaconEntry.CONTENT_URI, contentValues);
         }
+        cursor.close();
 
     }
 
