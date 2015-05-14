@@ -76,8 +76,8 @@ public class HomeUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //call wods activity with intent
-                Intent receiverNFCActivityIntent = new Intent(getActivity().getApplicationContext(), ReceiverNFCActivity.class);
-                startActivity(receiverNFCActivityIntent);
+                Intent challengeNFCActivityIntent = new Intent(getActivity().getApplicationContext(), ChallengeNFCActivity.class);
+                startActivity(challengeNFCActivityIntent);
             }
         });
 

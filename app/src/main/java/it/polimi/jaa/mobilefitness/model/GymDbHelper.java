@@ -27,7 +27,7 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 " );";
 
         final String SQL_CREATE_EXERC_TABLE = "CREATE TABLE " + GymContract.ExerciseEntry.TABLE_NAME + " (" +
-                GymContract.ExerciseEntry.COLUMN_ID + " TEXT NOT NULL, " +
+                GymContract.ExerciseEntry.COLUMN_ID + " TEXT PRIMARY KEY, " +
                 GymContract.ExerciseEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_ID_WOD +" TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_NAME_WOD + " TEXT NOT NULL, " +
@@ -41,7 +41,8 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 GymContract.ExerciseEntry.COLUMN_ROUNDS+ " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_WEIGHT + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_DELETED + " INTEGER, " +
-                "PRIMARY KEY (" + GymContract.ExerciseEntry.COLUMN_ID_WOD + "," + GymContract.ExerciseEntry.COLUMN_ID + ") );";
+                GymContract.ExerciseEntry.COLUMN_COMPLETED + " INTEGER " +
+                " );";
 
         final String SQL_CREATE_HISTORY_TABLE = "CREATE TABLE " + GymContract.HistoryEntry.TABLE_NAME + " (" +
                 GymContract.HistoryEntry.COLUMN_ID_EXERC + " INTEGER, " +

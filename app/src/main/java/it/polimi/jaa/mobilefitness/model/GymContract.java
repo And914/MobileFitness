@@ -74,6 +74,7 @@ public class GymContract {
         public static final String COLUMN_WEIGHT = "weight";
 
         public static final String COLUMN_DELETED = "deleted";
+        public static final String COLUMN_COMPLETED = "completed";
 
 
         public static Uri buildExerciseUri(long id) {

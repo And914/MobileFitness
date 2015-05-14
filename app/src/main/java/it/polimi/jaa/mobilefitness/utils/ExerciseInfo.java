@@ -21,8 +21,9 @@ public class ExerciseInfo {
     public final String time;
     public final int image;
     public final int category;
+    public final int completed;
 
-    public ExerciseInfo(String id, String name, String equipment, String rounds, String rep, String rest, String weight, String time, int image, int category) {
+    public ExerciseInfo(String id, String name, String equipment, String rounds, String rep, String rest, String weight, String time, int image, int category, int completed) {
         this.id = id;
         this.name = name;
         this.equipment = equipment;
@@ -33,6 +34,7 @@ public class ExerciseInfo {
         this.time = time;
         this.image = image;
         this.category = category;
+        this.completed = completed;
     }
 
     public static List<ExerciseInfo> createListFromCursor(Cursor cursor) {
@@ -51,8 +53,9 @@ public class ExerciseInfo {
             String time = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
             int image = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID));
             int category = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_CATEGORY));
+            int completed = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_COMPLETED));
 
-            ExerciseInfo exerciseInfo = new ExerciseInfo(id, exerciseName,equipment,rounds,reps,rest,weight,time,image, category);
+            ExerciseInfo exerciseInfo = new ExerciseInfo(id, exerciseName,equipment,rounds,reps,rest,weight,time,image, category,completed);
             if (!mArrayList.contains(exerciseInfo)){
                 mArrayList.add(exerciseInfo);
             }

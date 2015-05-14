@@ -64,6 +64,10 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         else
             exerciseViewHolder.vTime.setText(ex.time);
 
+        if(ex.completed == 1) {
+            exerciseViewHolder.itemView.setBackgroundResource(android.R.color.holo_red_dark);
+        }
+
         /*
         if(ex.time.equals("") || ex.time.equals("null"))
             exerciseViewHolder.vTime.setText("-");
@@ -148,16 +152,17 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
                     ExerciseInfo ei = exerciseInfoList.get(getAdapterPosition());
                     SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
                     mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_EXERCISE,ei.id).apply();
-                    //if cardio
-                    if (ei.category == 1) {
-                        Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
-                        view.getContext().startActivity(intent);
-                    }
-                    //if strength
-                    else if (ei.category == 2) {
-                        Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
-
-                        view.getContext().startActivity(intent);
+                    if (ei.completed == 0) {
+                        //if cardio
+                        if (ei.category == 1) {
+                            Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
+                            view.getContext().startActivity(intent);
+                        }
+                        //if strength
+                        else if (ei.category == 2) {
+                            Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
+                            view.getContext().startActivity(intent);
+                        }
                     }
 
                 }

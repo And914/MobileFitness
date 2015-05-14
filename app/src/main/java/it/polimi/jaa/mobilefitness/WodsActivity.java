@@ -141,7 +141,8 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
     private void saveOnDB(List<ParseObject> parseObjects){
         final ContentValues contentValues = new ContentValues();
         //Set all the entry as deleted
-        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,null,null,null);
+        contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED,1);
+        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,contentValues,null,null);
         for (final ParseObject wod : parseObjects){
             BackendFunctions.BFGetExercisesWod(wod.getObjectId(), new CallbackParseObjects() {
                 @Override
@@ -163,8 +164,8 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
                             Log.e(LOG_ACTIVITY,"DATABASE CURSOR NULL");
                             //Handle when entry already in the sqlite database
                         } else if (cursor.getCount() >= 1) {
-
-                            getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI_DELETED,null,GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED,0);
+                            getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,contentValues,GymContract.ExerciseEntry.COLUMN_ID_WOD + "= ? AND " + GymContract.ExerciseEntry.COLUMN_ID +"= ?",args);
                             cursor.close();
                             //Handle insert when no entry in the database found
                         } else {

@@ -166,6 +166,35 @@ public class BackendFunctions {
         });
     }
 
+    public static void BFGetGymEquipments(final CallbackParseObjects callbackParseObject){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("users_gyms");
+        query.whereEqualTo(Utils.PARSE_USERSGYMS_USER, ParseUser.getCurrentUser());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e == null) {
+                    ParseObject gym = parseObject.getParseObject(Utils.PARSE_USERSGYMS_GYM);
+                    try {
+                        gym.fetchIfNeeded();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("equipments");
+                    query.whereEqualTo(Utils.PARSE_EQUIPMENT_GYM,gym);
+                    List<ParseObject> gymEquipments;
+                    try {
+                        gymEquipments = query.find();
+                        callbackParseObject.done(gymEquipments);
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+
+                } else
+                    callbackParseObject.error(R.string.e_undefined);
+            }
+        });
+    }
+
     public static void BFGetExercisesWod(String wodId, final CallbackParseObjects callbackParseObjects){
         BFGetWodObject(wodId, new CallbackParseObject() {
             @Override

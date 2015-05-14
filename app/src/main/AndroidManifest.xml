@@ -64,7 +64,7 @@
         </activity>
 
         <activity
-            android:name=".ReceiverNFCActivity"
+            android:name=".SendResultsNFCActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -77,11 +77,11 @@
         </activity>
 
         <activity
-            android:name=".SenderNFCActivity"
+            android:name=".ChallengeNFCActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ReceiverNFCActivity"/>
+                android:value=".SendResultsNFCActivity"/>
         </activity>
 
         <activity

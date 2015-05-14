@@ -151,6 +151,7 @@ public class GymProvider extends ContentProvider {
                 break;
             case EXERCISE:
                 values.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
+                values.put(GymContract.ExerciseEntry.COLUMN_COMPLETED,0);
                 _id = db.insert(GymContract.ExerciseEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
                     returnUri = GymContract.ExerciseEntry.buildExerciseUri(_id);
@@ -224,14 +225,10 @@ public class GymProvider extends ContentProvider {
                 rowsUpdated = db.update(GymContract.BeaconEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case EXERCISE:
-                contentValues = new ContentValues();
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 1);
-                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case EXERCISE_DELETED:
-                contentValues = new ContentValues();
-                contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED, 0);
-                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                rowsUpdated = db.update(GymContract.ExerciseEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: "+uri);

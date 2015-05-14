@@ -234,30 +234,33 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                         beaconEntered = false;
                         return;
                     }
-                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                    vibrator.vibrate(750);
+
+                    if(exerciseCardList.get(i).completed == 0) {
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        vibrator.vibrate(750);
 
 
-                    final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
-                    viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            beaconEntered = false;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
+                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
-                            });
-                        }
-                    });
-                    thread.start();
+                                beaconEntered = false;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                                    }
+                                });
+                            }
+                        });
+                        thread.start();
+                    }
                 }
             }
 
@@ -275,13 +278,13 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
+        /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 setExercisesInfoFromServer();
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }, 1000);
+        }, 1000);*/
     }
 
     private void setExercisesInfoFromServer() {
@@ -398,7 +401,8 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
         Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
                 new String[]{GymContract.ExerciseEntry.COLUMN_ID, GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
                         GymContract.ExerciseEntry.COLUMN_ROUNDS,GymContract.ExerciseEntry.COLUMN_REPS,GymContract.ExerciseEntry.COLUMN_REST_TIME,
-                        GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID, GymContract.ExerciseEntry.COLUMN_CATEGORY
+                        GymContract.ExerciseEntry.COLUMN_WEIGHT,GymContract.ExerciseEntry.COLUMN_DURATION,GymContract.ExerciseEntry.COLUMN_ICON_ID,
+                        GymContract.ExerciseEntry.COLUMN_CATEGORY,GymContract.ExerciseEntry.COLUMN_COMPLETED
                 },
                 GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
                 args ,
