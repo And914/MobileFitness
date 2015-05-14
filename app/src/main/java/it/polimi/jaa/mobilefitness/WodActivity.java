@@ -205,8 +205,6 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
 
             private void handleBeaconEnter(BeaconSighting sighting) {
                 if (sighting.getRSSI() > -40 && !beaconEntered) {
-                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                    vibrator.vibrate(750);
                     beaconEntered = true;
                     int i = 0;
 
@@ -236,6 +234,8 @@ public class WodActivity extends ActionBarActivity implements SwipeRefreshLayout
                         beaconEntered = false;
                         return;
                     }
+                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(750);
 
 
                     final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
