@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseObject;
@@ -34,6 +36,8 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapter.CreateNdefMessageCallback{
 
     private NfcAdapter mNfcAdapter;
+    private Spinner equipmentSpinner;
+    private EditText exerciseNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +59,8 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        final Spinner equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
-
+        equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
+        exerciseNameText = (EditText) findViewById(R.id.challenge_exercise_name);
 
 
         BackendFunctions.BFGetGymEquipments(new CallbackParseObjects() {
@@ -88,7 +92,12 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     public NdefMessage createNdefMessage(NfcEvent event) {
         JSONObject jsonObject = new JSONObject();
 
-
+        try {
+            jsonObject.put("equipment",equipmentSpinner.getSelectedItem().toString());
+            jsonObject.put("name",exerciseNameText.getText());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         return new NdefMessage(
@@ -134,36 +143,13 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(new String(msg.getRecords()[0].getPayload()));
+            String exerciseName = jsonObject.getString("name");
+            exerciseNameText.setText(exerciseName);
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public static class SendBackDialogFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            CharSequence[] info = {"You received your friend results.","To send him yours, detach and reattach your devices."};
-            builder.setItems(info, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            }).setTitle("Results received!")
-                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dismiss();
-                        }
-                    });
-
-
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
     }
 }

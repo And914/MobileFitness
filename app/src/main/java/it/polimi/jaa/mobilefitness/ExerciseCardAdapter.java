@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,7 +66,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             exerciseViewHolder.vTime.setText(ex.time);
 
         if(ex.completed == 1) {
-            exerciseViewHolder.itemView.setBackgroundResource(android.R.color.holo_red_dark);
+            exerciseViewHolder.vCompleted.setVisibility(View.VISIBLE);
         }
 
         /*
@@ -129,6 +130,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
         TextView vTime;
         ImageView vImage;
         ImageView vCategory;
+        ImageView vCompleted;
         View view;
 
 
@@ -144,8 +146,8 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             vTime = (TextView) v.findViewById(R.id.ex_time);
             vImage = (ImageView) v.findViewById(R.id.ex_image);
             vCategory = (ImageView) v.findViewById(R.id.ex_category);
+            vCompleted = (ImageView) v.findViewById(R.id.completed_exercise_image);
 
-            //TODO:gestire click card
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -156,12 +158,12 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
                         //if cardio
                         if (ei.category == 1) {
                             Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
-                            view.getContext().startActivity(intent);
+                            ((Activity)view.getContext()).startActivityForResult(intent, 0);
                         }
                         //if strength
                         else if (ei.category == 2) {
                             Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
-                            view.getContext().startActivity(intent);
+                            ((Activity)view.getContext()).startActivityForResult(intent,0);
                         }
                     }
 
