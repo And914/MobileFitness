@@ -168,7 +168,9 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     public NdefMessage createNdefMessage(NfcEvent event) {
         JSONObject jsonObject = new JSONObject();
 
+        int equipmentPos = equipmentSpinner.getSelectedItemPosition();
         String equipment = equipmentSpinner.getSelectedItem().toString();
+
         try {switch (equipment) {
             case "Rower":
                 jsonObject.put("duration", duration.getText());
@@ -185,7 +187,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
                 jsonObject.put("weight", weight.getText());
                 jsonObject.put("restTime", restTime.getText());
         }
-            jsonObject.put("equipment",equipment);
+            jsonObject.put("equipment",equipmentPos);
             jsonObject.put("name",exerciseNameText.getText());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -236,7 +238,47 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         try {
             jsonObject = new JSONObject(new String(msg.getRecords()[0].getPayload()));
             String exerciseName = jsonObject.getString("name");
+            int equipmentPos = jsonObject.getInt("equipment");
+
+            equipmentSpinner.setSelection(equipmentPos);
             exerciseNameText.setText(exerciseName);
+
+            if (jsonObject.has("duration")) {
+                String exerciseDuration = jsonObject.getString("duration");
+                duration.setText(exerciseDuration);
+                durationLayout.setVisibility(View.VISIBLE);
+
+            }
+
+            if (jsonObject.has("rounds")) {
+                String exerciseDuration = jsonObject.getString("rounds");
+                rounds.setText(exerciseDuration);
+                roundsLayout.setVisibility(View.VISIBLE);
+
+            }
+
+            if (jsonObject.has("reps")) {
+                String exerciseDuration = jsonObject.getString("reps");
+                reps.setText(exerciseDuration);
+                repsLayout.setVisibility(View.VISIBLE);
+
+            }
+
+            if (jsonObject.has("weight")) {
+                String exerciseDuration = jsonObject.getString("weight");
+                weight.setText(exerciseDuration);
+                weightsLayout.setVisibility(View.VISIBLE);
+
+            }
+
+            if (jsonObject.has("restTime")) {
+                String exerciseDuration = jsonObject.getString("restTime");
+                restTime.setText(exerciseDuration);
+                restTimeLayout.setVisibility(View.VISIBLE);
+
+            }
+
+
 
 
 
