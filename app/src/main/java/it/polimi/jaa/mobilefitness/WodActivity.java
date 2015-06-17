@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.gimbal.android.BeaconEventListener;
 import com.gimbal.android.BeaconManager;
@@ -145,6 +146,20 @@ public class WodActivity extends ActionBarActivity {
         });
 
         setExercisesFromLocalDB();
+
+        int totalEx = exerciseCardList.size();
+        int counterCompleted = 0;
+        for (ExerciseInfo exerciseCard : exerciseCardList) {
+            if (exerciseCard.completed == 1) {
+                counterCompleted++;
+            }
+        }
+
+        if (counterCompleted == totalEx) {
+            Toast.makeText(getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
+            resetExercises();
+            this.finish();
+        }
 
         placeEventListener = new PlaceEventListener() {
             @Override
@@ -317,6 +332,47 @@ public class WodActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             setExercisesFromLocalDB();
+            int totalEx = exerciseCardList.size();
+            int counterCompleted = 0;
+            for (ExerciseInfo exerciseCard : exerciseCardList) {
+                if (exerciseCard.completed == 1) {
+                    counterCompleted++;
+                }
+            }
+
+            if (counterCompleted == totalEx) {
+                Toast.makeText(getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
+                resetExercises();
+                this.finish();
+            }
         }
+    }
+
+    private void resetExercises() {
+        String[] args = {String.valueOf(idWod)};
+        Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
+                new String[]{GymContract.ExerciseEntry.COLUMN_ID},
+                GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
+                args ,
+                null
+        );
+
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()) {
+
+            String[] args1 = {cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID))};
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED,0);
+
+            this.getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                    contentValues,
+                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                    args1);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
     }
 }
