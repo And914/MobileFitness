@@ -49,7 +49,7 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        senderNFCButton = (Button) findViewById(R.id.button_sender_nfc);
+        /*senderNFCButton = (Button) findViewById(R.id.button_sender_nfc);
 
         senderNFCButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
                 Intent senderNFCActivityIntent = new Intent(getApplicationContext(), ChallengeNFCActivity.class);
                 startActivity(senderNFCActivityIntent);
             }
-        });
+        });*/
     }
 
     @Override

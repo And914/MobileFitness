@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -12,8 +13,11 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +43,19 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     private Spinner equipmentSpinner;
     private EditText exerciseNameText;
 
+    private LinearLayout roundsLayout;
+    private LinearLayout repsLayout;
+    private LinearLayout weightsLayout;
+    private LinearLayout restTimeLayout;
+    private LinearLayout durationLayout;
+
+    private TextView rounds;
+    private TextView reps;
+    private TextView weight;
+    private TextView restTime;
+    private TextView duration;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +76,15 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+
         equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
         exerciseNameText = (EditText) findViewById(R.id.challenge_exercise_name);
 
+        String loading[] = new String[1];
+        loading[0] = "Loading .. ";
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, loading);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+        equipmentSpinner.setAdapter(spinnerArrayAdapter);
 
         BackendFunctions.BFGetGymEquipments(new CallbackParseObjects() {
             @Override
@@ -74,7 +97,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
                 }
 
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
-                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
                 equipmentSpinner.setAdapter(spinnerArrayAdapter);
             }
 
@@ -84,6 +107,59 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
             }
         });
 
+        roundsLayout = (LinearLayout) findViewById(R.id.rounds_layout);
+        repsLayout = (LinearLayout) findViewById(R.id.reps_layout);
+        weightsLayout = (LinearLayout) findViewById(R.id.weights_layout);
+        restTimeLayout = (LinearLayout) findViewById(R.id.rest_time_layout);
+        durationLayout = (LinearLayout) findViewById(R.id.duration_layout);
+
+        rounds = (TextView) findViewById(R.id.rounds);
+        reps = (TextView) findViewById(R.id.reps);
+        weight = (TextView) findViewById(R.id.weights);
+        restTime = (TextView) findViewById(R.id.rest_time);
+        duration = (TextView) findViewById(R.id.duration);
+
+        equipmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
+                String selected = adapterView.getItemAtPosition(i).toString();
+                switch (selected) {
+                    case "Rower":
+                        roundsLayout.setVisibility(View.GONE);
+                        repsLayout.setVisibility(View.GONE);
+                        weightsLayout.setVisibility(View.GONE);
+                        restTimeLayout.setVisibility(View.GONE);
+                        durationLayout.setVisibility(View.VISIBLE);
+                        break;
+                    case "Cyclette":
+                        roundsLayout.setVisibility(View.GONE);
+                        repsLayout.setVisibility(View.GONE);
+                        weightsLayout.setVisibility(View.GONE);
+                        restTimeLayout.setVisibility(View.GONE);
+                        durationLayout.setVisibility(View.VISIBLE);
+                        break;
+                    case "Rope":
+                        roundsLayout.setVisibility(View.GONE);
+                        repsLayout.setVisibility(View.GONE);
+                        weightsLayout.setVisibility(View.GONE);
+                        restTimeLayout.setVisibility(View.GONE);
+                        durationLayout.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        roundsLayout.setVisibility(View.VISIBLE);
+                        repsLayout.setVisibility(View.VISIBLE);
+                        weightsLayout.setVisibility(View.VISIBLE);
+                        restTimeLayout.setVisibility(View.VISIBLE);
+                        durationLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
     }
@@ -92,8 +168,24 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     public NdefMessage createNdefMessage(NfcEvent event) {
         JSONObject jsonObject = new JSONObject();
 
-        try {
-            jsonObject.put("equipment",equipmentSpinner.getSelectedItem().toString());
+        String equipment = equipmentSpinner.getSelectedItem().toString();
+        try {switch (equipment) {
+            case "Rower":
+                jsonObject.put("duration", duration.getText());
+                break;
+            case "Cyclette":
+                jsonObject.put("duration", duration.getText());
+                break;
+            case "Rope":
+                jsonObject.put("duration", duration.getText());
+                break;
+            default:
+                jsonObject.put("rounds", rounds.getText());
+                jsonObject.put("reps", reps.getText());
+                jsonObject.put("weight", weight.getText());
+                jsonObject.put("restTime", restTime.getText());
+        }
+            jsonObject.put("equipment",equipment);
             jsonObject.put("name",exerciseNameText.getText());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -145,6 +237,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
             jsonObject = new JSONObject(new String(msg.getRecords()[0].getPayload()));
             String exerciseName = jsonObject.getString("name");
             exerciseNameText.setText(exerciseName);
+
 
 
         } catch (JSONException e) {

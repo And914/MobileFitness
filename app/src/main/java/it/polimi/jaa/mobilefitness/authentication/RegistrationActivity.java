@@ -127,7 +127,7 @@ public class RegistrationActivity extends ActionBarActivity{
             emailText.setError(getString(R.string.reg_error_email));
             valid = false;
         }
-        if(passwordText.getText().toString().length()<4){
+        if(passwordText.getText().toString().length()<=4){
             passwordText.setError(getString(R.string.reg_error_psw));
             valid = false;
         }

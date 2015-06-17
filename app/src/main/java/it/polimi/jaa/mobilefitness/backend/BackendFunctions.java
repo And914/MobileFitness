@@ -37,6 +37,11 @@ public class BackendFunctions {
 
     public static void BFRegisterDevice(final Callback callback){
         ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+        try {
+            ParseUser.getCurrentUser().fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         parseInstallation.put("user",ParseUser.getCurrentUser());
         parseInstallation.saveInBackground(new SaveCallback() {
             @Override
