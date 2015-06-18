@@ -11,41 +11,39 @@ import java.util.List;
 
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.utils.ResultsInfo;
 
 /**
  * Created by andre on 30/03/15.
  */
 public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.ResultsViewHolder> {
 
-    private List<ExerciseInfo> exerciseInfoList;
+    private List<ResultsInfo> resultInfoList;
 
-    public ResultsCardAdapter(List<ExerciseInfo> contactList) {
-        this.exerciseInfoList = contactList;
+    public ResultsCardAdapter(List<ResultsInfo> resultList) {
+        this.resultInfoList = resultList;
     }
 
 
     @Override
     public int getItemCount() {
-        return exerciseInfoList.size();
+        return resultInfoList.size();
     }
 
     @Override
     public void onBindViewHolder(ResultsViewHolder exerciseViewHolder, int i) {
-        ExerciseInfo ex = exerciseInfoList.get(i);
+        ResultsInfo ex = resultInfoList.get(i);
         exerciseViewHolder.vName.setText(ex.name);
         exerciseViewHolder.vEquipment.setText(ex.equipment);
-        exerciseViewHolder.vRep.setText(ex.rep);
-        exerciseViewHolder.vRest.setText(ex.rest);
-        exerciseViewHolder.vRounds.setText(ex.rounds);
-        exerciseViewHolder.vWeight.setText(ex.weight);
-        exerciseViewHolder.vTime.setText(ex.time);
+        exerciseViewHolder.vDate.setText(ex.date);
+        exerciseViewHolder.vResult.setText(ex.result);
     }
 
     @Override
     public ResultsViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
-                inflate(R.layout.exercise_card, viewGroup, false);
+                inflate(R.layout.result_card, viewGroup, false);
 
         return new ResultsViewHolder(itemView);
     }
@@ -54,24 +52,17 @@ public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.
 
         TextView vName;
         TextView vEquipment;
-        TextView vRounds;
-        TextView vRep;
-        TextView vRest;
-        TextView vWeight;
-        TextView vTime;
+        TextView vDate;
+        TextView vResult;
         View view;
-
 
         public ResultsViewHolder(final View v) {
             super(v);
             view = v;
-            vName = (TextView) v.findViewById(R.id.ex_name);
-            vEquipment = (TextView) v.findViewById(R.id.ex_equip);
-            vRounds = (TextView) v.findViewById(R.id.ex_rounds);
-            vRep = (TextView) v.findViewById(R.id.ex_reps);
-            vRest = (TextView) v.findViewById(R.id.ex_rest);
-            vWeight = (TextView) v.findViewById(R.id.ex_weight);
-            vTime = (TextView) v.findViewById(R.id.ex_time);
+            vName = (TextView) v.findViewById(R.id.exercise_name_result);
+            vEquipment = (TextView) v.findViewById(R.id.exercise_equipment_result);
+            vDate = (TextView) v.findViewById(R.id.exercise_date_result);
+            vResult = (TextView) v.findViewById(R.id.exercise_result_result);
         }
     }
 }
