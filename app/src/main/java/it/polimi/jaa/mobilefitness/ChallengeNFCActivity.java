@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -27,7 +28,12 @@ import com.parse.ParseObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObject;
@@ -38,6 +44,8 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
  * Created by Jacopo on 09/04/2015.
  */
 public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapter.CreateNdefMessageCallback{
+
+    private SharedPreferences mSharedPreferences;
 
     private NfcAdapter mNfcAdapter;
     private Spinner equipmentSpinner;
@@ -62,6 +70,8 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
 
         setContentView(R.layout.activity_challenge_nfc);
 
+        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP, MODE_PRIVATE);
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
@@ -80,32 +90,43 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
         exerciseNameText = (EditText) findViewById(R.id.challenge_exercise_name);
 
-        String loading[] = new String[1];
-        loading[0] = "Loading .. ";
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, loading);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
-        equipmentSpinner.setAdapter(spinnerArrayAdapter);
+        int NFCDone = mSharedPreferences.getInt("NFCDone",0);
 
-        BackendFunctions.BFGetGymEquipments(new CallbackParseObjects() {
-            @Override
-            public void done(List<ParseObject> equipments) {
-                String[] spinnerArray = new String[equipments.size()];
-                int i = 0;
-                for (ParseObject equipment : equipments) {
-                    spinnerArray[i] = equipment.getString(Utils.PARSE_EQUIPMENT_NAME);
-                    i++;
+        if (exerciseNameText.getText().length() == 0 && NFCDone == 0) {
+
+            String loading[] = new String[1];
+            loading[0] = "Loading .. ";
+            final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, loading);
+            spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+            equipmentSpinner.setAdapter(spinnerArrayAdapter);
+
+            BackendFunctions.BFGetGymEquipments(new CallbackParseObjects() {
+                @Override
+                public void done(List<ParseObject> equipments) {
+                    String[] spinnerArray = new String[equipments.size()];
+                    int i = 0;
+                    for (ParseObject equipment : equipments) {
+                        spinnerArray[i] = equipment.getString(Utils.PARSE_EQUIPMENT_NAME);
+                        i++;
+                    }
+
+                    mSharedPreferences.edit().putStringSet("spinnerArray", new HashSet<>(Arrays.asList(spinnerArray))).apply();
+
+                    Arrays.sort(spinnerArray);
+
+                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
+                    spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+                    equipmentSpinner.setAdapter(spinnerArrayAdapter);
                 }
 
-                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
-                spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
-                equipmentSpinner.setAdapter(spinnerArrayAdapter);
-            }
+                @Override
+                public void error(int error) {
 
-            @Override
-            public void error(int error) {
+                }
+            });
 
-            }
-        });
+            mSharedPreferences.edit().putInt("NFCDone",1).apply();
+        }
 
         roundsLayout = (LinearLayout) findViewById(R.id.rounds_layout);
         repsLayout = (LinearLayout) findViewById(R.id.reps_layout);
@@ -122,36 +143,39 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         equipmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
-                String selected = adapterView.getItemAtPosition(i).toString();
-                switch (selected) {
-                    case "Rower":
-                        roundsLayout.setVisibility(View.GONE);
-                        repsLayout.setVisibility(View.GONE);
-                        weightsLayout.setVisibility(View.GONE);
-                        restTimeLayout.setVisibility(View.GONE);
-                        durationLayout.setVisibility(View.VISIBLE);
-                        break;
-                    case "Cyclette":
-                        roundsLayout.setVisibility(View.GONE);
-                        repsLayout.setVisibility(View.GONE);
-                        weightsLayout.setVisibility(View.GONE);
-                        restTimeLayout.setVisibility(View.GONE);
-                        durationLayout.setVisibility(View.VISIBLE);
-                        break;
-                    case "Rope":
-                        roundsLayout.setVisibility(View.GONE);
-                        repsLayout.setVisibility(View.GONE);
-                        weightsLayout.setVisibility(View.GONE);
-                        restTimeLayout.setVisibility(View.GONE);
-                        durationLayout.setVisibility(View.VISIBLE);
-                        break;
-                    default:
-                        roundsLayout.setVisibility(View.VISIBLE);
-                        repsLayout.setVisibility(View.VISIBLE);
-                        weightsLayout.setVisibility(View.VISIBLE);
-                        restTimeLayout.setVisibility(View.VISIBLE);
-                        durationLayout.setVisibility(View.GONE);
+                if (adapterView.getChildCount() > 0) {
+                    ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
+
+                    String selected = adapterView.getItemAtPosition(i).toString();
+                    switch (selected) {
+                        case "Rower":
+                            roundsLayout.setVisibility(View.GONE);
+                            repsLayout.setVisibility(View.GONE);
+                            weightsLayout.setVisibility(View.GONE);
+                            restTimeLayout.setVisibility(View.GONE);
+                            durationLayout.setVisibility(View.VISIBLE);
+                            break;
+                        case "Cyclette":
+                            roundsLayout.setVisibility(View.GONE);
+                            repsLayout.setVisibility(View.GONE);
+                            weightsLayout.setVisibility(View.GONE);
+                            restTimeLayout.setVisibility(View.GONE);
+                            durationLayout.setVisibility(View.VISIBLE);
+                            break;
+                        case "Rope":
+                            roundsLayout.setVisibility(View.GONE);
+                            repsLayout.setVisibility(View.GONE);
+                            weightsLayout.setVisibility(View.GONE);
+                            restTimeLayout.setVisibility(View.GONE);
+                            durationLayout.setVisibility(View.VISIBLE);
+                            break;
+                        default:
+                            roundsLayout.setVisibility(View.VISIBLE);
+                            repsLayout.setVisibility(View.VISIBLE);
+                            weightsLayout.setVisibility(View.VISIBLE);
+                            restTimeLayout.setVisibility(View.VISIBLE);
+                            durationLayout.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -168,7 +192,6 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
     public NdefMessage createNdefMessage(NfcEvent event) {
         JSONObject jsonObject = new JSONObject();
 
-        int equipmentPos = equipmentSpinner.getSelectedItemPosition();
         String equipment = equipmentSpinner.getSelectedItem().toString();
 
         try {switch (equipment) {
@@ -187,7 +210,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
                 jsonObject.put("weight", weight.getText());
                 jsonObject.put("restTime", restTime.getText());
         }
-            jsonObject.put("equipment",equipmentPos);
+            jsonObject.put("equipment",equipment);
             jsonObject.put("name",exerciseNameText.getText());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -237,51 +260,56 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(new String(msg.getRecords()[0].getPayload()));
-            String exerciseName = jsonObject.getString("name");
-            int equipmentPos = jsonObject.getInt("equipment");
 
-            equipmentSpinner.setSelection(equipmentPos);
-            exerciseNameText.setText(exerciseName);
+            if (jsonObject.length() > 0) {
+                String exerciseName = jsonObject.getString("name");
+                String equipment = jsonObject.getString("equipment");
 
-            if (jsonObject.has("duration")) {
-                String exerciseDuration = jsonObject.getString("duration");
-                duration.setText(exerciseDuration);
-                durationLayout.setVisibility(View.VISIBLE);
+                String[] spinnerArray = {equipment};
 
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
+                spinnerArrayAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+                equipmentSpinner.setAdapter(spinnerArrayAdapter);
+
+
+
+                if (jsonObject.has("duration")) {
+                    String exerciseDuration = jsonObject.getString("duration");
+                    duration.setText(exerciseDuration);
+                    durationLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                if (jsonObject.has("rounds")) {
+                    String exerciseDuration = jsonObject.getString("rounds");
+                    rounds.setText(exerciseDuration);
+                    roundsLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                if (jsonObject.has("reps")) {
+                    String exerciseDuration = jsonObject.getString("reps");
+                    reps.setText(exerciseDuration);
+                    repsLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                if (jsonObject.has("weight")) {
+                    String exerciseDuration = jsonObject.getString("weight");
+                    weight.setText(exerciseDuration);
+                    weightsLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                if (jsonObject.has("restTime")) {
+                    String exerciseDuration = jsonObject.getString("restTime");
+                    restTime.setText(exerciseDuration);
+                    restTimeLayout.setVisibility(View.VISIBLE);
+
+                }
+
+                exerciseNameText.setText(exerciseName);
             }
-
-            if (jsonObject.has("rounds")) {
-                String exerciseDuration = jsonObject.getString("rounds");
-                rounds.setText(exerciseDuration);
-                roundsLayout.setVisibility(View.VISIBLE);
-
-            }
-
-            if (jsonObject.has("reps")) {
-                String exerciseDuration = jsonObject.getString("reps");
-                reps.setText(exerciseDuration);
-                repsLayout.setVisibility(View.VISIBLE);
-
-            }
-
-            if (jsonObject.has("weight")) {
-                String exerciseDuration = jsonObject.getString("weight");
-                weight.setText(exerciseDuration);
-                weightsLayout.setVisibility(View.VISIBLE);
-
-            }
-
-            if (jsonObject.has("restTime")) {
-                String exerciseDuration = jsonObject.getString("restTime");
-                restTime.setText(exerciseDuration);
-                restTimeLayout.setVisibility(View.VISIBLE);
-
-            }
-
-
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

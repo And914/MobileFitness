@@ -27,6 +27,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.parse.ParseUser;
 
+import org.slf4j.helpers.Util;
+
 import java.io.IOException;
 
 import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
@@ -84,6 +86,14 @@ public class MainActivity extends ActionBarActivity
                 .addControlCategory(CastMediaControlIntent.categoryForCast(getResources().getString(R.string.chromecast_app_id)))
                 .build();
         mMediaRouterCallback = new MyMediaRouterCallback();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP,MODE_PRIVATE);
+        mSharedPreferences.edit().putInt("NFCDone",0).apply();
     }
 
     @Override
