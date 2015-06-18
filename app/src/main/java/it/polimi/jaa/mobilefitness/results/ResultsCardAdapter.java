@@ -72,15 +72,6 @@ public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.
             vRest = (TextView) v.findViewById(R.id.ex_rest);
             vWeight = (TextView) v.findViewById(R.id.ex_weight);
             vTime = (TextView) v.findViewById(R.id.ex_time);
-
-            //TODO:gestire click card
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "Sucaaaa " + vName.getText(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 }

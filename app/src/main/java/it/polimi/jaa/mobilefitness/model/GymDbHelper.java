@@ -45,9 +45,9 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 " );";
 
         final String SQL_CREATE_HISTORY_TABLE = "CREATE TABLE " + GymContract.HistoryEntry.TABLE_NAME + " (" +
-                GymContract.HistoryEntry.COLUMN_ID_EXERC + " INTEGER, " +
-                GymContract.HistoryEntry.COLUMN_TIMESTAMP + " TEXT, " +
-                GymContract.HistoryEntry.COLUMN_RESULT + " REAL NOT NULL, " +
+                GymContract.HistoryEntry.COLUMN_ID_EXERC + " TEXT, " +
+                GymContract.HistoryEntry.COLUMN_TIMESTAMP + " DATETIME, " +
+                GymContract.HistoryEntry.COLUMN_RESULT + " INTEGER NOT NULL, " +
                 "PRIMARY KEY(" + GymContract.HistoryEntry.COLUMN_ID_EXERC + ", " +
                 GymContract.HistoryEntry.COLUMN_TIMESTAMP + ") " +
                 " );";

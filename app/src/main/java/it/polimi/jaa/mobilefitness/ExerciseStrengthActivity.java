@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.sql.Timestamp;
+
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
@@ -33,6 +36,10 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
     private TextView totalRounds;
     private Button completeRoundButton;
     private CountDownTimer countDownTimer;
+    private static String rounds;
+    private static String reps;
+    private static String weight;
+    private static String restTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +65,9 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         String[] args = {String.valueOf(exerciseId)};
 
         final Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_ICON_ID,GymContract.ExerciseEntry.COLUMN_ROUNDS,GymContract.ExerciseEntry.COLUMN_REST_TIME},
+                new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_ICON_ID,
+                        GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_ROUNDS,
+                        GymContract.ExerciseEntry.COLUMN_REST_TIME, GymContract.ExerciseEntry.COLUMN_WEIGHT},
                 GymContract.ExerciseEntry.COLUMN_ID + " = ?",
                 args ,
                 null
@@ -69,8 +78,10 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
         exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
 
-        String rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
-        final String restTime = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REST_TIME));
+        rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
+        weight = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_WEIGHT));
+        reps = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REPS));
+        restTime = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REST_TIME));
 
         completedRounds.setText("0");
         totalRounds.setText(rounds);
@@ -140,12 +151,24 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
                             String[] args = {String.valueOf(exerciseId)};
 
                             ContentValues contentValues = new ContentValues();
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED,1);
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
 
                             getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
                                     contentValues,
                                     GymContract.ExerciseEntry.COLUMN_ID + " = ?",
                                     args);
+
+
+                            int result = Integer.valueOf(rounds) * Integer.valueOf(reps) * Integer.valueOf(weight);
+                            BackendFunctions.BFSaveResult(exerciseId, result);
+
+                            contentValues = new ContentValues();
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
+
+                            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+
                         }
                     });
 

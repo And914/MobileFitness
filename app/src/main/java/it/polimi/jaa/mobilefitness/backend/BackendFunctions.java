@@ -3,6 +3,7 @@ package it.polimi.jaa.mobilefitness.backend;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -295,6 +296,42 @@ public class BackendFunctions {
             @Override
             public void error(int error) {
                 callback.error(R.string.e_undefined);
+            }
+        });
+
+    }
+
+    public static void BFGetWodExercise(String wodExerciseId, final CallbackParseObject callbackParseObject){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("wods_exercises");
+        query.whereEqualTo("objectId", wodExerciseId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null){
+                    callbackParseObject.done(parseObject);
+                }
+                else
+                    callbackParseObject.error(R.string.e_undefined);
+            }
+        });
+    }
+
+    public static void BFSaveResult(String wodExerciseId, final int result){
+        BFGetWodExercise(wodExerciseId, new CallbackParseObject() {
+            @Override
+            public void done(ParseObject wodExercise) {
+                ParseObject record = new ParseObject("users_exercises");
+
+                record.put(Utils.PARSE_USERSEXERCISES_USER, ParseUser.getCurrentUser());
+                record.put(Utils.PARSE_USERSEXERCISES_WODSEXERCISES, wodExercise);
+                record.put(Utils.PARSE_USERSEXERCISES_RESULT, result);
+
+                record.saveInBackground();
+            }
+
+            @Override
+            public void error(int error) {
+
             }
         });
 

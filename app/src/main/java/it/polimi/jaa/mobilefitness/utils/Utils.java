@@ -36,6 +36,10 @@ public class Utils {
     public static final String PARSE_WODSEXERCISES_DURATION = "duration";
     public static final String PARSE_WODSEXERCISES_CATEGORY = "category";
 
+    public static final String PARSE_USERSEXERCISES_USER = "id_user";
+    public static final String PARSE_USERSEXERCISES_WODSEXERCISES = "wods_exercises";
+    public static final String PARSE_USERSEXERCISES_RESULT = "result";
+
 
     public static final String PARSE_EXERCISES_NAME = "name";
     public static final String PARSE_EXERCISES_EQUIPMENT = "id_equipment";
