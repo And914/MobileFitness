@@ -155,6 +155,7 @@
             android:ems="10"
             android:id="@+id/rest_time" />
     </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -181,6 +182,14 @@
             android:inputType="number"
             android:ems="10"
             android:id="@+id/duration" />
+
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="START"
+        android:id="@+id/button_start"
+        android:visibility="visible" />
 
 </LinearLayout>

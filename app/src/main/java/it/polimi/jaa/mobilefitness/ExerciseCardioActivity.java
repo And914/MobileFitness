@@ -40,6 +40,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class ExerciseCardioActivity extends ActionBarActivity {
 
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
     private ImageView exerciseImage;
@@ -51,6 +52,8 @@ public class ExerciseCardioActivity extends ActionBarActivity {
     private long savedMillisecondsUntilFinish;
     private static int duration;
 
+    private Boolean isChallenge;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,9 @@ public class ExerciseCardioActivity extends ActionBarActivity {
 
         mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP, MODE_PRIVATE);
         exerciseId = mSharedPreferences.getString(Utils.SHARED_PREFERENCES_ID_EXERCISE, "");
+
+        mSharedPreferencesChallenge = getSharedPreferences(Utils.SHARED_PREFERENCES_APP_CHALLENGE, MODE_PRIVATE);
+        isChallenge = mSharedPreferencesChallenge.getBoolean(Utils.SHARED_PREFERENCES_ISCHALLENGE, false);
     }
 
     @Override
@@ -73,23 +79,27 @@ public class ExerciseCardioActivity extends ActionBarActivity {
         started = false;
 
 
+        if(!isChallenge) {
+            String[] args = {String.valueOf(exerciseId)};
 
+            final Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
+                    new String[]{GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_ICON_ID, GymContract.ExerciseEntry.COLUMN_DURATION},
+                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                    args,
+                    null
+            );
 
-        String[] args = {String.valueOf(exerciseId)};
+            cursor.moveToFirst();
 
-        final Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_ICON_ID,GymContract.ExerciseEntry.COLUMN_DURATION},
-                GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                args ,
-                null
-        );
+            exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
+            exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
 
-        cursor.moveToFirst();
-
-        exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
-        exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
-
-        duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
+            duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
+            cursor.close();
+        } else {
+            exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
+            duration = mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION,0);
+        }
         savedMillisecondsUntilFinish = duration*1000;
 
         chronometer.setText(convertIntToTimeString(duration));
@@ -100,11 +110,11 @@ public class ExerciseCardioActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (!started) {
 
-                    countDownTimer = new CountDownTimer(savedMillisecondsUntilFinish,1000) {
+                    countDownTimer = new CountDownTimer(savedMillisecondsUntilFinish, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             savedMillisecondsUntilFinish = millisUntilFinished;
-                            int secondsUntilFinished = (int)(millisUntilFinished / 1000);
+                            int secondsUntilFinished = (int) (millisUntilFinished / 1000);
                             chronometer.setText(convertIntToTimeString(secondsUntilFinished));
                         }
 
@@ -126,7 +136,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
             }
         });
 
-        cursor.close();
+
 
     }
 

@@ -28,6 +28,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class ExerciseStrengthActivity extends ActionBarActivity {
 
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
     private ImageView exerciseImage;
@@ -41,6 +42,8 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
     private static String weight;
     private static String restTime;
 
+    private Boolean isChallenge;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,9 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
 
         mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP, MODE_PRIVATE);
         exerciseId = mSharedPreferences.getString(Utils.SHARED_PREFERENCES_ID_EXERCISE, "");
+
+        mSharedPreferencesChallenge = getSharedPreferences(Utils.SHARED_PREFERENCES_APP_CHALLENGE, MODE_PRIVATE);
+        isChallenge = mSharedPreferencesChallenge.getBoolean(Utils.SHARED_PREFERENCES_ISCHALLENGE, false);
     }
 
     @Override
@@ -62,27 +68,38 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
 
         completeRoundButton.setText("Next round");
 
-        String[] args = {String.valueOf(exerciseId)};
+        if(!isChallenge) {
+            String[] args = {String.valueOf(exerciseId)};
 
-        final Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                new String[]{GymContract.ExerciseEntry.COLUMN_NAME,GymContract.ExerciseEntry.COLUMN_ICON_ID,
-                        GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_ROUNDS,
-                        GymContract.ExerciseEntry.COLUMN_REST_TIME, GymContract.ExerciseEntry.COLUMN_WEIGHT},
-                GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                args ,
-                null
-        );
+            final Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
+                    new String[]{GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_ICON_ID,
+                            GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_ROUNDS,
+                            GymContract.ExerciseEntry.COLUMN_REST_TIME, GymContract.ExerciseEntry.COLUMN_WEIGHT},
+                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                    args,
+                    null
+            );
 
-        cursor.moveToFirst();
+            cursor.moveToFirst();
 
-        exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
-        exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
+            exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
+            exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
 
-        rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
-        weight = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_WEIGHT));
-        reps = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REPS));
-        restTime = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REST_TIME));
+            rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
+            weight = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_WEIGHT));
+            reps = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REPS));
+            restTime = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REST_TIME));
 
+            cursor.close();
+        }
+        else {
+            exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
+
+            rounds = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_ROUNDS,0));
+            weight = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_WEIGHTS,0));
+            reps = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_REPS,0));
+            restTime = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESTTIME,0));
+        }
         completedRounds.setText("0");
         totalRounds.setText(rounds);
 
@@ -114,7 +131,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
             }
         });
 
-        cursor.close();
+
 
     }
 

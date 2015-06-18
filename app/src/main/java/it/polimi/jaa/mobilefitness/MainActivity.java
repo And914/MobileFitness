@@ -92,7 +92,8 @@ public class MainActivity extends ActionBarActivity
     protected void onPostResume() {
         super.onPostResume();
 
-        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP,MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP_CHALLENGE,MODE_PRIVATE);
+        mSharedPreferences.edit().clear();
         mSharedPreferences.edit().putInt("NFCDone",0).apply();
     }
 

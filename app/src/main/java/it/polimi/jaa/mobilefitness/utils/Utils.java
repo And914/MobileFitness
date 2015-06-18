@@ -62,8 +62,20 @@ public class Utils {
     public static final String PARSE_USERSRECORDS_RECORD = "personal_record";
 
     public static final String SHARED_PREFERENCES_APP = "shared_preferences_app";
+    public static final String SHARED_PREFERENCES_APP_CHALLENGE = "shared_preferences_app_c";
     public static final String SHARED_PREFERENCES_ID_WOD = "id_wod";
     public static final String SHARED_PREFERENCES_ID_EXERCISE = "id_exercise";
+
+
+    public static final String SHARED_PREFERENCES_ISCHALLENGE = "is_challenge";
+    public static final String SHARED_PREFERENCES_CHALLENGE_REPS = "c_reps";
+    public static final String SHARED_PREFERENCES_CHALLENGE_ROUNDS = "c_rounds";
+    public static final String SHARED_PREFERENCES_CHALLENGE_WEIGHTS = "c_weights";
+    public static final String SHARED_PREFERENCES_CHALLENGE_DURATION = "c_duration";
+    public static final String SHARED_PREFERENCES_CHALLENGE_RESTTIME = "c_rest_time";
+    public static final String SHARED_PREFERENCES_CHALLENGE_EQUIPMENT = "c_equipment";
+    public static final String SHARED_PREFERENCES_CHALLENGE_NAME = "c_name";
+
 
 
     public static int findIcon(int ex){
