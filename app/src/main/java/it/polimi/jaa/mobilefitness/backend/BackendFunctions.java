@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -307,10 +308,9 @@ public class BackendFunctions {
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if(e == null){
+                if (e == null) {
                     callbackParseObject.done(parseObject);
-                }
-                else
+                } else
                     callbackParseObject.error(R.string.e_undefined);
             }
         });
@@ -335,6 +335,20 @@ public class BackendFunctions {
             }
         });
 
+    }
+
+    public static void BFGetResults(final CallbackParseObjects callbackParseObjects) {
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("users_exercises");
+        parseQuery.whereEqualTo(Utils.PARSE_USERSEXERCISES_USER,ParseUser.getCurrentUser());
+        parseQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e == null)
+                    callbackParseObjects.done(list);
+                else
+                    callbackParseObjects.error(R.string.e_undefined);
+            }
+        });
     }
 
 
