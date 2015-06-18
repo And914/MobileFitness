@@ -25,9 +25,11 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
@@ -47,6 +49,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
     private Button startExerciseButton;
     private boolean started;
     private long savedMillisecondsUntilFinish;
+    private static int duration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
         exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
         exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
 
-        int duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
+        duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
         savedMillisecondsUntilFinish = duration*1000;
 
         chronometer.setText(convertIntToTimeString(duration));
@@ -166,6 +169,15 @@ public class ExerciseCardioActivity extends ActionBarActivity {
                                     contentValues,
                                     GymContract.ExerciseEntry.COLUMN_ID + " = ?",
                                     args);
+
+                            BackendFunctions.BFSaveResult(exerciseId, duration);
+
+                            contentValues = new ContentValues();
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
+
+                            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
                         }
                     });
 
