@@ -97,6 +97,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
             duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
             cursor.close();
         } else {
+            exerciseImage.setImageResource(R.drawable.cardio_image);
             exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
             duration = mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION,0);
         }

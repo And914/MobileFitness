@@ -94,7 +94,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         }
         else {
             exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
-
+            exerciseImage.setImageResource(R.drawable.strength_image);
             rounds = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_ROUNDS,0));
             weight = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_WEIGHTS,0));
             reps = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_REPS,0));
