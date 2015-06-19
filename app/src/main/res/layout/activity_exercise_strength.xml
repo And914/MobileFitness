@@ -51,9 +51,18 @@
 
     </LinearLayout>
 
-    <Button
+    <FrameLayout
         android:layout_width="match_parent"
-        android:id="@+id/button_complete_exercise"
-        android:textSize="@dimen/abc_text_size_button_material"
-        android:layout_height="@dimen/abc_action_button_min_height_material" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_complete_exercise"
+            android:clickable="true"
+            android:visibility="visible"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
 </LinearLayout>

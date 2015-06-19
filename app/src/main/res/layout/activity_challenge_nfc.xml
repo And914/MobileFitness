@@ -185,11 +185,19 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="START"
-        android:id="@+id/button_start"
-        android:visibility="visible" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="START"
+            android:id="@+id/button_start"
+            android:clickable="true"
+            android:visibility="visible"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
 
 </LinearLayout>
