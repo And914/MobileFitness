@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -14,10 +15,13 @@ import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by Jacopo on 09/04/2015.
@@ -26,6 +30,14 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
     private Button senderNFCButton;
     private static Boolean mFirst;
     private NfcAdapter mNfcAdapter;
+
+    private TextView resultText;
+    private TextView opponentResultText;
+
+    private int result;
+    private int opponentResult;
+
+    private SharedPreferences mSharedPreferencesChallenge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +55,18 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
         }
         // Register callback
         mNfcAdapter.setNdefPushMessageCallback(this, this);
+
+        mSharedPreferencesChallenge = getSharedPreferences(Utils.SHARED_PREFERENCES_APP_CHALLENGE, MODE_PRIVATE);
+        result = mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, 0);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        resultText = (TextView) findViewById(R.id.your_score);
+        opponentResultText = (TextView) findViewById(R.id.opponent_score);
+        resultText.setText(String.valueOf(result));
         /*senderNFCButton = (Button) findViewById(R.id.button_sender_nfc);
 
         senderNFCButton.setOnClickListener(new View.OnClickListener() {
@@ -67,9 +85,11 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
         try {
             if (mFirst) {
                 jsonObject.put("number",1);
+                jsonObject.put("result", result);
             }
             else {
                 jsonObject.put("number",2);
+                jsonObject.put("result", result);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -78,7 +98,7 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
 
         return new NdefMessage(
                 new NdefRecord[] { NdefRecord.createMime(
-                        "application/it.polimi.jaa.android.beam", jsonObject.toString().getBytes())
+                        "application/it.polimi.jaa.android.beam1", jsonObject.toString().getBytes())
                         /**
                          * The Android Application Record (AAR) is commented out. When a device
                          * receives a push with an AAR in it, the application specified in the AAR
@@ -122,6 +142,9 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
             if (jsonObject.getInt("number") == 1) {
                 mFirst = false;
             }
+
+            opponentResult = jsonObject.getInt("result");
+            opponentResultText.setText(String.valueOf(opponentResult));
             if(!mFirst) {
                 SendBackDialogFragment sendBackDialogFragment = new SendBackDialogFragment();
                 sendBackDialogFragment.show(getFragmentManager(), "send_back_dialog");

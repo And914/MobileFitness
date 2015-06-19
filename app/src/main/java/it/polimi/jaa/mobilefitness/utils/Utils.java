@@ -75,6 +75,7 @@ public class Utils {
     public static final String SHARED_PREFERENCES_CHALLENGE_RESTTIME = "c_rest_time";
     public static final String SHARED_PREFERENCES_CHALLENGE_EQUIPMENT = "c_equipment";
     public static final String SHARED_PREFERENCES_CHALLENGE_NAME = "c_name";
+    public static final String SHARED_PREFERENCES_CHALLENGE_RESULT = "c_result";
 
 
 

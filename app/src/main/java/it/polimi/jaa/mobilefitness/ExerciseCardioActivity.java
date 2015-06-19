@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class ExerciseCardioActivity extends ActionBarActivity {
 
     private SharedPreferences mSharedPreferences;
-    private SharedPreferences mSharedPreferencesChallenge;
+    private static SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
     private ImageView exerciseImage;
@@ -52,7 +53,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
     private long savedMillisecondsUntilFinish;
     private static int duration;
 
-    private Boolean isChallenge;
+    private static Boolean isChallenge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,25 +171,31 @@ public class ExerciseCardioActivity extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dismiss();
                             getActivity().finish();
+                            if(isChallenge){
+                                //save results
+                                mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, duration).apply();
+                                Intent intent = new Intent(getActivity().getApplicationContext(), SendResultsNFCActivity.class);
+                                startActivity(intent);
+                            } else {
+                                String[] args = {String.valueOf(exerciseId)};
 
-                            String[] args = {String.valueOf(exerciseId)};
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
 
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED,1);
+                                getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                                        contentValues,
+                                        GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                                        args);
 
-                            getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
-                                    contentValues,
-                                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                                    args);
+                                BackendFunctions.BFSaveResult(exerciseId, duration);
 
-                            BackendFunctions.BFSaveResult(exerciseId, duration);
+                                contentValues = new ContentValues();
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
 
-                            contentValues = new ContentValues();
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
-
-                            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                                getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                            }
                         }
                     });
 
