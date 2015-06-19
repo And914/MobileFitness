@@ -57,27 +57,6 @@ public class WodInfo {
         return mArrayList;
     }
 
-   /* public static List<WodInfo> createList(JSONArray jsonExercises) {
-
-        List<WodInfo> result = new ArrayList<WodInfo>();
-
-        for (int i = 0; i<jsonExercises.length();i++) {
-            try {
-                JSONObject exercise = jsonExercises.getJSONObject(i);
-
-                WodInfo wi = new WodInfo(exercise.getString("wod_name"), exercise.getString("gym_name"),exercise.getInt("id_wod"));
-                if (!result.contains(wi)){
-                    result.add(wi);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return result;
-    }*/
-
     public static List<WodInfo> createList(List<ParseObject> wodsParseObjects){
         List<WodInfo> result = new ArrayList<WodInfo>();
         for(ParseObject wod: wodsParseObjects){

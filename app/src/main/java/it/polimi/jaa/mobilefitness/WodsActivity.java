@@ -104,38 +104,6 @@ public class WodsActivity extends ActionBarActivity implements SwipeRefreshLayou
 
             }
         });
-        /*String urlServer = Utils.server_ip + "/wods/user/" + mSharedPreferences.getString(Utils.PREF_EMAIL, "");
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get(urlServer,
-                new TextHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int i, Header[] headers, String response) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-
-                            Log.d(LOG_ACTIVITY, jsonArray.toString());
-                            if (jsonArray.length() > 0) {
-                                //set the content of the recycler view
-                                WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(jsonArray));
-                                recyclerView.setAdapter(wodCardAdapter);
-
-                                saveOnDB(jsonArray);
-
-                            } else {
-                                Log.e(LOG_ACTIVITY, jsonArray.toString());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
-                        Log.e(LOG_ACTIVITY, statusCode + throwable.getMessage());
-                    }
-                });*/
     }
 
     private void saveOnDB(List<ParseObject> parseObjects){
