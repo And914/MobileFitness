@@ -22,6 +22,7 @@ public class ExerciseInfo {
     public final int image;
     public final int category;
     public final int completed;
+    public Boolean selected;
 
     public ExerciseInfo(String id, String name, String equipment, String rounds, String rep, String rest, String weight, String time, int image, int category, int completed) {
         this.id = id;
@@ -35,6 +36,7 @@ public class ExerciseInfo {
         this.image = image;
         this.category = category;
         this.completed = completed;
+        this.selected = false;
     }
 
     public static List<ExerciseInfo> createListFromCursor(Cursor cursor) {

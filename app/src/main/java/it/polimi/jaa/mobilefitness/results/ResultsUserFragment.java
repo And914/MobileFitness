@@ -86,9 +86,9 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
             public void done(List<ParseObject> parseObjects) {
                 for (ParseObject parseObject : parseObjects) {
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC,parseObject.getParseObject("wods_exercises").getObjectId());
+                    contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC,parseObject.getParseObject(Utils.PARSE_USERSEXERCISES_WODSEXERCISES).getObjectId());
                     contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(parseObject.getCreatedAt()));
-                    contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, parseObject.getInt("result"));
+                    contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, parseObject.getInt(Utils.PARSE_USERSEXERCISES_RESULT));
                     getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
                 }
                 Cursor cursor = getActivity().getContentResolver().query(GymContract.HistoryEntry.CONTENT_URI, new String[]{GymContract.HistoryEntry.COLUMN_ID_EXERC, GymContract.HistoryEntry.COLUMN_RESULT,GymContract.HistoryEntry.COLUMN_TIMESTAMP},

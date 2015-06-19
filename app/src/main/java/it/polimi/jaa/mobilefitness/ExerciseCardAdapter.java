@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -153,17 +154,20 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
                 public void onClick(View view) {
                     ExerciseInfo ei = exerciseInfoList.get(getAdapterPosition());
                     SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
-                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_EXERCISE,ei.id).apply();
-                    if (ei.completed == 0) {
+                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_EXERCISE, ei.id).apply();
+
+                    if (ei.completed == 0 && ei.selected) {
                         //if cardio
                         if (ei.category == 1) {
                             Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
                             ((Activity)view.getContext()).startActivityForResult(intent, 0);
+                            WodActivity.canVibrate = false;
                         }
                         //if strength
                         else if (ei.category == 2) {
                             Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
                             ((Activity)view.getContext()).startActivityForResult(intent,0);
+                            WodActivity.canVibrate = false;
                         }
                     }
 

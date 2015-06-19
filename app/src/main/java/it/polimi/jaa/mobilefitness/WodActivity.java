@@ -1,15 +1,11 @@
 package it.polimi.jaa.mobilefitness;
 
-
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,19 +18,12 @@ import com.gimbal.android.BeaconSighting;
 import com.gimbal.android.Communication;
 import com.gimbal.android.CommunicationListener;
 import com.gimbal.android.CommunicationManager;
-import com.gimbal.android.Gimbal;
 import com.gimbal.android.PlaceEventListener;
 import com.gimbal.android.PlaceManager;
 import com.gimbal.android.Push;
 import com.gimbal.android.Visit;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,8 +36,6 @@ import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
-import it.polimi.jaa.mobilefitness.utils.WodExerciseInfo;
-import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**
  * Created by andre on 30/03/15.
@@ -71,6 +58,8 @@ public class WodActivity extends ActionBarActivity {
 
     private static final String LOG_ACTIVITY = "WodFragment";
 
+    public static Boolean canVibrate;
+
     public WodActivity() {
     }
 
@@ -78,6 +67,8 @@ public class WodActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wod);
+
+        canVibrate = true;
 
         mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP,MODE_PRIVATE);
 
@@ -216,7 +207,7 @@ public class WodActivity extends ActionBarActivity {
             }
 
             private void handleBeaconEnter(BeaconSighting sighting) {
-                if (sighting.getRSSI() > -40 && !beaconEntered) {
+                if (sighting.getRSSI() > -40 && !beaconEntered && canVibrate) {
                     beaconEntered = true;
                     int i = 0;
 
@@ -247,13 +238,16 @@ public class WodActivity extends ActionBarActivity {
                         return;
                     }
 
-                    if(exerciseCardList.get(i).completed == 0) {
+                    final ExerciseInfo exerciseInfo = exerciseCardList.get(i);
+
+                    if(exerciseInfo.completed == 0) {
                         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                         vibrator.vibrate(750);
 
 
                         final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
                         viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                        exerciseInfo.selected = true;
                         Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -267,6 +261,7 @@ public class WodActivity extends ActionBarActivity {
                                     @Override
                                     public void run() {
                                         viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                                        exerciseInfo.selected = false;
                                     }
                                 });
                             }
@@ -330,6 +325,9 @@ public class WodActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        canVibrate = true;
+
         if (requestCode == 0) {
             setExercisesFromLocalDB();
             int totalEx = exerciseCardList.size();
