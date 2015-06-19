@@ -131,6 +131,14 @@ public class ExerciseCardioActivity extends ActionBarActivity {
                     started = true;
                     startExerciseButton.setText("STOP!");
                 } else {
+                    if (isChallenge){
+                        finish();
+                        //save results
+                        int results = duration -  (int) (savedMillisecondsUntilFinish / 1000);
+                        mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, results).apply();
+                        Intent intent = new Intent(getApplicationContext(), SendResultsNFCActivity.class);
+                        startActivity(intent);
+                    }
                     countDownTimer.cancel();
                     started = false;
                     startExerciseButton.setText(R.string.start_wod_timer_cardio);

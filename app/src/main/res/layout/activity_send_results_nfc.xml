@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="200"
             android:id="@+id/opponent_score"
             android:inputType="number" />
     </LinearLayout>

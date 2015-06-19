@@ -28,7 +28,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 public class ExerciseStrengthActivity extends ActionBarActivity {
 
     private SharedPreferences mSharedPreferences;
-    private SharedPreferences mSharedPreferencesChallenge;
+    private static SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
     private ImageView exerciseImage;
@@ -42,7 +42,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
     private static String weight;
     private static String restTime;
 
-    private Boolean isChallenge;
+    private static Boolean isChallenge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,26 +165,35 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
                             dismiss();
                             getActivity().finish();
 
-                            String[] args = {String.valueOf(exerciseId)};
-
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
-
-                            getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
-                                    contentValues,
-                                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                                    args);
-
-
                             int result = Integer.valueOf(rounds) * Integer.valueOf(reps) * Integer.valueOf(weight);
-                            BackendFunctions.BFSaveResult(exerciseId, result);
 
-                            contentValues = new ContentValues();
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
-                            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
+                            if(isChallenge){
+                                //save results
+                                mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, result).apply();
+                                Intent intent = new Intent(getActivity().getApplicationContext(), SendResultsNFCActivity.class);
+                                startActivity(intent);
+                            } else {
 
-                            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                                String[] args = {String.valueOf(exerciseId)};
+
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
+
+                                getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                                        contentValues,
+                                        GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                                        args);
+
+
+                                BackendFunctions.BFSaveResult(exerciseId, result);
+
+                                contentValues = new ContentValues();
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
+                                contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
+
+                                getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                            }
 
                         }
                     });
