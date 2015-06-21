@@ -4,6 +4,17 @@
     android:layout_height="match_parent">
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="RESULTS"
+        android:id="@+id/textView10"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp"
+        android:textColor="@color/myPrimaryDarkColor"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -15,7 +26,9 @@
             android:layout_weight="4"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Your Result : "
-            android:id="@+id/textView11" />
+            android:id="@+id/textView11"
+            android:layout_margin="15dp"
+            android:textColor="@color/myPrimaryColor" />
 
         <TextView
             android:layout_width="0dp"
@@ -24,7 +37,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="100"
             android:id="@+id/your_score"
-            android:inputType="number" />
+            android:inputType="number"
+            android:layout_margin="15dp"
+            android:textColor="@color/myPrimaryColor" />
     </LinearLayout>
 
     <LinearLayout
@@ -38,7 +53,9 @@
             android:layout_weight="4"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Opponent&apos;s Result : "
-            android:id="@+id/textView9" />
+            android:id="@+id/textView9"
+            android:layout_margin="15dp"
+            android:textColor="@color/myPrimaryColor" />
 
         <TextView
             android:layout_width="0dp"
@@ -46,6 +63,15 @@
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/opponent_score"
-            android:inputType="number" />
+            android:inputType="number"
+            android:layout_margin="15dp"
+            android:textColor="@color/myPrimaryColor" />
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/image_result"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
