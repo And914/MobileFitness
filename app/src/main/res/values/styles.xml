@@ -45,6 +45,15 @@
         <item name="android:background">@color/myPrimaryColor</item>
     </style>
 
+    <style name="DividerBlack">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+
     <style name="DividerHorizontalExerciseInfo">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_gravity">center</item>

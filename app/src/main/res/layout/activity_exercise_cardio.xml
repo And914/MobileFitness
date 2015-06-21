@@ -6,40 +6,71 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:layout_weight="2"
+        android:scaleType="fitCenter"
+        android:layout_weight="3"
         android:id="@+id/exercise_icon"/>
     
-    <TextView
-        android:paddingTop="10dp"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:textSize="30sp"
-        android:gravity="center_horizontal"
-        android:text="ExerciseName"
-        android:layout_weight="1"
-        android:id="@+id/exercise_name"/>
+        android:paddingTop="20dp"
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
+        <View style="@style/DividerBlack"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="00:00"
-        android:textSize="50sp"
-        android:id="@+id/timer_cardio"/>
+        <TextView
+            android:background="@color/background_material_light"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="30sp"
+            android:text="ExerciseName"
+
+            android:id="@+id/exercise_name"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center" />
+    </FrameLayout>
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="2"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="80dp"
+        android:paddingRight="80dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bollino"
+            android:scaleType="centerCrop"
+            android:paddingTop="110dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="00:00"
+            android:textSize="50sp"
+            android:id="@+id/timer_cardio"
+            android:paddingTop="40dp" />
+    </FrameLayout>
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
         <Button
             style="@style/Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/abc_action_button_min_height_material"
             android:id="@+id/button_timer_exercise"
             android:clickable="true"
             android:visibility="visible"
