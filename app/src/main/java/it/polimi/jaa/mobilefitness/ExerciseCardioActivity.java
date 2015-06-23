@@ -68,6 +68,13 @@ public class ExerciseCardioActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(isChallenge){
+            finish();
+        }
+    }
+
+    @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
