@@ -11,10 +11,19 @@
         android:id="@+id/editTextProfile"
         android:layout_gravity="center_horizontal"><requestFocus/></EditText>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Apply"
-        android:id="@+id/modify_button"
-        android:layout_gravity="right" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply"
+            android:id="@+id/modify_button"
+            android:clickable="true"
+            android:visibility="visible"
+            android:layout_gravity="bottom"
+            android:enabled="true" />
+    </FrameLayout>
 </LinearLayout>
