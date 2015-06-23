@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -138,17 +139,17 @@ public class ExerciseCardioActivity extends ActionBarActivity {
                     started = true;
                     startExerciseButton.setText("STOP!");
                 } else {
+                    countDownTimer.cancel();
+                    int results = duration -  (int) (savedMillisecondsUntilFinish / 1000);
                     if (isChallenge){
-                        finish();
-                        //save results
-                        int results = duration -  (int) (savedMillisecondsUntilFinish / 1000);
                         mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, results).apply();
                         Intent intent = new Intent(getApplicationContext(), SendResultsNFCActivity.class);
                         startActivity(intent);
                     }
-                    countDownTimer.cancel();
-                    started = false;
-                    startExerciseButton.setText(R.string.start_wod_timer_cardio);
+                    else {
+                        saveResult(results);
+                    }
+                    finish();
                 }
             }
         });
@@ -192,24 +193,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
                                 Intent intent = new Intent(getActivity().getApplicationContext(), SendResultsNFCActivity.class);
                                 startActivity(intent);
                             } else {
-                                String[] args = {String.valueOf(exerciseId)};
-
-                                ContentValues contentValues = new ContentValues();
-                                contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
-
-                                getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
-                                        contentValues,
-                                        GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                                        args);
-
-                                BackendFunctions.BFSaveResult(exerciseId, duration);
-
-                                contentValues = new ContentValues();
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
-
-                                getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                                saveResult();
                             }
                         }
                     });
@@ -218,5 +202,47 @@ public class ExerciseCardioActivity extends ActionBarActivity {
             // Create the AlertDialog object and return it
             return builder.create();
         }
+
+        private void saveResult() {
+            String[] args = {String.valueOf(exerciseId)};
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
+
+            getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                    contentValues,
+                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                    args);
+
+            BackendFunctions.BFSaveResult(exerciseId, duration);
+
+            contentValues = new ContentValues();
+            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
+            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
+
+            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+        }
+    }
+
+    private void saveResult(int result) {
+        String[] args = {String.valueOf(exerciseId)};
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
+
+        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                contentValues,
+                GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                args);
+
+        BackendFunctions.BFSaveResult(exerciseId, result);
+
+        contentValues = new ContentValues();
+        contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+        contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
+        contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
+
+        getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
     }
 }

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,13 @@ public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.
         exerciseViewHolder.vEquipment.setText(ex.equipment);
         exerciseViewHolder.vDate.setText(ex.date);
         exerciseViewHolder.vResult.setText(ex.result);
+        if (ex.firstDate) {
+            exerciseViewHolder.vDateContainer.setVisibility(View.VISIBLE);
+            exerciseViewHolder.vDateTitle.setText(ex.dateTitle);
+        }
+        else {
+            exerciseViewHolder.vDateContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -54,6 +62,8 @@ public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.
         TextView vEquipment;
         TextView vDate;
         TextView vResult;
+        TextView vDateTitle;
+        FrameLayout vDateContainer;
         View view;
 
         public ResultsViewHolder(final View v) {
@@ -63,6 +73,8 @@ public class ResultsCardAdapter extends RecyclerView.Adapter<ResultsCardAdapter.
             vEquipment = (TextView) v.findViewById(R.id.exercise_equipment_result);
             vDate = (TextView) v.findViewById(R.id.exercise_date_result);
             vResult = (TextView) v.findViewById(R.id.exercise_result_result);
+            vDateContainer = (FrameLayout) v.findViewById(R.id.result_date_container);
+            vDateTitle = (TextView) v.findViewById(R.id.result_date_title);
         }
     }
 }

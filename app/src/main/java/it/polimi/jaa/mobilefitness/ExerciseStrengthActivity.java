@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.model.GymContract;
@@ -36,6 +37,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
     private TextView completedRounds;
     private TextView totalRounds;
     private Button completeRoundButton;
+    private Button endButton;
     private CountDownTimer countDownTimer;
     private static String rounds;
     private static String reps;
@@ -64,9 +66,11 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         exerciseName = (TextView) findViewById(R.id.exercise_name);
         completedRounds = (TextView) findViewById(R.id.completed_rounds);
         totalRounds = (TextView) findViewById(R.id.total_rounds);
-        completeRoundButton = (Button) findViewById(R.id.button_complete_exercise);
+        completeRoundButton = (Button) findViewById(R.id.button_next_round);
+        endButton = (Button) findViewById(R.id.button_complete_exercise);
 
         completeRoundButton.setText("Next round");
+        endButton.setText("Give up!");
 
         if(!isChallenge) {
             String[] args = {String.valueOf(exerciseId)};
@@ -103,12 +107,22 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         completedRounds.setText("0");
         totalRounds.setText(rounds);
 
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int result = Integer.valueOf(completedRounds.getText().toString()) * Integer.valueOf(reps) * Integer.valueOf(weight);
+                saveResult(result);
+                finish();
+            }
+        });
+
         completeRoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int rounds = Integer.parseInt(completedRounds.getText().toString()) + 1;
                 if (rounds < Integer.parseInt(totalRounds.getText().toString())) {
                     completedRounds.setText(String.valueOf(rounds));
+                    completeRoundButton.setClickable(false);
                     countDownTimer = new CountDownTimer(Integer.parseInt(restTime) * 1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -119,7 +133,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
                         @Override
                         public void onFinish() {
                             completeRoundButton.setText("Next Round");
-
+                            completeRoundButton.setClickable(true);
                         }
                     };
                     countDownTimer.start();
@@ -167,40 +181,74 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
 
                             int result = Integer.valueOf(rounds) * Integer.valueOf(reps) * Integer.valueOf(weight);
 
-                            if(isChallenge){
+                            if (isChallenge) {
                                 //save results
                                 mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, result).apply();
                                 Intent intent = new Intent(getActivity().getApplicationContext(), SendResultsNFCActivity.class);
                                 startActivity(intent);
                             } else {
-
-                                String[] args = {String.valueOf(exerciseId)};
-
-                                ContentValues contentValues = new ContentValues();
-                                contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
-
-                                getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
-                                        contentValues,
-                                        GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                                        args);
-
-
-                                BackendFunctions.BFSaveResult(exerciseId, result);
-
-                                contentValues = new ContentValues();
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
-                                contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Timestamp(System.currentTimeMillis())));
-
-                                getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+                                saveResult(result);
                             }
 
+                        }
+
+                        private void saveResult(int result) {
+                            String[] args = {String.valueOf(exerciseId)};
+
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
+
+                            getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                                    contentValues,
+                                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                                    args);
+
+
+                            BackendFunctions.BFSaveResult(exerciseId, result);
+
+                            contentValues = new ContentValues();
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
+                            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
+
+                            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
                         }
                     });
 
 
             // Create the AlertDialog object and return it
             return builder.create();
+        }
+
+
+    }
+
+    private void saveResult(int result) {
+        String[] args = {String.valueOf(exerciseId)};
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
+
+        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+                contentValues,
+                GymContract.ExerciseEntry.COLUMN_ID + " = ?",
+                args);
+
+
+        BackendFunctions.BFSaveResult(exerciseId, result);
+
+        contentValues = new ContentValues();
+        contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
+        contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
+        contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
+
+        getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isChallenge){
+            finish();
         }
     }
 }

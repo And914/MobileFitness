@@ -1,76 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    android:layout_margin="5dp"
-    card_view:cardElevation="@dimen/cardview_default_elevation"
-    android:id="@+id/exercise_card">
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:padding="20dp"
-        android:background="@color/common_action_bar_splitter"
-        android:baselineAligned="false">
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
 
-        <LinearLayout android:layout_width="0dp"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/result_date_container">
+
+        <View style="@style/DividerBlack"/>
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/result_date_title"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:background="@color/background_floating_material_light"
+            android:textStyle="bold"/>
+    </FrameLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        android:layout_margin="5dp"
+        card_view:cardElevation="@dimen/cardview_default_elevation"
+        android:id="@+id/exercise_card">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_weight="2">
+            android:layout_weight="1"
+            android:padding="20dp"
+            android:background="@color/common_action_bar_splitter"
+            android:baselineAligned="false">
 
             <LinearLayout android:layout_width="0dp"
+                android:baselineAligned="false"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_weight="2">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextCard"
-                    android:text="Cyclette"
-                    android:id="@+id/exercise_name_result"
-                    android:textSize="20sp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    style="@style/TextCard"
-                    android:text="New Text"
-                    android:id="@+id/exercise_equipment_result" />
+                    android:orientation="vertical"
+                    android:layout_weight="2">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:text="Cyclette"
+                        android:id="@+id/exercise_name_result"
+                        android:textSize="20sp"/>
 
-                <TextView
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:text="New Text"
+                        android:id="@+id/exercise_equipment_result" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextCard"
+                        android:text="New Text"
+                        android:id="@+id/exercise_date_result" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextCard"
-                    android:text="New Text"
-                    android:id="@+id/exercise_date_result" />
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Result"
+                        android:textSize="20sp"
+                        style="@style/TextCard"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        style="@style/TextCard"
+                        android:id="@+id/exercise_result_result" />
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="bottom">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Result"
-                    android:textSize="20sp"
-                    style="@style/TextCard"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New Text"
-                    style="@style/TextCard"
-                    android:id="@+id/exercise_result_result" />
-            </LinearLayout>
         </LinearLayout>
 
-
-    </LinearLayout>
-
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

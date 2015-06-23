@@ -27,8 +27,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.parse.ParseUser;
 
-import org.slf4j.helpers.Util;
-
 import java.io.IOException;
 
 import it.polimi.jaa.mobilefitness.authentication.LoginActivity;

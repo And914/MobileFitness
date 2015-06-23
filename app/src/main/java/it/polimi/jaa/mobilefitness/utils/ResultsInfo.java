@@ -2,16 +2,27 @@ package it.polimi.jaa.mobilefitness.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import it.polimi.jaa.mobilefitness.model.GymContract;
 
 /**
  * Created by Jacopo on 18/06/2015.
  */
-public class ResultsInfo {
+public class ResultsInfo implements Comparable {
     public final String id;
     public final String name;
     public final String equipment;
@@ -19,6 +30,8 @@ public class ResultsInfo {
     public final int image;
     public final int category;
     public final String result;
+    public Boolean firstDate;
+    public String dateTitle;
 
     public ResultsInfo(String id, String name, String date, String equipment, int image, int category, String result) {
         this.id = id;
@@ -28,6 +41,7 @@ public class ResultsInfo {
         this.date = date;
         this.category = category;
         this.result = result;
+        this.firstDate = false;
     }
 
     public static List<ResultsInfo> createListFromCursor(Cursor cursor, Context context) {
@@ -60,6 +74,69 @@ public class ResultsInfo {
 
             cursorExercise.close();
         }
+
+        Collections.sort(mArrayList);
+
+        Date oldDate = null;
+        Date currentDate = null;
+
+        for (ResultsInfo ri : mArrayList) {
+            String stringDate = ri.date.replace("CEST ","");
+            SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+            try {
+                currentDate = format.parse(stringDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(currentDate);
+            int date1 = Integer.parseInt(String.valueOf(calendar.get(Calendar.YEAR))
+                    .concat(String.valueOf(calendar.get(Calendar.MONTH)))
+                    .concat(String.valueOf(calendar.get(Calendar.DATE))));
+
+            String dateString = String.valueOf(calendar.get(Calendar.DATE)).concat("/")
+                    .concat(String.valueOf(calendar.get(Calendar.MONTH))).concat("/")
+                    .concat(String.valueOf(calendar.get(Calendar.YEAR)));
+
+            if (oldDate != null) {
+                calendar.setTime(oldDate);
+                int date2 = Integer.parseInt(String.valueOf(calendar.get(Calendar.YEAR))
+                        .concat(String.valueOf(calendar.get(Calendar.MONTH)))
+                        .concat(String.valueOf(calendar.get(Calendar.DATE))));
+
+                if (date1 < date2) {
+
+                    ri.dateTitle = dateString;
+                    ri.firstDate = true;
+                }
+            }
+            else {
+
+                ri.firstDate = true;
+                ri.dateTitle = dateString;
+            }
+
+            oldDate = currentDate;
+        }
+
         return mArrayList;
+    }
+
+
+    @Override
+    public int compareTo(@NonNull Object another) {
+        ResultsInfo resultsInfoOther = (ResultsInfo) another;
+        try {
+            String stringDate1 = resultsInfoOther.date.replace("CEST ","");
+            String stringDate2 = this.date.replace("CEST ","");
+            SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+            Date date1 = format.parse(stringDate1);
+            Date date2 = format.parse(stringDate2);
+            return date1.compareTo(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
