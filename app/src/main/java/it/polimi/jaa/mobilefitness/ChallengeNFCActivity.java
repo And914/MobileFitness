@@ -95,7 +95,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
 
         int NFCDone = mSharedPreferences.getInt("NFCDone",0);
 
-        if (exerciseNameText.getText().length() == 0 && NFCDone == 0) {
+        if (exerciseNameText.getText().length() == 0 && NFCDone == 0 || savedInstanceState!= null) {
 
             String loading[] = new String[1];
             loading[0] = "Loading .. ";
@@ -154,19 +154,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
                     String selected = adapterView.getItemAtPosition(i).toString();
                     switch (selected) {
                         case "Rower":
-                            roundsLayout.setVisibility(View.GONE);
-                            repsLayout.setVisibility(View.GONE);
-                            weightsLayout.setVisibility(View.GONE);
-                            restTimeLayout.setVisibility(View.GONE);
-                            durationLayout.setVisibility(View.VISIBLE);
-                            break;
                         case "Cyclette":
-                            roundsLayout.setVisibility(View.GONE);
-                            repsLayout.setVisibility(View.GONE);
-                            weightsLayout.setVisibility(View.GONE);
-                            restTimeLayout.setVisibility(View.GONE);
-                            durationLayout.setVisibility(View.VISIBLE);
-                            break;
                         case "Rope":
                             roundsLayout.setVisibility(View.GONE);
                             repsLayout.setVisibility(View.GONE);
@@ -195,38 +183,46 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
             public void onClick(View view) {
                 if(mSharedPreferences.getBoolean("enableStart",false)) {
                     String equipment = equipmentSpinner.getSelectedItem().toString();
-                    Intent intent;
+                    Intent intent = null;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putBoolean(Utils.SHARED_PREFERENCES_ISCHALLENGE, true);
                     editor.putString(Utils.SHARED_PREFERENCES_CHALLENGE_EQUIPMENT, equipment);
                     editor.putString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME, exerciseNameText.getText().toString());
+                    Boolean checkValid = true;
                     switch (equipment) {
                         case "Rower":
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION, Integer.parseInt(duration.getText().toString()));
-                            editor.apply();
-                            intent = new Intent(view.getContext(), ExerciseCardioActivity.class);
-                            break;
                         case "Cyclette":
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION, Integer.parseInt(duration.getText().toString()));
-                            editor.apply();
-                            intent = new Intent(view.getContext(), ExerciseCardioActivity.class);
-                            break;
                         case "Rope":
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION, Integer.parseInt(duration.getText().toString()));
-                            editor.apply();
-                            intent = new Intent(view.getContext(), ExerciseCardioActivity.class);
+                            if(duration.getText().toString().length()>0) {
+                                editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION, Integer.parseInt(duration.getText().toString()));
+                                editor.apply();
+                                intent = new Intent(view.getContext(), ExerciseCardioActivity.class);
+                            }
+                            else {
+                                checkValid = false;
+                            }
                             break;
                         default:
-
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_REPS, Integer.parseInt(reps.getText().toString()));
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESTTIME, Integer.parseInt(restTime.getText().toString()));
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_ROUNDS, Integer.parseInt(rounds.getText().toString()));
-                            editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_WEIGHTS, Integer.parseInt(weight.getText().toString()));
-                            editor.apply();
-                            intent = new Intent(view.getContext(), ExerciseStrengthActivity.class);
+                            if(reps.getText().toString().length()>0 && restTime.getText().toString().length()>0 &&
+                                    rounds.getText().toString().length()>0 && weight.getText().toString().length()>0) {
+                                editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_REPS, Integer.parseInt(reps.getText().toString()));
+                                editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESTTIME, Integer.parseInt(restTime.getText().toString()));
+                                editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_ROUNDS, Integer.parseInt(rounds.getText().toString()));
+                                editor.putInt(Utils.SHARED_PREFERENCES_CHALLENGE_WEIGHTS, Integer.parseInt(weight.getText().toString()));
+                                editor.apply();
+                                intent = new Intent(view.getContext(), ExerciseStrengthActivity.class);
+                            }
+                            else {
+                                checkValid = false;
+                            }
                     }
-                    mSharedPreferences.edit().putBoolean("enableStart",false);
-                    ((Activity) view.getContext()).startActivity(intent);
+                    if (checkValid) {
+                        mSharedPreferences.edit().putBoolean("enableStart", false);
+                        ((Activity) view.getContext()).startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Missing Values!", Toast.LENGTH_LONG).show();
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Challenge someone before!", Toast.LENGTH_LONG).show();
@@ -245,11 +241,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
 
         try {switch (equipment) {
             case "Rower":
-                jsonObject.put("duration", duration.getText());
-                break;
             case "Cyclette":
-                jsonObject.put("duration", duration.getText());
-                break;
             case "Rope":
                 jsonObject.put("duration", duration.getText());
                 break;

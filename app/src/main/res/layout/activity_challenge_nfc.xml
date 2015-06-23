@@ -2,203 +2,216 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        >
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:id="@+id/challenge_exercise_name"
+                android:hint="Exercise Name"
+                android:inputType="textCapSentences"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Equipment"
+                    android:id="@+id/textView8" />
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:id="@+id/equipment_spinner"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dialog"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rounds_layout"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Rounds"
+                    android:id="@+id/textView" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/rounds" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reps_layout"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Reps"
+                    android:id="@+id/textView4" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/reps" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/weights_layout"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Weights"
+                    android:id="@+id/textView5" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/weights" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rest_time_layout"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Rest time"
+                    android:id="@+id/textView6" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/rest_time" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/duration_layout"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Duration"
+                    android:id="@+id/textView7" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/duration" />
+
+            </LinearLayout>
 
 
 
-    <EditText
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:id="@+id/challenge_exercise_name"
-        android:hint="Exercise Name"
-        android:inputType="textCapSentences"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp" />
+        </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Equipment"
-            android:id="@+id/textView8" />
-
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:id="@+id/equipment_spinner"
-            android:layout_gravity="center_horizontal"
-            android:spinnerMode="dialog"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rounds_layout"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Rounds"
-            android:id="@+id/textView" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/rounds" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/reps_layout"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Reps"
-            android:id="@+id/textView4" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/reps" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/weights_layout"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Weights"
-            android:id="@+id/textView5" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/weights" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rest_time_layout"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Rest time"
-            android:id="@+id/textView6" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/rest_time" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/duration_layout"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Duration"
-            android:id="@+id/textView7" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/duration" />
-
-    </LinearLayout>
-
+    </ScrollView>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
-        <Button
-            style="@style/Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="START"
-            android:id="@+id/button_start"
-            android:clickable="true"
-            android:visibility="visible"
-            android:layout_gravity="bottom"
-            android:enabled="true" />
+    <Button
+        style="@style/Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="START"
+        android:id="@+id/button_start"
+        android:clickable="true"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        android:enabled="true" />
     </FrameLayout>
-
 </LinearLayout>
