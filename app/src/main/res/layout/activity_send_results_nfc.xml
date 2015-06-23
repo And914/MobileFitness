@@ -70,8 +70,24 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/image_result"
         android:layout_gravity="center_horizontal" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HOME"
+            android:id="@+id/button_home_challenge"
+            android:clickable="true"
+            android:visibility="visible"
+            android:layout_gravity="bottom"
+            android:enabled="true" />
+    </FrameLayout>
 
 </LinearLayout>

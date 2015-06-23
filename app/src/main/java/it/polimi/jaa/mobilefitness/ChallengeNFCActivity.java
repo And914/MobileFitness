@@ -259,6 +259,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
             e.printStackTrace();
         }
 
+        startButton.setVisibility(View.VISIBLE);
 
         return new NdefMessage(
                 new NdefRecord[] { NdefRecord.createMime(
@@ -355,6 +356,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        startButton.setVisibility(View.VISIBLE);
 
     }
 }

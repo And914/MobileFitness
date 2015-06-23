@@ -36,6 +36,7 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
     private TextView resultText;
     private TextView opponentResultText;
     private ImageView imageResult;
+    private Button buttonHome;
 
     private int result;
     private int opponentResult;
@@ -72,8 +73,15 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
         resultText.setText(String.valueOf(result));
 
         imageResult = (ImageView) findViewById(R.id.image_result);
-        imageResult.setImageResource(R.drawable.ic_don_t_give_up);
-
+        buttonHome = (Button) findViewById(R.id.button_home_challenge);
+        buttonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainActivity);
+                finish();
+            }
+        });
         /*senderNFCButton = (Button) findViewById(R.id.button_sender_nfc);
 
         senderNFCButton.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +168,12 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
                 opponentResultText.setTypeface(null, Typeface.BOLD);
                 imageResult.setImageResource(R.drawable.ic_don_t_give_up);
 
-            } else {
+            } else if (opponentResult == result){
+                opponentResultText.setTypeface(null, Typeface.BOLD);
+                resultText.setTypeface(null, Typeface.BOLD);
+                imageResult.setImageResource(R.drawable.ic_3256270_winner);
+            }
+            else {
                 resultText.setTypeface(null, Typeface.BOLD);
                 imageResult.setImageResource(R.drawable.ic_3256270_winner);
             }
