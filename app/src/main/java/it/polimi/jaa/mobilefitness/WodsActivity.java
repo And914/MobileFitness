@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,7 +38,7 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
 /**
  * Created by Jacopo on 02/04/2015.
  */
-public class WodsActivity extends ActionBarActivity implements WodsFragment.OnFragmentInteractionListener {
+public class WodsActivity extends ActionBarActivity implements WodsFragment.OnFragmentInteractionListener,WodFragment.OnFragmentInteractionListener {
 
 
     public WodsActivity() {
@@ -49,7 +50,13 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnFr
 
         setContentView(R.layout.activity_wods);
 
-        getFragmentManager().beginTransaction().replace(R.id.wods_fragment_container, new WodsFragment()).commit();
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.wods_fragment_container, new WodsFragment());
+        if(findViewById(R.id.wod_fragment_container) != null){
+            fragmentTransaction.replace(R.id.wod_fragment_container, new WodFragment());
+        }
+        fragmentTransaction.commit();
     }
 
 
