@@ -1,11 +1,15 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,10 +44,10 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by andre on 30/03/15.
  */
-public class WodActivity extends ActionBarActivity {
+public class WodActivity extends ActionBarActivity implements WodFragment.OnFragmentInteractionListener,WodsFragment.OnFragmentInteractionListener {
 
 
-    private SharedPreferences mSharedPreferences;
+    /*private SharedPreferences mSharedPreferences;
     private RecyclerView recyclerView;
     private String idWod;
     private ExerciseCardAdapter exerciseCardAdapter;
@@ -56,7 +60,7 @@ public class WodActivity extends ActionBarActivity {
     private Boolean beaconEntered = false;
     final List<String> beaconsList = new ArrayList<>();
 
-    private static final String LOG_ACTIVITY = "WodFragment";
+    private static final String LOG_ACTIVITY = "WodFragment";*/
 
     public static Boolean canVibrate;
 
@@ -67,222 +71,18 @@ public class WodActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wod);
-
-        canVibrate = true;
-
-        mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP,MODE_PRIVATE);
-
-        idWod = mSharedPreferences.getString(Utils.SHARED_PREFERENCES_ID_WOD, "");
-
-        recyclerView = (RecyclerView) findViewById(R.id.card_list);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        BackendFunctions.BFGetGym(new CallbackParseObject() {
-            @Override
-            public void done(final ParseObject parseObject) {
-                BackendFunctions.BFGetGymBeacons(parseObject, new CallbackParseObjects() {
-                    @Override
-                    public void done(List<ParseObject> parseObjects) {
-                        for (ParseObject parseObject : parseObjects) {
-                            ParseObject equipment = parseObject.getParseObject(Utils.PARSE_GYMSBEACONS_EQUIPMENT);
-                            try {
-                                equipment.fetchIfNeeded();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            beaconsList.add(parseObject.getString(Utils.PARSE_GYMSBEACONS_BEACON));
-
-                            String[] args = {String.valueOf(idWod)};
-                            Cursor cursor = getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                                    new String[]{GymContract.ExerciseEntry.COLUMN_ID,GymContract.ExerciseEntry.COLUMN_EQUIPMENT},
-                                    GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
-                                    args ,
-                                    null
-                            );
-
-                            cursor.moveToFirst();
-                            Boolean present = false;
-                            String exerciseId = "";
-                            while(!cursor.isAfterLast()) {
-                                if (equipment.getString(Utils.PARSE_EQUIPMENT_NAME).equals(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_EQUIPMENT)))) {
-                                    present = true;
-                                    exerciseId = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID));
-                                    break;
-                                }
-                                cursor.moveToNext();
-                            }
-                            cursor.close();
-
-                            if (present) {
-                                saveBeaconsOnDB(exerciseId,equipment.getString(Utils.PARSE_EQUIPMENT_NAME),parseObject.getString(Utils.PARSE_GYMSBEACONS_BEACON));
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void error(int error) {
-                        Log.e("app", getString(error));
-                    }
-                });
-            }
-
-            @Override
-            public void error(int error) {
-                Log.e("app", getString(error));
-            }
-        });
-
-        setExercisesFromLocalDB();
-
-        int totalEx = exerciseCardList.size();
-        int counterCompleted = 0;
-        for (ExerciseInfo exerciseCard : exerciseCardList) {
-            if (exerciseCard.completed == 1) {
-                counterCompleted++;
-            }
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.wod_fragment_container, new WodFragment());
+        //getFragmentManager().beginTransaction().replace(R.id.wod_fragment_container, new WodFragment()).commit();
+        if(findViewById(R.id.wods_fragment_container) != null){
+            fragmentTransaction.replace(R.id.wods_fragment_container, new WodsFragment());
         }
+        fragmentTransaction.commit();
 
-        if (counterCompleted == totalEx) {
-            Toast.makeText(getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
-            resetExercises();
-            this.finish();
-        }
-
-        placeEventListener = new PlaceEventListener() {
-            @Override
-            public void onVisitStart(Visit visit) {
-                // This will be invoked when a place is entered. Example below shows a simple log upon enter
-                Log.i("Info:", "Enter: " + visit.getPlace().getName() + ", at: " + new Date(visit.getArrivalTimeInMillis()));
-            }
-
-            @Override
-            public void onVisitEnd(Visit visit) {
-                // This will be invoked when a place is exited. Example below shows a simple log upon exit
-                Log.i("Info:", "Exit: " + visit.getPlace().getName() + ", at: " + new Date(visit.getDepartureTimeInMillis()));
-            }
-        };
-        PlaceManager.getInstance().addListener(placeEventListener);
-
-
-        communicationListener = new CommunicationListener() {
-            @Override
-            public Collection<Communication> presentNotificationForCommunications(Collection<Communication> communications, Visit visit) {
-                for (Communication comm : communications) {
-                    Log.i("INFO", "Place Communication: " + visit.getPlace().getName() + ", message: " + comm.getTitle());
-                }
-                //allow Gimbal to show the notification for all communications
-                return communications;
-            }
-
-            @Override
-            public Collection<Communication> presentNotificationForCommunications(Collection<Communication> communications, Push push) {
-                for (Communication comm : communications) {
-                    Log.i("INFO", "Received a Push Communication with message: " + comm.getTitle());
-                }
-                //allow Gimbal to show the notification for all communications
-                return communications;
-            }
-
-            @Override
-            public void onNotificationClicked(List<Communication> communications) {
-                Log.i("INFO", "Notification was clicked on");
-            }
-        };
-        CommunicationManager.getInstance().addListener(communicationListener);
-
-        beaconSightingListener = new BeaconEventListener() {
-
-            @Override
-            public void onBeaconSighting(BeaconSighting sighting) {
-
-
-                if (beaconsList.contains(sighting.getBeacon().getIdentifier())) {
-                    handleBeaconEnter(sighting);
-
-                }
-            }
-
-            private void handleBeaconEnter(BeaconSighting sighting) {
-                if (sighting.getRSSI() > -40 && !beaconEntered && canVibrate) {
-                    beaconEntered = true;
-                    int i = 0;
-
-                    String[] args = {sighting.getBeacon().getIdentifier()};
-                    Cursor cursor = getContentResolver().query(GymContract.BeaconEntry.CONTENT_URI,
-                            new String[]{GymContract.BeaconEntry.COLUMN_ID_EXERCISE},
-                            GymContract.BeaconEntry.COLUMN_ID_BEACON + " = ?",
-                            args,
-                            null
-                    );
-                    cursor.moveToFirst();
-                    if(cursor.getCount() == 0) {
-                        beaconEntered = false;
-                        return;
-                    }
-                    boolean found = false;
-                    String idExercise = cursor.getString(cursor.getColumnIndex(GymContract.BeaconEntry.COLUMN_ID_EXERCISE));
-                    for(ExerciseInfo ei : exerciseCardList) {
-                        if (ei.id.equals(idExercise)) {
-                            found = true;
-                            break;
-                        }
-                        i++;
-                    }
-                    cursor.close();
-                    if(!found) {
-                        beaconEntered = false;
-                        return;
-                    }
-
-                    final ExerciseInfo exerciseInfo = exerciseCardList.get(i);
-
-                    if(exerciseInfo.completed == 0) {
-                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                        vibrator.vibrate(750);
-
-
-                        final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
-                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                        exerciseInfo.selected = true;
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                beaconEntered = false;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-                                        exerciseInfo.selected = false;
-                                    }
-                                });
-                            }
-                        });
-                        thread.start();
-                    }
-                }
-            }
-
-
-        };
-        beaconManager = new BeaconManager();
-        beaconManager.addListener(beaconSightingListener);
-
-        PlaceManager.getInstance().startMonitoring();
-        beaconManager.startListening();
-        CommunicationManager.getInstance().startReceivingCommunications();
 
     }
 
-    private void saveBeaconsOnDB(String exerciseId, String equipment, String beaconId){
+    /*private void saveBeaconsOnDB(String exerciseId, String equipment, String beaconId){
 
         final ContentValues contentValues = new ContentValues();
         //Set all the entry as deleted
@@ -372,5 +172,12 @@ public class WodActivity extends ActionBarActivity {
         }
 
         cursor.close();
+    }*/
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
+
+
 }

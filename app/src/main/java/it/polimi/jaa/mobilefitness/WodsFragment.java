@@ -216,4 +216,5 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
+
 }
