@@ -67,19 +67,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
-                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_WOD,id_wod).apply();
-                    WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
-                    if (wodFragment != null){
-                        wodFragment.setExercisesFromLocalDB();
-                    }
-                    else {
-                        FragmentTransaction fragmentTransaction = ((WodsActivity) view.getContext()).getFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.wods_fragment_container, new WodFragment());
-                        fragmentTransaction.addToBackStack("wod_stack");
-                        fragmentTransaction.commit();
-
-                    }
+                    ((WodsActivity) view.getContext()).onWodSelected(id_wod);
                 }
             });
         }

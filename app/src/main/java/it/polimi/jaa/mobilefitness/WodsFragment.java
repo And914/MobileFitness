@@ -72,8 +72,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         return layout;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(String wodId) {
+    public void onWodSelected(String wodId) {
         if (mListener != null) {
             mListener.onWodSelected(wodId);
         }
@@ -107,7 +106,6 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnWodSelectedListener {
-        // TODO: Update argument type and name
         public void onWodSelected(String wodId);
     }
 

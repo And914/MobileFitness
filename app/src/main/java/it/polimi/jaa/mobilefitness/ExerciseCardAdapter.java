@@ -152,35 +152,7 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ExerciseInfo ei = exerciseInfoList.get(getAdapterPosition());
-                    SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
-                    mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_EXERCISE, ei.id).apply();
-
-                    if (ei.completed == 0 && ei.selected) {
-                        //if cardio
-                        if (ei.category == 1) {
-                            Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
-                            WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
-                            if(wodFragment != null) {
-                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
-                            }
-                            else {
-                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wods_fragment_container).startActivityForResult(intent, 0);
-                            }
-                        }
-                        //if strength
-                        else if (ei.category == 2) {
-                            Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
-                            WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
-                            if(wodFragment != null) {
-                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
-                            }
-                            else {
-                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wods_fragment_container).startActivityForResult(intent, 0);
-                            }
-                        }
-                    }
-
+                    ((WodsActivity) view.getContext()).onExerciseSelected(exerciseInfoList.get(getAdapterPosition()));
                 }
             });
         }
