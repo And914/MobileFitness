@@ -1,7 +1,8 @@
 package it.polimi.jaa.mobilefitness;
 
-import android.app.FragmentTransaction;
+
 import android.app.Notification;
+import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +12,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -52,7 +56,7 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
         setContentView(R.layout.activity_wods);
 
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.wods_fragment_container, new WodsFragment());
         if(findViewById(R.id.wod_fragment_container) != null){
             fragmentTransaction.replace(R.id.wod_fragment_container, new WodFragment());
@@ -66,14 +70,15 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
     public void onWodSelected(String wodId) {
         SharedPreferences mSharedPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
         mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_WOD, wodId).apply();
-        WodFragment wodFragment = (WodFragment) getFragmentManager().findFragmentById(R.id.wod_fragment_container);
-        if (wodFragment != null){
-            wodFragment.setExercisesFromLocalDB();
+
+        if (findViewById(R.id.wod_fragment_container) != null){
+            WodFragment wodsFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
+            wodsFragment.setExercisesFromLocalDB();
         }
         else {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.wods_fragment_container, new WodFragment());
-            fragmentTransaction.addToBackStack("wod_stack");
+            fragmentTransaction.addToBackStack("tag");
             fragmentTransaction.commit();
 
         }
@@ -89,7 +94,7 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
             //if cardio
             if (exerciseInfo.category == 1) {
                 Intent intent = new Intent(this,ExerciseCardioActivity.class);
-                WodFragment wodFragment = (WodFragment) getFragmentManager().findFragmentById(R.id.wod_fragment_container);
+                WodFragment wodFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
                 if(wodFragment != null) {
                     getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
                 }
@@ -100,7 +105,7 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
             //if strength
             else if (exerciseInfo.category == 2) {
                 Intent intent = new Intent(this,ExerciseStrengthActivity.class);
-                WodFragment wodFragment = (WodFragment) getFragmentManager().findFragmentById(R.id.wod_fragment_container);
+                WodFragment wodFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
                 if(wodFragment != null) {
                     getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
                 }
@@ -110,4 +115,28 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
             }
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                                    // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
