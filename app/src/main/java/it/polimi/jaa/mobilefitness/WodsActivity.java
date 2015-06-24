@@ -38,8 +38,7 @@ import it.polimi.jaa.mobilefitness.utils.WodInfo;
 /**
  * Created by Jacopo on 02/04/2015.
  */
-public class WodsActivity extends ActionBarActivity implements WodsFragment.OnFragmentInteractionListener,WodFragment.OnFragmentInteractionListener {
-
+public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWodSelectedListener,WodFragment.OnFragmentInteractionListener {
 
     public WodsActivity() {
     }
@@ -62,6 +61,11 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnFr
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onWodSelected(String wodId) {
 
     }
 }

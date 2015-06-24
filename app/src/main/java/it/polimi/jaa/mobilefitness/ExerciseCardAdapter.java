@@ -160,14 +160,24 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
                         //if cardio
                         if (ei.category == 1) {
                             Intent intent = new Intent(view.getContext(),ExerciseCardioActivity.class);
-                            ((Activity)view.getContext()).startActivityForResult(intent, 0);
-                            WodActivity.canVibrate = false;
+                            WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
+                            if(wodFragment != null) {
+                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
+                            }
+                            else {
+                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wods_fragment_container).startActivityForResult(intent, 0);
+                            }
                         }
                         //if strength
                         else if (ei.category == 2) {
                             Intent intent = new Intent(view.getContext(),ExerciseStrengthActivity.class);
-                            ((Activity)view.getContext()).startActivityForResult(intent,0);
-                            WodActivity.canVibrate = false;
+                            WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
+                            if(wodFragment != null) {
+                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container).startActivityForResult(intent, 0);
+                            }
+                            else {
+                                ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wods_fragment_container).startActivityForResult(intent, 0);
+                            }
                         }
                     }
 

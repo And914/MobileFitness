@@ -1,8 +1,11 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,10 +67,19 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent wodActivityIntent = new Intent(view.getContext().getApplicationContext(), WodActivity.class);
                     SharedPreferences mSharedPreferences = view.getContext().getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
                     mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_WOD,id_wod).apply();
-                    view.getContext().startActivity(wodActivityIntent);
+                    WodFragment wodFragment = (WodFragment) ((WodsActivity) view.getContext()).getFragmentManager().findFragmentById(R.id.wod_fragment_container);
+                    if (wodFragment != null){
+                        wodFragment.setExercisesFromLocalDB();
+                    }
+                    else {
+                        FragmentTransaction fragmentTransaction = ((WodsActivity) view.getContext()).getFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.wods_fragment_container, new WodFragment());
+                        fragmentTransaction.addToBackStack("wod_stack");
+                        fragmentTransaction.commit();
+
+                    }
                 }
             });
         }

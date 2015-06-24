@@ -3,6 +3,7 @@ package it.polimi.jaa.mobilefitness;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -80,7 +81,6 @@ public class WodFragment extends Fragment {
 
     private LinearLayout llLayout;
 
-    public static Boolean canVibrate;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -116,8 +116,6 @@ public class WodFragment extends Fragment {
         faActivity = (ActionBarActivity) super.getActivity();
 
         llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_wod, container, false);
-
-        canVibrate = true;
 
         mSharedPreferences = faActivity.getSharedPreferences(Utils.SHARED_PREFERENCES_APP, Context.MODE_PRIVATE);
 
@@ -256,7 +254,7 @@ public class WodFragment extends Fragment {
             }
 
             private void handleBeaconEnter(BeaconSighting sighting) {
-                if (sighting.getRSSI() > -40 && !beaconEntered && canVibrate) {
+                if (sighting.getRSSI() > -40 && !beaconEntered && isAdded()) {
                     beaconEntered = true;
                     int i = 0;
 
@@ -290,33 +288,41 @@ public class WodFragment extends Fragment {
                     final ExerciseInfo exerciseInfo = exerciseCardList.get(i);
 
                     if(exerciseInfo.completed == 0) {
-                        Vibrator vibrator = (Vibrator) faActivity.getSystemService(Context.VIBRATOR_SERVICE);
-                        vibrator.vibrate(750);
 
 
                         final RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
-                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                        exerciseInfo.selected = true;
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                beaconEntered = false;
-                                faActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
-                                        exerciseInfo.selected = false;
+
+                        if (viewHolder != null) {
+
+                            Vibrator vibrator = (Vibrator) faActivity.getSystemService(Context.VIBRATOR_SERVICE);
+                            vibrator.vibrate(750);
+                            viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+
+                            exerciseInfo.selected = true;
+                            Thread thread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(5000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        });
-                        thread.start();
+                                    beaconEntered = false;
+                                    faActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(isAdded()) {
+                                                viewHolder.itemView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                                                exerciseInfo.selected = false;
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                            thread.start();
+                        }
                     }
+
                 }
             }
 
@@ -390,7 +396,7 @@ public class WodFragment extends Fragment {
 
     }
 
-    private void setExercisesFromLocalDB() {
+    protected void setExercisesFromLocalDB() {
 
 
         String[] args = {String.valueOf(idWod)};
@@ -439,4 +445,23 @@ public class WodFragment extends Fragment {
         cursor.close();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 0) {
+            setExercisesFromLocalDB();
+            int totalEx = exerciseCardList.size();
+            int counterCompleted = 0;
+            for (ExerciseInfo exerciseCard : exerciseCardList) {
+                if (exerciseCard.completed == 1) {
+                    counterCompleted++;
+                }
+            }
+
+            if (counterCompleted == totalEx) {
+                Toast.makeText(getActivity().getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
+                resetExercises();
+                }
+            }
+    }
 }

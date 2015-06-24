@@ -89,7 +89,7 @@
         </activity>
 
         <activity
-            android:name=".WodActivity"
+            android:name=".ExerciseCardioActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -97,19 +97,11 @@
         </activity>
 
         <activity
-            android:name=".ExerciseCardioActivity"
-            android:label="@string/app_name" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".WodActivity"/>
-        </activity>
-
-        <activity
         android:name=".ExerciseStrengthActivity"
         android:label="@string/app_name" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".WodActivity"/>
+            android:value=".WodsActivity"/>
         </activity>
 
 

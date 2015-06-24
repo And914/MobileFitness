@@ -36,7 +36,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private OnFragmentInteractionListener mListener;
+    private OnWodSelectedListener mListener;
 
     public WodsFragment() {
         // Required empty public constructor
@@ -73,9 +73,9 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String wodId) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onWodSelected(wodId);
         }
     }
 
@@ -83,7 +83,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnWodSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -106,9 +106,9 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnWodSelectedListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onWodSelected(String wodId);
     }
 
     private void setWodsInfoFromServer() {
