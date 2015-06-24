@@ -36,6 +36,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
     private TextView exerciseName;
     private TextView completedRounds;
     private TextView totalRounds;
+    private TextView totalReps;
     private Button completeRoundButton;
     private Button endButton;
     private CountDownTimer countDownTimer;
@@ -66,6 +67,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         exerciseName = (TextView) findViewById(R.id.exercise_name);
         completedRounds = (TextView) findViewById(R.id.completed_rounds);
         totalRounds = (TextView) findViewById(R.id.total_rounds);
+        totalReps = (TextView) findViewById(R.id.total_reps);
         completeRoundButton = (Button) findViewById(R.id.button_next_round);
         endButton = (Button) findViewById(R.id.button_complete_exercise);
 
@@ -106,6 +108,7 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
         }
         completedRounds.setText("0");
         totalRounds.setText(rounds);
+        totalReps.setText(reps);
 
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override

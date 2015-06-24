@@ -22,33 +22,87 @@
         android:id="@+id/exercise_name"/>
 
     <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center">
+        android:layout_weight="1">
 
-        <TextView
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="50sp"
-            android:id="@+id/completed_rounds"/>
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rounds"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="50sp"
+                    android:id="@+id/completed_rounds"/>
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="/"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textSize="50sp"
+                    android:id="@+id/total_rounds"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:text="/"
-            android:textSize="50sp" />
+            android:layout_weight="1"
+            android:layout_gravity="center">
 
-        <TextView
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:textSize="50sp"
-            android:id="@+id/total_rounds"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reps"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="50sp"
+                android:id="@+id/total_reps"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
