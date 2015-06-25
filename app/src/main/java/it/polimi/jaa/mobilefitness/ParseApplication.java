@@ -4,12 +4,12 @@ package it.polimi.jaa.mobilefitness;
 import android.app.Application;
 
 import com.facebook.FacebookSdk;
+import com.gimbal.android.Gimbal;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseCrashReporting;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
-import com.gimbal.android.Gimbal;
 /**
  * Created by Jacopo on 05/05/2015.
  */

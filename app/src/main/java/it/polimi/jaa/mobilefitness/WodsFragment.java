@@ -3,15 +3,14 @@ package it.polimi.jaa.mobilefitness;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        activity = (ActionBarActivity) this.getActivity();
+        activity = this.getActivity();
         layout = (LinearLayout) inflater.inflate(R.layout.fragment_wods, container, false);
 
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container_wods);
@@ -106,7 +105,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnWodSelectedListener {
-        public void onWodSelected(String wodId);
+        void onWodSelected(String wodId);
     }
 
     private void setWodsInfoFromServer() {
@@ -162,7 +161,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                         //Handle error if cursor null
                         if (null == cursor) {
-                            //Log.e(LOG_ACTIVITY, "DATABASE CURSOR NULL");
+                            Log.e("WodsFragment", "DATABASE CURSOR NULL");
                             //Handle when entry already in the sqlite database
                         } else if (cursor.getCount() >= 1) {
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_DELETED,0);

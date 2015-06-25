@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.os.Vibrator;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -78,7 +76,7 @@ public class WodFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        faActivity = (ActionBarActivity) super.getActivity();
+        faActivity = super.getActivity();
 
         llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_wod, container, false);
 
@@ -336,7 +334,7 @@ public class WodFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnExerciseSelectedListener {
-        public void onExerciseSelected(ExerciseInfo exerciseInfo);
+        void onExerciseSelected(ExerciseInfo exerciseInfo);
     }
 
     private void saveBeaconsOnDB(String exerciseId, String equipment, String beaconId){

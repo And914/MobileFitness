@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;

@@ -16,15 +16,12 @@ import android.widget.TextView;
 
 import com.parse.ParseObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import it.polimi.jaa.mobilefitness.ExerciseCardAdapter;
 import it.polimi.jaa.mobilefitness.R;
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
-import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.utils.ResultsInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 

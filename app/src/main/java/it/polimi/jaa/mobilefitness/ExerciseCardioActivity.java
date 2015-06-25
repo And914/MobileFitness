@@ -10,26 +10,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.model.GymContract;

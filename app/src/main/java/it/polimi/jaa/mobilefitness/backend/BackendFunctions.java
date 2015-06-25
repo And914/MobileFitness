@@ -1,14 +1,10 @@
 package it.polimi.jaa.mobilefitness.backend;
 
-import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -19,7 +15,6 @@ import com.parse.SignUpCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.helpers.Util;
 
 import java.util.Date;
 import java.util.List;

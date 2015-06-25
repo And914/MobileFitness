@@ -1,11 +1,5 @@
 package it.polimi.jaa.mobilefitness;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +8,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import it.polimi.jaa.mobilefitness.utils.Utils;
 import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**

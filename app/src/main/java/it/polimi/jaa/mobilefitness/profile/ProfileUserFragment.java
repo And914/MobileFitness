@@ -1,29 +1,24 @@
 package it.polimi.jaa.mobilefitness.profile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.login.widget.ProfilePictureView;
 import com.parse.ParseUser;
@@ -65,8 +60,6 @@ public class ProfileUserFragment extends Fragment implements View.OnClickListene
             ProfilePictureView profilePictureView = (ProfilePictureView) view.findViewById(R.id.friend_profile_image_large);
             profilePictureView.setProfileId(ParseUser.getCurrentUser().getString("fbId"));
             profilePictureView.setPresetSize(ProfilePictureView.LARGE);
-
-            ImageView imageView = (ImageView) getActivity().findViewById(R.id.img_profile);
 
         }
         else {

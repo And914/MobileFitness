@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
 import it.polimi.jaa.mobilefitness.R;
 import it.polimi.jaa.mobilefitness.utils.ResultsInfo;
 

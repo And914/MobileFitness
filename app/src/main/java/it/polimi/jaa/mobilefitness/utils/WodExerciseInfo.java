@@ -2,8 +2,6 @@ package it.polimi.jaa.mobilefitness.utils;
 
 import android.database.Cursor;
 
-import com.parse.ParseObject;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +9,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 
 /**

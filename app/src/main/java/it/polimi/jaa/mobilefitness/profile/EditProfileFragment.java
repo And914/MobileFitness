@@ -17,13 +17,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.apache.http.Header;
 
 import java.text.DateFormat;
 import java.text.ParseException;

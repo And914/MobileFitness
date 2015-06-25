@@ -1,23 +1,15 @@
 package it.polimi.jaa.mobilefitness;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
-import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
  * Created by andre on 30/03/15.

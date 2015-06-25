@@ -215,7 +215,6 @@ public class GymProvider extends ContentProvider {
         final SQLiteDatabase db = gymDbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
 
-        ContentValues contentValues;
         int rowsUpdated;
         switch (match) {
             case HISTORY:

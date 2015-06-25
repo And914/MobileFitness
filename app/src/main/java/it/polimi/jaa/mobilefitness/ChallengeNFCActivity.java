@@ -1,10 +1,5 @@
 package it.polimi.jaa.mobilefitness;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -31,14 +26,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
-import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObject;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
@@ -218,7 +209,7 @@ public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapte
                     }
                     if (checkValid) {
                         mSharedPreferences.edit().putBoolean("enableStart", false);
-                        ((Activity) view.getContext()).startActivity(intent);
+                        view.getContext().startActivity(intent);
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "Missing Values!", Toast.LENGTH_LONG).show();
