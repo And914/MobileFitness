@@ -87,6 +87,8 @@ public class ExerciseCardAdapter extends RecyclerView.Adapter<ExerciseCardAdapte
                 return R.drawable.treadmill;
             case 6:
                 return R.drawable.step;
+            case 7:
+                return R.drawable.ic_weightlifter;
             default:
                 return R.drawable.strength_icon;
         }
