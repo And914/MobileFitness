@@ -58,9 +58,11 @@ public class WodFragment extends Fragment {
     private BeaconEventListener beaconSightingListener;
     private BeaconManager beaconManager;
     private Boolean beaconEntered = false;
-    final List<String> beaconsList = new ArrayList<>();
+    private final List<String> beaconsList = new ArrayList<>();
 
-    FragmentActivity faActivity = null;
+    private Boolean canVibrate;
+
+    private FragmentActivity faActivity = null;
 
     private static final String LOG_ACTIVITY = "WodFragment";
 
@@ -77,6 +79,8 @@ public class WodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         faActivity = super.getActivity();
+
+        canVibrate = true;
 
         llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_wod, container, false);
 
@@ -217,7 +221,7 @@ public class WodFragment extends Fragment {
             }
 
             private void handleBeaconEnter(BeaconSighting sighting) {
-                if (sighting.getRSSI() > -40 && !beaconEntered && isAdded()) {
+                if (sighting.getRSSI() > -40 && !beaconEntered && isAdded() && canVibrate) {
                     beaconEntered = true;
                     int i = 0;
 
@@ -422,7 +426,14 @@ public class WodFragment extends Fragment {
             if (counterCompleted == totalEx) {
                 Toast.makeText(getActivity().getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
                 resetExercises();
-                }
             }
+            canVibrate = true;
+        }
+    }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        canVibrate = menuVisible;
     }
 }

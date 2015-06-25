@@ -249,8 +249,6 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(isChallenge){
-            finish();
-        }
+        finish();
     }
 }

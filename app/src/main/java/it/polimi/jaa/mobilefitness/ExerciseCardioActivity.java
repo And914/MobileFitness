@@ -57,9 +57,7 @@ public class ExerciseCardioActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(isChallenge){
-            finish();
-        }
+        finish();
     }
 
     @Override
@@ -232,4 +230,6 @@ public class ExerciseCardioActivity extends ActionBarActivity {
 
         getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
     }
+
+
 }

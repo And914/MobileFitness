@@ -67,6 +67,8 @@ public class HomeUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //call wods activity with intent
+                mSharedPreferences = getActivity().getSharedPreferences(Utils.SHARED_PREFERENCES_APP,Context.MODE_PRIVATE);
+                mSharedPreferences.edit().putBoolean("wodDetails",false).apply();
                 Intent wodsActivityIntent = new Intent(getActivity().getApplicationContext(), WodsActivity.class);
                 startActivity(wodsActivityIntent);
             }
