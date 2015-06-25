@@ -45,12 +45,11 @@
         android:gravity="center"
         android:weightSum="1">
         <ImageView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/imageView"
             android:layout_gravity="center"
-            android:src="@drawable/ic_fitness_2"
-            android:layout_weight="0.36" />
+            android:src="@drawable/ic_fitness_2" />
     </LinearLayout>
 
     <LinearLayout

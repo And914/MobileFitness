@@ -146,7 +146,7 @@ public class WodFragment extends Fragment {
             }
         });
 
-        setExercisesFromLocalDB();
+        setExercisesFromLocalDB(idWod);
 
         int totalEx = exerciseCardList.size();
         int counterCompleted = 0;
@@ -357,10 +357,10 @@ public class WodFragment extends Fragment {
 
     }
 
-    protected void setExercisesFromLocalDB() {
+    protected void setExercisesFromLocalDB(String idWod) {
 
 
-        String[] args = {String.valueOf(idWod)};
+        String[] args = {idWod};
         Cursor cursor = faActivity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
                 new String[]{GymContract.ExerciseEntry.COLUMN_ID, GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
                         GymContract.ExerciseEntry.COLUMN_ROUNDS, GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_REST_TIME,
@@ -410,7 +410,7 @@ public class WodFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 0) {
-            setExercisesFromLocalDB();
+            setExercisesFromLocalDB(idWod);
             int totalEx = exerciseCardList.size();
             int counterCompleted = 0;
             for (ExerciseInfo exerciseCard : exerciseCardList) {

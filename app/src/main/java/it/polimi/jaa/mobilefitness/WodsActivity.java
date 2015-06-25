@@ -46,7 +46,7 @@ public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWo
 
         if (findViewById(R.id.wod_fragment_container) != null){
             WodFragment wodsFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
-            wodsFragment.setExercisesFromLocalDB();
+            wodsFragment.setExercisesFromLocalDB(wodId);
         }
         else {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
