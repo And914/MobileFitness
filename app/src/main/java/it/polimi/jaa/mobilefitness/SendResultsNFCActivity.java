@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -19,6 +20,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +42,8 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
     private ImageView imageResult;
     private Button buttonHome;
 
-    private int result;
-    private int opponentResult;
+    private static int result;
+    private static int opponentResult;
 
     private SharedPreferences mSharedPreferencesChallenge;
 
@@ -82,16 +86,6 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
                 finish();
             }
         });
-        /*senderNFCButton = (Button) findViewById(R.id.button_sender_nfc);
-
-        senderNFCButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //call wods activity with intent
-                Intent senderNFCActivityIntent = new Intent(getApplicationContext(), ChallengeNFCActivity.class);
-                startActivity(senderNFCActivityIntent);
-            }
-        });*/
     }
 
     @Override
@@ -176,6 +170,9 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
             else {
                 resultText.setTypeface(null, Typeface.BOLD);
                 imageResult.setImageResource(R.drawable.ic_3256270_winner);
+                ShareOnFacebookFragment shareOnFacebookFragment = new ShareOnFacebookFragment();
+                shareOnFacebookFragment.show(getFragmentManager(),"share_on_facebook");
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -198,6 +195,47 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
             }).setTitle("Results received!")
                     .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            dismiss();
+                        }
+                    });
+
+
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
+    public static class ShareOnFacebookFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            CharSequence[] info = {"Share your victory on Facebook!","Let other people know how good you are."};
+            builder.setItems(info, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).setTitle("You Won!")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ShareDialog shareDialog = new ShareDialog(getActivity());
+                            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                        .setContentTitle("Today's Challenge Result")
+                                        .setContentDescription(
+                                                "I won today's challenge. My score: "+ result + "\nMy opponent score: " + opponentResult)
+                                        .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                                        .build();
+
+                                shareDialog.show(linkContent);
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
                             dismiss();
                         }
                     });

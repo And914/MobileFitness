@@ -113,8 +113,15 @@ public class ExerciseStrengthActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 int result = Integer.valueOf(completedRounds.getText().toString()) * Integer.valueOf(reps) * Integer.valueOf(weight);
-                saveResult(result);
-                finish();
+                if (isChallenge) {
+                    mSharedPreferencesChallenge.edit().putInt(Utils.SHARED_PREFERENCES_CHALLENGE_RESULT, result).apply();
+                    Intent intent = new Intent(getApplicationContext(), SendResultsNFCActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    saveResult(result);
+                    finish();
+                }
             }
         });
 
