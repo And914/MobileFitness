@@ -14,6 +14,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.CalendarContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.MediaRouteActionProvider;
@@ -33,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -140,6 +142,21 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
             return true;
 
 
+        }
+        if (id == R.id.action_calendar) {
+            Calendar beginTime = Calendar.getInstance();
+            Calendar endTime = Calendar.getInstance();
+            endTime.add(Calendar.HOUR,1);
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                    .putExtra(CalendarContract.Events.TITLE, "Challenge Results")
+                    .putExtra(CalendarContract.Events.DESCRIPTION, "I won today's challenge. My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
+                    .putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                    .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+                    //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

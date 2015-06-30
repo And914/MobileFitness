@@ -267,7 +267,7 @@ public class MainActivity extends ActionBarActivity
                     } else {
                         // Re-create the custom message channel
                         try {
-                            Cast.CastApi.setMessageReceivedCallbacks(
+                              Cast.CastApi.setMessageReceivedCallbacks(
                                     mApiClient,
                                     mCustomChannel.getNamespace(),
                                     mCustomChannel);
@@ -278,28 +278,18 @@ public class MainActivity extends ActionBarActivity
                 } else {
                     // Launch the receiver app
                     Cast.CastApi
-                            .launchApplication(mApiClient,
-                                    getString(R.string.chromecast_app_id),false)
-                            .setResultCallback(
-                                    new ResultCallback<Cast.ApplicationConnectionResult>() {
+                            .launchApplication(mApiClient, getString(R.string.chromecast_app_id),false)
+                            .setResultCallback(new ResultCallback<Cast.ApplicationConnectionResult>() {
                                         @Override
-                                        public void onResult(
-                                                Cast.ApplicationConnectionResult result) {
+                                        public void onResult(Cast.ApplicationConnectionResult result) {
                                             Status status = result.getStatus();
-                                            Log.d(TAG,
-                                                    "ApplicationConnectionResultCallback.onResult: statusCode"
-                                                            + status.getStatusCode());
+                                            Log.d(TAG, "ApplicationConnectionResultCallback.onResult: statusCode" + status.getStatusCode());
                                             if (status.isSuccess()) {
-                                                ApplicationMetadata applicationMetadata = result
-                                                        .getApplicationMetadata();
-                                                mSessionId = result
-                                                        .getSessionId();
-                                                String applicationStatus = result
-                                                        .getApplicationStatus();
-                                                boolean wasLaunched = result
-                                                        .getWasLaunched();
-                                                Log.d(TAG,
-                                                        "application name: "
+                                                ApplicationMetadata applicationMetadata = result.getApplicationMetadata();
+                                                mSessionId = result.getSessionId();
+                                                String applicationStatus = result.getApplicationStatus();
+                                                boolean wasLaunched = result.getWasLaunched();
+                                                Log.d(TAG, "application name: "
                                                                 + applicationMetadata
                                                                 .getName()
                                                                 + ", status: "
@@ -317,18 +307,15 @@ public class MainActivity extends ActionBarActivity
                                                     Cast.CastApi
                                                             .setMessageReceivedCallbacks(
                                                                     mApiClient,
-                                                                    mCustomChannel
-                                                                            .getNamespace(),
+                                                                    mCustomChannel.getNamespace(),
                                                                     mCustomChannel);
                                                 } catch (IOException e) {
-                                                    Log.e(TAG,
-                                                            "Exception while creating channel",
-                                                            e);
+                                                    Log.e(TAG, "Exception while creating channel", e);
                                                 }
 
                                                 // set the initial instructions
                                                 // on the receiver
-                                                sendMessage("ciao!!");
+                                                sendMessage(ParseUser.getCurrentUser().getObjectId());
                                             } else {
                                                 Log.e(TAG,
                                                         "application could not launch");
