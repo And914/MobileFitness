@@ -14,7 +14,11 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.MediaRouteActionProvider;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,10 +27,16 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 /**
@@ -44,8 +54,12 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
 
     private static int result;
     private static int opponentResult;
+    private static String opponentFbId;
+    private static String opponentUsername;
 
     private SharedPreferences mSharedPreferencesChallenge;
+
+    //MenuItem shareMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +103,61 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.challenge, menu);
+
+        /*shareMenu = menu.findItem(R.id.action_share_fb);
+        if(shareMenu != null){
+            shareMenu.setVisible(true);
+        }*/
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_share_fb) {
+            ShareDialog shareDialog = new ShareDialog(this);
+            List<String> fbIds = new ArrayList<>();
+            fbIds.add(opponentFbId);
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        .setContentTitle("Today's Challenge Result")
+                        .setContentDescription(
+                                "I won today's challenge. My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
+                        .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                        .setPeopleIds(fbIds)
+                        .build();
+
+                shareDialog.show(linkContent);
+            }
+            return true;
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         JSONObject jsonObject = new JSONObject();
         try {
             if (mFirst) {
                 jsonObject.put("number",1);
-                jsonObject.put("result", result);
             }
             else {
                 jsonObject.put("number",2);
-                jsonObject.put("result", result);
             }
+            jsonObject.put("result", result);
+            jsonObject.put("fbId", ParseUser.getCurrentUser().getString(Utils.PARSE_USER_FBID));
+            jsonObject.put("username", ParseUser.getCurrentUser().getUsername());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -153,6 +211,8 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
             }
 
             opponentResult = jsonObject.getInt("result");
+            opponentFbId = jsonObject.getString("fbId");
+            opponentUsername = jsonObject.getString("username");
             opponentResultText.setText(String.valueOf(opponentResult));
             if(!mFirst) {
                 SendBackDialogFragment sendBackDialogFragment = new SendBackDialogFragment();
@@ -166,13 +226,11 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
                 opponentResultText.setTypeface(null, Typeface.BOLD);
                 resultText.setTypeface(null, Typeface.BOLD);
                 imageResult.setImageResource(R.drawable.ic_3256270_winner);
-            }
-            else {
+                mSharedPreferencesChallenge.edit().putBoolean("winner", true).apply();
+            } else {
                 resultText.setTypeface(null, Typeface.BOLD);
                 imageResult.setImageResource(R.drawable.ic_3256270_winner);
-                ShareOnFacebookFragment shareOnFacebookFragment = new ShareOnFacebookFragment();
-                shareOnFacebookFragment.show(getFragmentManager(),"share_on_facebook");
-
+                mSharedPreferencesChallenge.edit().putBoolean("winner", true).apply();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -221,12 +279,15 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             ShareDialog shareDialog = new ShareDialog(getActivity());
+                            List<String> fbIds = new ArrayList<>();
+                            fbIds.add(opponentFbId);
                             if (ShareDialog.canShow(ShareLinkContent.class)) {
                                 ShareLinkContent linkContent = new ShareLinkContent.Builder()
                                         .setContentTitle("Today's Challenge Result")
                                         .setContentDescription(
-                                                "I won today's challenge. My score: "+ result + "\nMy opponent score: " + opponentResult)
+                                                "I won today's challenge. My score: " + result + " - "+ opponentUsername +" score: " + opponentResult)
                                         .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                                        .setPeopleIds(fbIds)
                                         .build();
 
                                 shareDialog.show(linkContent);

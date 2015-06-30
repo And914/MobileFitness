@@ -22,6 +22,7 @@ public class Utils {
     public static final String PARSE_USER_BIRTHDATE = "birthdate";
     public static final String PARSE_USER_NAME = "name";
     public static final String PARSE_USER_SURNAME = "surname";
+    public static final String PARSE_USER_FBID = "fbId";
 
     public static final String PARSE_WODS_USER = "id_user";
     public static final String PARSE_WODS_NAME = "wod_name";
