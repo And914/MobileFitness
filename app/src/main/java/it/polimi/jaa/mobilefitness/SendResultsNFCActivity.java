@@ -123,40 +123,53 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_share_fb) {
-            ShareDialog shareDialog = new ShareDialog(this);
-            List<String> fbIds = new ArrayList<>();
-            fbIds.add(opponentFbId);
-            if (ShareDialog.canShow(ShareLinkContent.class)) {
-                ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                        .setContentTitle("Today's Challenge Result")
-                        .setContentDescription(
-                                "I won today's challenge. My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
-                        .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
-                        .setPeopleIds(fbIds)
-                        .build();
+        if (opponentResultText.getText().length() > 0) {
+            String description = "I won today's challenge.";
+            /*Uri uri = Uri.parse("android.resource://it.polimi.jaa.mobilefitness/drawable/ic_3256270_winner");
+            if (opponentResult > result) {
+                description = "I lost today's challenge.";
+                uri = Uri.parse("android.resource://it.polimi.jaa.mobilefitness/drawable/ic_don_t_give_up");
+            }*/
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_share_fb) {
 
-                shareDialog.show(linkContent);
+                ShareDialog shareDialog = new ShareDialog(this);
+                List<String> fbIds = new ArrayList<>();
+                fbIds.add(opponentFbId);
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle("Today's Challenge Result")
+                            .setContentDescription(
+                                    description + " My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
+                            .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                            //.setImageUrl(uri)
+                            .setPeopleIds(fbIds)
+                            .build();
+
+                    shareDialog.show(linkContent);
+                }
+                return true;
+
             }
-            return true;
 
+            if (id == R.id.action_calendar) {
+                Calendar beginTime = Calendar.getInstance();
+                Calendar endTime = Calendar.getInstance();
+                endTime.add(Calendar.HOUR, 1);
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                        .putExtra(CalendarContract.Events.TITLE, "Challenge Results")
+                        .putExtra(CalendarContract.Events.DESCRIPTION, description+" My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
+                        .putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
+                        .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+                //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+                startActivity(intent);
+            }
 
-        }
-        if (id == R.id.action_calendar) {
-            Calendar beginTime = Calendar.getInstance();
-            Calendar endTime = Calendar.getInstance();
-            endTime.add(Calendar.HOUR,1);
-            Intent intent = new Intent(Intent.ACTION_INSERT)
-                    .setData(CalendarContract.Events.CONTENT_URI)
-                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                    .putExtra(CalendarContract.Events.TITLE, "Challenge Results")
-                    .putExtra(CalendarContract.Events.DESCRIPTION, "I won today's challenge. My score: " + result + " - " + opponentUsername + " score: " + opponentResult)
-                    .putExtra(CalendarContract.Events.EVENT_LOCATION, "The gym")
-                    .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
-                    //.putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-            startActivity(intent);
+        } else {
+            Toast.makeText(getApplicationContext(), "You don't have the opponent's results", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -280,47 +293,4 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
         }
     }
 
-    public static class ShareOnFacebookFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            CharSequence[] info = {"Share your victory on Facebook!","Let other people know how good you are."};
-            builder.setItems(info, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            }).setTitle("You Won!")
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            ShareDialog shareDialog = new ShareDialog(getActivity());
-                            List<String> fbIds = new ArrayList<>();
-                            fbIds.add(opponentFbId);
-                            if (ShareDialog.canShow(ShareLinkContent.class)) {
-                                ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                        .setContentTitle("Today's Challenge Result")
-                                        .setContentDescription(
-                                                "I won today's challenge. My score: " + result + " - "+ opponentUsername +" score: " + opponentResult)
-                                        .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
-                                        .setPeopleIds(fbIds)
-                                        .build();
-
-                                shareDialog.show(linkContent);
-                            }
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dismiss();
-                        }
-                    });
-
-
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
-    }
 }
