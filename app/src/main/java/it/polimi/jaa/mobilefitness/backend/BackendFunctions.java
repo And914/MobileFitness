@@ -5,6 +5,7 @@ import android.util.Log;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -15,7 +16,9 @@ import com.parse.SignUpCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.helpers.Util;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -182,7 +185,7 @@ public class BackendFunctions {
                         e1.printStackTrace();
                     }
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("equipments");
-                    query.whereEqualTo(Utils.PARSE_EQUIPMENT_GYM,gym);
+                    query.whereEqualTo(Utils.PARSE_EQUIPMENT_GYM, gym);
                     List<ParseObject> gymEquipments;
                     try {
                         gymEquipments = query.find();
@@ -220,6 +223,35 @@ public class BackendFunctions {
             }
         });
 
+    }
+
+    public static void BFGetExercisesCurrentUser(final CallbackParseObjects callbackParseObjects){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("users_exercises");
+        query.whereEqualTo(Utils.PARSE_USERSEXERCISES_USER, ParseUser.getCurrentUser());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> usersExercises, ParseException e) {
+                if (e == null) {
+                    List<ParseObject> exercises = new ArrayList<>();
+                    for(ParseObject userExercise : usersExercises){
+                        try {
+                            ParseObject wodExercise = userExercise.getParseObject(Utils.PARSE_USERSEXERCISES_WODSEXERCISES).fetchIfNeeded();
+                            ParseObject exercise = wodExercise.getParseObject(Utils.PARSE_WODSEXERCISES_EXERCISE).fetchIfNeeded();
+                            if (!exercises.contains(exercise)) {
+                                exercises.add(exercise);
+                            }
+
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+                    callbackParseObjects.done(exercises);
+                }
+                else
+                    callbackParseObjects.error(R.string.e_undefined);
+            }
+        });
     }
 
     public static void BFGetWodObject(String wodId, final CallbackParseObject callbackParseObject){

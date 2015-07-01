@@ -24,21 +24,26 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
+import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.profile.ProfileUserFragment;
 import it.polimi.jaa.mobilefitness.results.ResultsUserFragment;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,ChromecastFragment.OnButtonClicked {
 
     private static final String TAG = "tag_chromecast";
 
@@ -56,6 +61,8 @@ public class MainActivity extends ActionBarActivity
     private ConnectionCallbacks mConnectionCallbacks;
     private ConnectionFailedListener mConnectionFailedListener;
     private Cast.Listener mCastListener;
+    private ArrayList<String> exercisesId;
+    private int exerciseIndex;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -86,6 +93,22 @@ public class MainActivity extends ActionBarActivity
                 .addControlCategory(CastMediaControlIntent.categoryForCast(getResources().getString(R.string.chromecast_app_id)))
                 .build();
         mMediaRouterCallback = new MyMediaRouterCallback();
+
+        exercisesId = new ArrayList<>();
+
+        BackendFunctions.BFGetExercisesCurrentUser(new CallbackParseObjects() {
+            @Override
+            public void done(List<ParseObject> exercises) {
+                for(ParseObject exercise : exercises) {
+                    exercisesId.add(exercise.getObjectId());
+                }
+            }
+
+            @Override
+            public void error(int error) {
+
+            }
+        });
     }
 
     @Override
@@ -198,6 +221,20 @@ public class MainActivity extends ActionBarActivity
         super.onStop();
     }
 
+    @Override
+    public void onButtonClicked() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId",ParseUser.getCurrentUser().getObjectId());
+            jsonObject.put("exerciseId",exercisesId.get(exerciseIndex));
+            exerciseIndex =(exerciseIndex + 1) % exercisesId.size();
+            sendMessage(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private class MyMediaRouterCallback extends MediaRouter.Callback {
 
@@ -205,9 +242,11 @@ public class MainActivity extends ActionBarActivity
         public void onRouteSelected(MediaRouter router, MediaRouter.RouteInfo info) {
             mSelectedDevice = CastDevice.getFromBundle(info.getExtras());
             String routeId = info.getId();
-            //TODO: do something when connect to chromecast
+
             launchReceiver();
-            Toast.makeText(MainActivity.this,routeId, Toast.LENGTH_LONG).show();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChromecastFragment())
+                    .addToBackStack("tag").commit();
         }
 
         @Override
@@ -322,8 +361,10 @@ public class MainActivity extends ActionBarActivity
                                                 try {
                                                     JSONObject jsonObject = new JSONObject();
                                                     jsonObject.put("userId",ParseUser.getCurrentUser().getObjectId());
-                                                    jsonObject.put("exerciseId","zuFwXXJNx4");
+                                                    jsonObject.put("exerciseId", exercisesId.get(exerciseIndex));
+                                                    exerciseIndex = (exerciseIndex + 1) % exercisesId.size();
                                                     sendMessage(jsonObject.toString());
+
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
