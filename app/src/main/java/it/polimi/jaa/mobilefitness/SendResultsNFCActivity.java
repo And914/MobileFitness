@@ -125,11 +125,11 @@ public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdap
 
         if (opponentResultText.getText().length() > 0) {
             String description = "I won today's challenge.";
-            /*Uri uri = Uri.parse("android.resource://it.polimi.jaa.mobilefitness/drawable/ic_3256270_winner");
+            Uri uri = Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/drawable/ic_3256270_winner");
             if (opponentResult > result) {
                 description = "I lost today's challenge.";
-                uri = Uri.parse("android.resource://it.polimi.jaa.mobilefitness/drawable/ic_don_t_give_up");
-            }*/
+                uri = Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/drawable/ic_don_t_give_up");
+            }
             //noinspection SimplifiableIfStatement
             if (id == R.id.action_share_fb) {
 
