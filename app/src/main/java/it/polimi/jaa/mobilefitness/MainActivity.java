@@ -26,6 +26,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import it.polimi.jaa.mobilefitness.authentication.LoginActivity;
@@ -315,7 +318,16 @@ public class MainActivity extends ActionBarActivity
 
                                                 // set the initial instructions
                                                 // on the receiver
-                                                sendMessage(ParseUser.getCurrentUser().getObjectId());
+
+                                                try {
+                                                    JSONObject jsonObject = new JSONObject();
+                                                    jsonObject.put("userId",ParseUser.getCurrentUser().getObjectId());
+                                                    jsonObject.put("exerciseId","zuFwXXJNx4");
+                                                    sendMessage(jsonObject.toString());
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
                                             } else {
                                                 Log.e(TAG,
                                                         "application could not launch");
