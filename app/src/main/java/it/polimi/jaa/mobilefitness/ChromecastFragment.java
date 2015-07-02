@@ -6,21 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 /**
  * Created by jaco on 01/07/15.
  */
 public class ChromecastFragment extends Fragment {
     private MainActivity activity;
-    private LinearLayout layout;
+    private FrameLayout layout;
     private Button changeExerciseButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
-        layout = (LinearLayout) inflater.inflate(R.layout.fragment_chromecast, container, false);
+        layout = (FrameLayout) inflater.inflate(R.layout.fragment_chromecast, container, false);
 
         changeExerciseButton = (Button) layout.findViewById(R.id.change_exercise_button);
 

@@ -2,12 +2,14 @@ package it.polimi.jaa.mobilefitness;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
@@ -42,7 +44,7 @@ import it.polimi.jaa.mobilefitness.results.ResultsUserFragment;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,ChromecastFragment.OnButtonClicked {
 
     private static final String TAG = "tag_chromecast";
@@ -63,6 +65,7 @@ public class MainActivity extends ActionBarActivity
     private Cast.Listener mCastListener;
     private ArrayList<String> exercisesId;
     private int exerciseIndex;
+    private Boolean chromecastFragment;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -77,6 +80,8 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        chromecastFragment = false;
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -124,29 +129,34 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        switch (position+1){
-            case 1:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new HomeUserFragment()).addToBackStack("tag")
-                        .commit();
-                break;
-            case 2:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new ResultsUserFragment()).addToBackStack("tag")
-                        .commit();
-                break;
-            case 3:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new ProfileUserFragment()).addToBackStack("tag")
-                        .commit();
-                break;
+
+        if (chromecastFragment) {
+            fragmentManager.beginTransaction().replace(R.id.container, new ChromecastFragment()).commit();
+        }
+        else {
+            switch (position+1){
+                case 1:
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, new HomeUserFragment()).addToBackStack("tag")
+                            .commit();
+                    break;
+                case 2:
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, new ResultsUserFragment()).addToBackStack("tag")
+                            .commit();
+                    break;
+                case 3:
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, new ProfileUserFragment()).addToBackStack("tag")
+                            .commit();
+                    break;
+            }
         }
 
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -245,8 +255,10 @@ public class MainActivity extends ActionBarActivity
 
             launchReceiver();
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChromecastFragment())
-                    .addToBackStack("tag").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChromecastFragment()).commit();
+            chromecastFragment = true;
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         }
 
         @Override
@@ -266,7 +278,6 @@ public class MainActivity extends ActionBarActivity
                     Log.d(TAG, "application has stopped");
                     teardown();
                 }
-
             };
             // Connect to Google Play services
             mConnectionCallbacks = new ConnectionCallbacks();
@@ -407,6 +418,9 @@ public class MainActivity extends ActionBarActivity
      */
     private void teardown() {
         Log.d(TAG, "teardown");
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,new HomeUserFragment()).commit();
+        chromecastFragment = false;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (mApiClient != null) {
             if (mApplicationStarted) {
                 if (mApiClient.isConnected()  || mApiClient.isConnecting()) {
