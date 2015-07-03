@@ -16,10 +16,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Date;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
+import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackBoolean;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
@@ -230,6 +232,19 @@ public class ExerciseCardioActivity extends AppCompatActivity {
         contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
 
         getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+        BackendFunctions.BFSaveRecord(exerciseId, result, new CallbackBoolean() {
+            @Override
+            public void done(boolean result) {
+                if(result){
+                    Toast.makeText(getApplicationContext(),"Complimenti!Record!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void error(int error) {
+                Toast.makeText(getApplicationContext(),getString(error), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
