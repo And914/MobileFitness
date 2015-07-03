@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -34,7 +35,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
  * Created by andre on 31/03/15.
  */
 
-public class RegistrationActivity extends ActionBarActivity{
+public class RegistrationActivity extends AppCompatActivity {
 
     //UI References
     private EditText birthDateText;

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import org.slf4j.helpers.Util;
@@ -20,7 +21,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by Jacopo on 02/04/2015.
  */
-public class WodsActivity extends ActionBarActivity implements WodsFragment.OnWodSelectedListener,WodFragment.OnExerciseSelectedListener {
+public class WodsActivity extends AppCompatActivity implements WodsFragment.OnWodSelectedListener,WodFragment.OnExerciseSelectedListener {
 
     private SharedPreferences mSharedPreferences;
     private Boolean wodDetails;

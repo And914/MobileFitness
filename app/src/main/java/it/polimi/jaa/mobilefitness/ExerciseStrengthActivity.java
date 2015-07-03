@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,7 +26,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by Jacopo on 13/05/2015.
  */
-public class ExerciseStrengthActivity extends ActionBarActivity {
+public class ExerciseStrengthActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPreferences;
     private static SharedPreferences mSharedPreferencesChallenge;

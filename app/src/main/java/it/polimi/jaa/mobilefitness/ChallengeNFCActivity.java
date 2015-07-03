@@ -10,6 +10,7 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by Jacopo on 09/04/2015.
  */
-public class ChallengeNFCActivity extends ActionBarActivity implements NfcAdapter.CreateNdefMessageCallback{
+public class ChallengeNFCActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback{
 
     private SharedPreferences mSharedPreferences;
 

@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.provider.CalendarContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,7 @@ import it.polimi.jaa.mobilefitness.utils.Utils;
 /**
  * Created by Jacopo on 09/04/2015.
  */
-public class SendResultsNFCActivity extends ActionBarActivity implements NfcAdapter.CreateNdefMessageCallback {
+public class SendResultsNFCActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback {
     private Button senderNFCButton;
     private static Boolean mFirst;
     private NfcAdapter mNfcAdapter;
