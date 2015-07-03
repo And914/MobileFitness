@@ -260,7 +260,7 @@ public class ExerciseStrengthActivity extends AppCompatActivity {
             @Override
             public void done(boolean result) {
                 if (result) {
-                    Toast.makeText(getApplicationContext(), "Complimenti!Record!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "New Record!", Toast.LENGTH_SHORT).show();
                 }
             }
 

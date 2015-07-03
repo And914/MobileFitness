@@ -236,7 +236,7 @@ public class ExerciseCardioActivity extends AppCompatActivity {
             @Override
             public void done(boolean result) {
                 if(result){
-                    Toast.makeText(getApplicationContext(),"Complimenti!Record!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"New record!", Toast.LENGTH_SHORT).show();
                 }
             }
 
