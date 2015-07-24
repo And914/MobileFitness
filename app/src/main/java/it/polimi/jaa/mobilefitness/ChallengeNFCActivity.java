@@ -84,7 +84,7 @@ public class ChallengeNFCActivity extends AppCompatActivity implements NfcAdapte
 
         equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
         exerciseNameText = (EditText) findViewById(R.id.challenge_exercise_name);
-
+        exerciseNameText.requestFocus();
         int NFCDone = mSharedPreferences.getInt("NFCDone",0);
 
         if (exerciseNameText.getText().length() == 0 && NFCDone == 0 || savedInstanceState!= null) {
