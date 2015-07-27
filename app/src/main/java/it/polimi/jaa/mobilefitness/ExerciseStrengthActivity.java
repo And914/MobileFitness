@@ -34,7 +34,6 @@ public class ExerciseStrengthActivity extends AppCompatActivity {
     private static SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
-    private ImageView exerciseImage;
     private TextView exerciseName;
     private TextView completedRounds;
     private TextView totalRounds;
@@ -65,7 +64,6 @@ public class ExerciseStrengthActivity extends AppCompatActivity {
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        exerciseImage = (ImageView) findViewById(R.id.exercise_icon);
         exerciseName = (TextView) findViewById(R.id.exercise_name);
         completedRounds = (TextView) findViewById(R.id.completed_rounds);
         totalRounds = (TextView) findViewById(R.id.total_rounds);
@@ -91,8 +89,6 @@ public class ExerciseStrengthActivity extends AppCompatActivity {
             cursor.moveToFirst();
 
             exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
-            exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
-
             rounds = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ROUNDS));
             weight = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_WEIGHT));
             reps = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_REPS));
@@ -102,7 +98,6 @@ public class ExerciseStrengthActivity extends AppCompatActivity {
         }
         else {
             exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
-            exerciseImage.setImageResource(R.drawable.strength_image);
             rounds = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_ROUNDS,0));
             weight = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_WEIGHTS,0));
             reps = String.valueOf(mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_REPS,0));
