@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -32,6 +33,21 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
         wodViewHolder.vName.setText(wod.name);
         wodViewHolder.vGym.setText(wod.gym);
         wodViewHolder.id_wod = wod.id_wod;
+        switch (i % 4) {
+            case 0:
+                wodViewHolder.vImageView.setImageResource(R.drawable.logo_bag);
+                break;
+            case 1:
+                wodViewHolder.vImageView.setImageResource(R.drawable.logo_bike);
+                break;
+            case 2:
+                wodViewHolder.vImageView.setImageResource(R.drawable.logo_hearth);
+                break;
+            case 3:
+                wodViewHolder.vImageView.setImageResource(R.drawable.logo_medal);
+                break;
+        }
+
     }
 
     @Override
@@ -48,6 +64,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
         String id_wod;
         TextView vName;
         TextView vGym;
+        ImageView vImageView;
 
         private View view;
 
@@ -56,6 +73,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
             view = v;
             vName = (TextView) v.findViewById(R.id.wod_name);
             vGym = (TextView) v.findViewById(R.id.wod_gym);
+            vImageView = (ImageView) v.findViewById(R.id.wod_icon);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
