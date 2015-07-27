@@ -35,7 +35,6 @@ public class ExerciseCardioActivity extends AppCompatActivity {
     private static SharedPreferences mSharedPreferencesChallenge;
     private static String exerciseId;
 
-    private ImageView exerciseImage;
     private TextView exerciseName;
     private TextView chronometer;
     private CountDownTimer countDownTimer;
@@ -67,7 +66,6 @@ public class ExerciseCardioActivity extends AppCompatActivity {
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        exerciseImage = (ImageView) findViewById(R.id.exercise_icon);
         exerciseName = (TextView) findViewById(R.id.exercise_name);
         chronometer = (TextView) findViewById(R.id.timer_cardio);
         startExerciseButton = (Button) findViewById(R.id.button_timer_exercise);
@@ -89,12 +87,10 @@ public class ExerciseCardioActivity extends AppCompatActivity {
             cursor.moveToFirst();
 
             exerciseName.setText(cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME)));
-            exerciseImage.setImageResource(Utils.findIcon(cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ICON_ID))));
 
             duration = cursor.getInt(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_DURATION));
             cursor.close();
         } else {
-            exerciseImage.setImageResource(R.drawable.cardio_image);
             exerciseName.setText(mSharedPreferencesChallenge.getString(Utils.SHARED_PREFERENCES_CHALLENGE_NAME,""));
             duration = mSharedPreferencesChallenge.getInt(Utils.SHARED_PREFERENCES_CHALLENGE_DURATION,0);
         }

@@ -6,8 +6,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:layout_weight="3"
+        android:src="@drawable/hearth_background_cardio"
         android:id="@+id/exercise_icon"/>
     
 
