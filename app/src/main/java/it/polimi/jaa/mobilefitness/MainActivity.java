@@ -190,10 +190,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.action_logout){
+        if (id == R.id.action_logout){
             ParseUser.logOut();
             Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginActivityIntent);

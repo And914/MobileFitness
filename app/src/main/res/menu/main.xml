@@ -7,8 +7,6 @@
         app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never"/>
-    <item android:id="@+id/action_logout" android:title="@string/action_logout"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_logout" android:title="@string/action_logout" android:icon="@drawable/ic_exit_to_app_white_48dp"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>
