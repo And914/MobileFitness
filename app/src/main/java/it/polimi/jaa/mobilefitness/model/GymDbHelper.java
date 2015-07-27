@@ -21,9 +21,11 @@ public class GymDbHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         //Set the queries to create the databases
         final String SQL_CREATE_BEACON_TABLE = "CREATE TABLE " + GymContract.BeaconEntry.TABLE_NAME + " (" +
-                GymContract.BeaconEntry.COLUMN_ID_BEACON +" TEXT PRIMARY KEY, " +
+                GymContract.BeaconEntry.COLUMN_ID_BEACON +" TEXT NOT NULL, " +
                 GymContract.BeaconEntry.COLUMN_ID_EXERCISE + " INTEGER NOT NULL, " +
-                GymContract.BeaconEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL " +
+                GymContract.BeaconEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL ," +
+                "PRIMARY KEY(" + GymContract.BeaconEntry.COLUMN_ID_BEACON + ", " +
+                GymContract.BeaconEntry.COLUMN_ID_EXERCISE + ") " +
                 " );";
 
         final String SQL_CREATE_EXERC_TABLE = "CREATE TABLE " + GymContract.ExerciseEntry.TABLE_NAME + " (" +

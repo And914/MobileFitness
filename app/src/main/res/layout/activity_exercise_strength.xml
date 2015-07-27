@@ -124,12 +124,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/button_next_round"
+                android:background="@drawable/blue_round_button"
                 android:textSize="35sp"
                 android:clickable="true"
                 android:visibility="visible"
                 android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center" />
+
         </FrameLayout>
+
 
         <FrameLayout
             android:layout_width="0dp"
@@ -137,13 +140,13 @@
             android:padding="5dp"
             android:layout_height="match_parent">
             <Button
-                android:background="@android:color/holo_red_dark"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="35sp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:id="@+id/button_complete_exercise"
+                android:background="@drawable/red_round_button"
                 android:clickable="true"
                 android:visibility="visible"
                 android:layout_gravity="center"
