@@ -1,11 +1,13 @@
 package it.polimi.jaa.mobilefitness;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -41,7 +43,9 @@ import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObject;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
+import it.polimi.jaa.mobilefitness.results.ResultsCardAdapter;
 import it.polimi.jaa.mobilefitness.utils.ExerciseInfo;
+import it.polimi.jaa.mobilefitness.utils.ResultsInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
 
 
@@ -58,6 +62,7 @@ public class WodFragment extends Fragment {
     private BeaconEventListener beaconSightingListener;
     private BeaconManager beaconManager;
     private Boolean beaconEntered = false;
+    private ProgressDialog dialog;
     private final List<String> beaconsList = new ArrayList<>();
 
     private Boolean canVibrate;
@@ -79,6 +84,8 @@ public class WodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         faActivity = super.getActivity();
+        dialog = new ProgressDialog(faActivity);
+        dialog.setMessage("Loading Exercises...");
 
         canVibrate = true;
 
@@ -150,21 +157,9 @@ public class WodFragment extends Fragment {
             }
         });
 
-        setExercisesFromLocalDB(idWod);
+        new FetchFromLocalDB().execute(idWod);
 
-        int totalEx = exerciseCardList.size();
-        int counterCompleted = 0;
-        for (ExerciseInfo exerciseCard : exerciseCardList) {
-            if (exerciseCard.completed == 1) {
-                counterCompleted++;
-            }
-        }
 
-        if (counterCompleted == totalEx) {
-            Toast.makeText(faActivity.getApplicationContext(), "Complimenti! Per oggi hai finito!", Toast.LENGTH_SHORT).show();
-            resetExercises();
-            faActivity.finish();
-        }
 
         placeEventListener = new PlaceEventListener() {
             @Override
@@ -344,7 +339,6 @@ public class WodFragment extends Fragment {
     private void saveBeaconsOnDB(String exerciseId, String equipment, String beaconId){
 
         final ContentValues contentValues = new ContentValues();
-        //Set all the entry as deleted
         String[] args = {beaconId};
 
         Cursor cursor = faActivity.getContentResolver().query(GymContract.BeaconEntry.CONTENT_URI, null,
@@ -359,27 +353,6 @@ public class WodFragment extends Fragment {
         }
         cursor.close();
 
-    }
-
-    protected void setExercisesFromLocalDB(String idWod) {
-
-
-        String[] args = {idWod};
-        Cursor cursor = faActivity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
-                new String[]{GymContract.ExerciseEntry.COLUMN_ID, GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
-                        GymContract.ExerciseEntry.COLUMN_ROUNDS, GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_REST_TIME,
-                        GymContract.ExerciseEntry.COLUMN_WEIGHT, GymContract.ExerciseEntry.COLUMN_DURATION, GymContract.ExerciseEntry.COLUMN_ICON_ID,
-                        GymContract.ExerciseEntry.COLUMN_CATEGORY, GymContract.ExerciseEntry.COLUMN_COMPLETED
-                },
-                GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
-                args,
-                null
-        );
-
-        exerciseCardList = ExerciseInfo.createListFromCursor(cursor);
-        exerciseCardAdapter = new ExerciseCardAdapter(exerciseCardList);
-        cursor.close();
-        recyclerView.setAdapter(exerciseCardAdapter);
     }
 
     private void resetExercises() {
@@ -414,19 +387,7 @@ public class WodFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 0) {
-            setExercisesFromLocalDB(idWod);
-            int totalEx = exerciseCardList.size();
-            int counterCompleted = 0;
-            for (ExerciseInfo exerciseCard : exerciseCardList) {
-                if (exerciseCard.completed == 1) {
-                    counterCompleted++;
-                }
-            }
-
-            if (counterCompleted == totalEx) {
-                Toast.makeText(getActivity().getApplicationContext(),"Complimenti! Per oggi hai finito!",Toast.LENGTH_SHORT).show();
-                resetExercises();
-            }
+            new FetchFromLocalDB().execute(idWod);
             canVibrate = true;
         }
     }
@@ -435,5 +396,57 @@ public class WodFragment extends Fragment {
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
         canVibrate = menuVisible;
+    }
+
+    private class FetchFromLocalDB extends AsyncTask<String, Void, List<ExerciseInfo>> {
+
+
+        @Override
+        protected List<ExerciseInfo> doInBackground(String... idWod) {
+            return ExerciseInfo.createListFromCursor(faActivity, idWod);
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<ExerciseInfo> resultsInfos) {
+            exerciseCardAdapter = new ExerciseCardAdapter(resultsInfos);
+            exerciseCardList = resultsInfos;
+
+            int totalEx = resultsInfos.size();
+            int counterCompleted = 0;
+            for (ExerciseInfo exerciseCard : resultsInfos) {
+                if (exerciseCard.completed == 1) {
+                    counterCompleted++;
+                }
+            }
+
+            if (counterCompleted == totalEx) {
+                Toast.makeText(faActivity.getApplicationContext(), "Complimenti! Per oggi hai finito!", Toast.LENGTH_SHORT).show();
+                resetExercises();
+                faActivity.finish();
+            }
+
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
+            recyclerView.setAdapter(exerciseCardAdapter);
+
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+    public void setExercisesFromLocalDB (String idWod) {
+        new FetchFromLocalDB().execute(idWod);
     }
 }

@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness.utils;
 
+import android.app.Activity;
 import android.database.Cursor;
 
 import java.util.ArrayList;
@@ -39,7 +40,18 @@ public class ExerciseInfo {
         this.selected = false;
     }
 
-    public static List<ExerciseInfo> createListFromCursor(Cursor cursor) {
+    public static List<ExerciseInfo> createListFromCursor(Activity activity, String[] args) {
+
+        Cursor cursor = activity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI,
+                new String[]{GymContract.ExerciseEntry.COLUMN_ID, GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_EQUIPMENT,
+                        GymContract.ExerciseEntry.COLUMN_ROUNDS, GymContract.ExerciseEntry.COLUMN_REPS, GymContract.ExerciseEntry.COLUMN_REST_TIME,
+                        GymContract.ExerciseEntry.COLUMN_WEIGHT, GymContract.ExerciseEntry.COLUMN_DURATION, GymContract.ExerciseEntry.COLUMN_ICON_ID,
+                        GymContract.ExerciseEntry.COLUMN_CATEGORY, GymContract.ExerciseEntry.COLUMN_COMPLETED
+                },
+                GymContract.ExerciseEntry.COLUMN_ID_WOD + " = ?",
+                args,
+                null
+        );
 
         ArrayList<ExerciseInfo> mArrayList = new ArrayList<ExerciseInfo>();
         cursor.moveToFirst();
@@ -63,6 +75,8 @@ public class ExerciseInfo {
             }
             cursor.moveToNext();
         }
+        cursor.close();
+
         return mArrayList;
     }
 }

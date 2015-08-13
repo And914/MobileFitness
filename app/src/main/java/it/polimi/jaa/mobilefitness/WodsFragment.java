@@ -65,7 +65,6 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        //WodCardAdapter wodCardAdapter = new WodCardAdapter();
         new FetchFromLocalDB().execute();
 
         return layout;

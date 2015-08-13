@@ -66,8 +66,8 @@ public class WodsActivity extends AppCompatActivity implements WodsFragment.OnWo
         mSharedPreferences.edit().putString(Utils.SHARED_PREFERENCES_ID_WOD, wodId).apply();
 
         if (findViewById(R.id.wod_fragment_container) != null){
-            WodFragment wodsFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
-            wodsFragment.setExercisesFromLocalDB(wodId);
+            WodFragment wodFragment = (WodFragment) getSupportFragmentManager().findFragmentById(R.id.wod_fragment_container);
+            wodFragment.setExercisesFromLocalDB(wodId);
         }
         else {
             mSharedPreferences.edit().putBoolean("wodDetails",true).apply();
