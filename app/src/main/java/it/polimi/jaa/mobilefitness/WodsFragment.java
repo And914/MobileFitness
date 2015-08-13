@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
@@ -57,7 +59,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        Cursor cursor = activity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME_WOD, GymContract.ExerciseEntry.COLUMN_GYM_NAME,GymContract.ExerciseEntry.COLUMN_ID_WOD},
+        Cursor cursor = activity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME_WOD, GymContract.ExerciseEntry.COLUMN_GYM_NAME,GymContract.ExerciseEntry.COLUMN_ID_WOD,GymContract.ExerciseEntry.COLUMN_CREATION_DATE},
                 null, null, null);
 
         WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createListFromCursor(cursor));
@@ -191,6 +193,15 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_EQUIPMENT, equipment.getString(Utils.PARSE_EQUIPMENT_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_ROUNDS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_ROUNDS));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_REPS, wodEx.getInt(Utils.PARSE_WODSEXERCISES_REPS));
+
+                            GregorianCalendar calendar = new GregorianCalendar();
+                            calendar.setTime(wodEx.getCreatedAt());
+
+                            String dateString = String.valueOf(calendar.get(Calendar.DATE)).concat("/")
+                                    .concat(String.valueOf(calendar.get(Calendar.MONTH))).concat("/")
+                                    .concat(String.valueOf(calendar.get(Calendar.YEAR)));
+
+                            contentValues.put(GymContract.ExerciseEntry.COLUMN_CREATION_DATE, dateString);
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_GYM_NAME, gym.getString(Utils.PARSE_GYMS_NAME));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_REST_TIME, wodEx.getInt(Utils.PARSE_WODSEXERCISES_REST));
                             contentValues.put(GymContract.ExerciseEntry.COLUMN_WEIGHT, wodEx.getInt(Utils.PARSE_WODSEXERCISES_WEIGHT));

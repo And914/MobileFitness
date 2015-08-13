@@ -66,6 +66,7 @@ public class GymContract {
         public static final String COLUMN_GYM_NAME = "gym_name";
         public static final String COLUMN_CATEGORY = "category";
         public static final String COLUMN_EQUIPMENT = "equipment";
+        public static final String COLUMN_CREATION_DATE = "created_at";
         public static final String COLUMN_ICON_ID = "icon_id";
         public static final String COLUMN_ROUNDS = "rounds";
         public static final String COLUMN_REPS = "reps";

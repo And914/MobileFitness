@@ -36,6 +36,7 @@ public class GymDbHelper extends SQLiteOpenHelper{
                 GymContract.ExerciseEntry.COLUMN_CATEGORY + " INTEGER NOT NULL," +
                 GymContract.ExerciseEntry.COLUMN_GYM_NAME + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_EQUIPMENT + " TEXT NOT NULL, " +
+                GymContract.ExerciseEntry.COLUMN_CREATION_DATE + " TEXT NOT NULL, " +
                 GymContract.ExerciseEntry.COLUMN_DURATION + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_ICON_ID + " INTEGER, " +
                 GymContract.ExerciseEntry.COLUMN_REPS + " INTEGER, " +

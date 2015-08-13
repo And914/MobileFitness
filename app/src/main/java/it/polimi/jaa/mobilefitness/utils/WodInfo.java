@@ -6,6 +6,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.model.GymContract;
@@ -17,11 +19,13 @@ public class WodInfo {
     public final String name;
     public final String gym;
     public final String id_wod;
+    public final String date;
 
-    public WodInfo(String name, String gym, String id_wod) {
+    public WodInfo(String name, String gym, String id_wod, String date) {
         this.name = name;
         this.gym = gym;
         this.id_wod = id_wod;
+        this.date = date;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class WodInfo {
             String wodName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_NAME_WOD));
             String gymName = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_GYM_NAME));
             String wodId = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_ID_WOD));
-            WodInfo wodInfo = new WodInfo(wodName,gymName,wodId);
+            String date = cursor.getString(cursor.getColumnIndex(GymContract.ExerciseEntry.COLUMN_CREATION_DATE));
+            WodInfo wodInfo = new WodInfo(wodName,gymName,wodId, date);
             if (!mArrayList.contains(wodInfo)){
                 mArrayList.add(wodInfo);
             }
@@ -62,7 +67,14 @@ public class WodInfo {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            WodInfo wi = new WodInfo(wod.getString(Utils.PARSE_WODS_NAME),gym.getString(Utils.PARSE_GYMS_NAME),wod.getObjectId());
+
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(wod.getCreatedAt());
+            String dateString = String.valueOf(calendar.get(Calendar.DATE)).concat("/")
+                    .concat(String.valueOf(calendar.get(Calendar.MONTH))).concat("/")
+                    .concat(String.valueOf(calendar.get(Calendar.YEAR)));
+
+            WodInfo wi = new WodInfo(wod.getString(Utils.PARSE_WODS_NAME),gym.getString(Utils.PARSE_GYMS_NAME),wod.getObjectId(), dateString);
             if (!result.contains(wi)){
                 result.add(wi);
             }

@@ -33,6 +33,8 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
         wodViewHolder.vName.setText(wod.name);
         wodViewHolder.vGym.setText(wod.gym);
         wodViewHolder.id_wod = wod.id_wod;
+        wodViewHolder.vCreationDate.setText(wod.date);
+
         switch (i % 4) {
             case 0:
                 wodViewHolder.vImageView.setImageResource(R.drawable.logo_bag);
@@ -64,6 +66,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
         String id_wod;
         TextView vName;
         TextView vGym;
+        TextView vCreationDate;
         ImageView vImageView;
 
         private View view;
@@ -74,6 +77,7 @@ public class WodCardAdapter extends RecyclerView.Adapter<WodCardAdapter.WodViewH
             vName = (TextView) v.findViewById(R.id.wod_name);
             vGym = (TextView) v.findViewById(R.id.wod_gym);
             vImageView = (ImageView) v.findViewById(R.id.wod_icon);
+            vCreationDate = (TextView) v.findViewById(R.id.wod_creation_date);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
