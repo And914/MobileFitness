@@ -1,12 +1,15 @@
 package it.polimi.jaa.mobilefitness;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +39,7 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentActivity activity;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressDialog dialog;
 
     private OnWodSelectedListener mListener;
 
@@ -48,6 +52,8 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         activity = this.getActivity();
+        dialog = new ProgressDialog(activity);
+        dialog.setMessage("Fetching WODs...");
         layout = (LinearLayout) inflater.inflate(R.layout.fragment_wods, container, false);
 
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container_wods);
@@ -59,17 +65,9 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        Cursor cursor = activity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME_WOD, GymContract.ExerciseEntry.COLUMN_GYM_NAME,GymContract.ExerciseEntry.COLUMN_ID_WOD,GymContract.ExerciseEntry.COLUMN_CREATION_DATE},
-                null, null, null);
+        //WodCardAdapter wodCardAdapter = new WodCardAdapter();
+        new FetchFromLocalDB().execute();
 
-        WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createListFromCursor(cursor));
-        cursor.close();
-        if (wodCardAdapter.getItemCount()>0){
-            recyclerView.setAdapter(wodCardAdapter);
-        }
-        else {
-            setWodsInfoFromServer();
-        }
         return layout;
     }
 
@@ -111,14 +109,19 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void setWodsInfoFromServer() {
+        dialog.show();
 
         BackendFunctions.BFGetWods(new CallbackParseObjects() {
             @Override
             public void done(List<ParseObject> parseObjects) {
                 if (parseObjects.size() > 0) {
                     WodCardAdapter wodCardAdapter = new WodCardAdapter(WodInfo.createList(parseObjects));
-                    recyclerView.setAdapter(wodCardAdapter);
                     saveOnDB(parseObjects);
+
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    recyclerView.setAdapter(wodCardAdapter);
                 }
             }
 
@@ -222,6 +225,42 @@ public class WodsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             });
         }
 
+    }
+
+    private class FetchFromLocalDB extends AsyncTask<Void, Void, List<WodInfo>> {
+
+
+        @Override
+        protected List<WodInfo> doInBackground(Void... params) {
+            return WodInfo.createListFromCursor(getActivity());
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<WodInfo> wodInfos) {
+            WodCardAdapter wodCardAdapter = new WodCardAdapter(wodInfos);
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
+            if (wodCardAdapter.getItemCount()>0){
+                recyclerView.setAdapter(wodCardAdapter);
+            }
+            else {
+                setWodsInfoFromServer();
+            }
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 
 

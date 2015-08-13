@@ -1,7 +1,9 @@
 package it.polimi.jaa.mobilefitness.results;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -19,11 +21,13 @@ import com.parse.ParseObject;
 import java.util.List;
 
 import it.polimi.jaa.mobilefitness.R;
+import it.polimi.jaa.mobilefitness.WodCardAdapter;
 import it.polimi.jaa.mobilefitness.backend.BackendFunctions;
 import it.polimi.jaa.mobilefitness.backend.callbacks.CallbackParseObjects;
 import it.polimi.jaa.mobilefitness.model.GymContract;
 import it.polimi.jaa.mobilefitness.utils.ResultsInfo;
 import it.polimi.jaa.mobilefitness.utils.Utils;
+import it.polimi.jaa.mobilefitness.utils.WodInfo;
 
 /**
  * Created by andre on 30/03/15.
@@ -32,8 +36,7 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private FrameLayout dateContainer;
-    private TextView dateTitle;
+    private ProgressDialog dialog;
 
     public ResultsUserFragment() {
     }
@@ -42,6 +45,9 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_results, container, false);
+
+        dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Fetching Results...");
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.results_recycler_list);
         recyclerView.setHasFixedSize(true);
@@ -53,14 +59,7 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
-        Cursor cursor = getActivity().getContentResolver().query(GymContract.HistoryEntry.CONTENT_URI, new String[]{GymContract.HistoryEntry.COLUMN_ID_EXERC, GymContract.HistoryEntry.COLUMN_RESULT,GymContract.HistoryEntry.COLUMN_TIMESTAMP},
-                null, null, null);
-
-        ResultsCardAdapter resultsCardAdapter = new ResultsCardAdapter(ResultsInfo.createListFromCursor(cursor, getActivity().getApplicationContext()));
-        cursor.close();
-
-        recyclerView.setAdapter(resultsCardAdapter);
+        new FetchFromLocalDB().execute();
 
         return rootView;
     }
@@ -78,7 +77,7 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     private void setResultsFromServer(){
-
+        dialog.show ();
         getActivity().getContentResolver().delete(GymContract.HistoryEntry.CONTENT_URI, null, null);
 
         BackendFunctions.BFGetResults(new CallbackParseObjects() {
@@ -91,13 +90,14 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
                     contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, parseObject.getInt(Utils.PARSE_USERSEXERCISES_RESULT));
                     getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
                 }
-                Cursor cursor = getActivity().getContentResolver().query(GymContract.HistoryEntry.CONTENT_URI, new String[]{GymContract.HistoryEntry.COLUMN_ID_EXERC, GymContract.HistoryEntry.COLUMN_RESULT,GymContract.HistoryEntry.COLUMN_TIMESTAMP},
-                        null, null, null);
 
-                ResultsCardAdapter resultsCardAdapter = new ResultsCardAdapter(ResultsInfo.createListFromCursor(cursor, getActivity().getApplicationContext()));
-                cursor.close();
+                ResultsCardAdapter resultsCardAdapter = new ResultsCardAdapter(ResultsInfo.createListFromCursor(getActivity()));
 
                 recyclerView.setAdapter(resultsCardAdapter);
+
+                if (dialog.isShowing()) {
+                   dialog.dismiss();
+                }
             }
 
             @Override
@@ -105,5 +105,41 @@ public class ResultsUserFragment extends Fragment implements SwipeRefreshLayout.
 
             }
         });
+    }
+
+    private class FetchFromLocalDB extends AsyncTask<Void, Void, List<ResultsInfo>> {
+
+
+        @Override
+        protected List<ResultsInfo> doInBackground(Void... params) {
+            return ResultsInfo.createListFromCursor(getActivity());
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<ResultsInfo> resultsInfos) {
+            ResultsCardAdapter resultsCardAdapter = new ResultsCardAdapter(resultsInfos);
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
+            if (resultsCardAdapter.getItemCount()>0){
+                recyclerView.setAdapter(resultsCardAdapter);
+            }
+            else {
+                setResultsFromServer();
+            }
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 }

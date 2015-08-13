@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -41,16 +42,19 @@ public class ResultsInfo implements Comparable {
         this.firstDate = false;
     }
 
-    public static List<ResultsInfo> createListFromCursor(Cursor cursor, Context context) {
+    public static List<ResultsInfo> createListFromCursor(Activity activity) {
         ArrayList<ResultsInfo> mArrayList = new ArrayList<>();
+
+        Cursor cursor = activity.getContentResolver().query(GymContract.HistoryEntry.CONTENT_URI, new String[]{GymContract.HistoryEntry.COLUMN_ID_EXERC, GymContract.HistoryEntry.COLUMN_RESULT,GymContract.HistoryEntry.COLUMN_TIMESTAMP},
+                null, null, null);
+
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
             // The Cursor is now set to the right position
             String exerciseId = cursor.getString(cursor.getColumnIndex(GymContract.HistoryEntry.COLUMN_ID_EXERC));
 
             String[] args = {exerciseId};
-
-            Cursor cursorExercise = context.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_EQUIPMENT, GymContract.ExerciseEntry.COLUMN_CATEGORY, GymContract.ExerciseEntry.COLUMN_ICON_ID},
+            Cursor cursorExercise = activity.getApplicationContext().getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME, GymContract.ExerciseEntry.COLUMN_EQUIPMENT, GymContract.ExerciseEntry.COLUMN_CATEGORY, GymContract.ExerciseEntry.COLUMN_ICON_ID},
                     GymContract.ExerciseEntry.COLUMN_ID + " = ?" , args, null);
 
             cursorExercise.moveToFirst();
@@ -71,6 +75,7 @@ public class ResultsInfo implements Comparable {
 
             cursorExercise.close();
         }
+        cursor.close();
 
         Collections.sort(mArrayList);
 

@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness.utils;
 
+import android.app.Activity;
 import android.database.Cursor;
 
 import com.parse.ParseException;
@@ -40,7 +41,9 @@ public class WodInfo {
 
 
 
-    public static List<WodInfo> createListFromCursor(Cursor cursor) {
+    public static List<WodInfo> createListFromCursor(Activity activity) {
+        Cursor cursor =   activity.getContentResolver().query(GymContract.ExerciseEntry.CONTENT_URI, new String[]{GymContract.ExerciseEntry.COLUMN_NAME_WOD, GymContract.ExerciseEntry.COLUMN_GYM_NAME,GymContract.ExerciseEntry.COLUMN_ID_WOD,GymContract.ExerciseEntry.COLUMN_CREATION_DATE},
+                null, null, null);
         ArrayList<WodInfo> mArrayList = new ArrayList<WodInfo>();
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
@@ -55,6 +58,7 @@ public class WodInfo {
             }
             cursor.moveToNext();
         }
+        cursor.close();
         return mArrayList;
     }
 
