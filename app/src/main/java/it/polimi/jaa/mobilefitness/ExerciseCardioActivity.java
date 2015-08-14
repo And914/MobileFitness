@@ -1,5 +1,6 @@
 package it.polimi.jaa.mobilefitness;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -131,7 +132,7 @@ public class ExerciseCardioActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else {
-                        saveResult(results);
+                        saveResult(results, getParent());
                     }
                     finish();
                 }
@@ -177,45 +178,23 @@ public class ExerciseCardioActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getActivity().getApplicationContext(), SendResultsNFCActivity.class);
                                 startActivity(intent);
                             } else {
-                                saveResult();
+                                saveResult(duration,getActivity());
                             }
                         }
                     });
 
-
             // Create the AlertDialog object and return it
             return builder.create();
         }
-
-        private void saveResult() {
-            String[] args = {String.valueOf(exerciseId)};
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
-
-            getActivity().getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
-                    contentValues,
-                    GymContract.ExerciseEntry.COLUMN_ID + " = ?",
-                    args);
-
-            BackendFunctions.BFSaveResult(exerciseId, duration);
-
-            contentValues = new ContentValues();
-            contentValues.put(GymContract.HistoryEntry.COLUMN_ID_EXERC, String.valueOf(exerciseId));
-            contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, duration);
-            contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
-
-            getActivity().getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
-        }
     }
 
-    private void saveResult(int result) {
+    private static void saveResult(int result, final Activity activity) {
         String[] args = {String.valueOf(exerciseId)};
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(GymContract.ExerciseEntry.COLUMN_COMPLETED, 1);
 
-        getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
+        activity.getContentResolver().update(GymContract.ExerciseEntry.CONTENT_URI,
                 contentValues,
                 GymContract.ExerciseEntry.COLUMN_ID + " = ?",
                 args);
@@ -227,18 +206,18 @@ public class ExerciseCardioActivity extends AppCompatActivity {
         contentValues.put(GymContract.HistoryEntry.COLUMN_RESULT, result);
         contentValues.put(GymContract.HistoryEntry.COLUMN_TIMESTAMP, String.valueOf(new Date()));
 
-        getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
+        activity.getContentResolver().insert(GymContract.HistoryEntry.CONTENT_URI, contentValues);
         BackendFunctions.BFSaveRecord(exerciseId, result, new CallbackBoolean() {
             @Override
             public void done(boolean result) {
                 if(result){
-                    Toast.makeText(getApplicationContext(),"New record!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.getApplicationContext(),"New record!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void error(int error) {
-                Toast.makeText(getApplicationContext(),getString(error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(),activity.getString(error), Toast.LENGTH_SHORT).show();
             }
         });
     }

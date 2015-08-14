@@ -283,11 +283,19 @@ public class BackendFunctions {
         });
     }
 
-    public static void BFSaveRecord(String exerciseId, final int result, final CallbackBoolean callback){
-        BFGetExercise(exerciseId, new CallbackParseObject() {
+    public static void BFSaveRecord(String wodExerciseId, final int result, final CallbackBoolean callback){
+        BFGetWodExercise(wodExerciseId, new CallbackParseObject() {
             @Override
-            public void done(final ParseObject ex) {
+            public void done(ParseObject wodEx) {
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("users_records");
+                final ParseObject ex = wodEx.getParseObject(Utils.PARSE_WODSEXERCISES_EXERCISE);
+
+                try {
+                    ex.fetchIfNeeded();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 query.whereEqualTo(Utils.PARSE_USERSRECORDS_EXERCISE, ex);
                 query.whereEqualTo(Utils.PARSE_USERSRECORDS_USER, ParseUser.getCurrentUser());
                 query.findInBackground(new FindCallback<ParseObject>() {
